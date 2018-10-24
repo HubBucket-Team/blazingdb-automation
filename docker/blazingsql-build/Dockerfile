@@ -23,4 +23,4 @@ WORKDIR /home/builder
 VOLUME /home/builder/src
 VOLUME /home/builder/output
 
-#ENTRYPOINT bash /home/builder/build.sh
+ENTRYPOINT bash /home/builder/build.sh

@@ -16,6 +16,7 @@ function zip_files() {
 
     cp -r $workspace/blazingdb-ral/CMakeFiles/thirdparty/libgdf-src/python/* $output/libgdf_cffi/
     cp -r $workspace/blazingdb-ral/CMakeFiles/thirdparty/libgdf-install/* $output/libgdf_cffi/
+    rm -rf $output/libgdf_cffi/lib/libgdf.a
 
     cp $workspace/blazingdb-orchestrator/blazingdb_orchestator_service $output
     cp $workspace/blazingdb-calcite/blazingdb-calcite-application/target/BlazingCalcite.jar $output

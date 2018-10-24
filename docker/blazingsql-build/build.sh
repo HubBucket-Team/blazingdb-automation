@@ -10,6 +10,7 @@ function zip_files() {
     workspace=/home/builder/src/
     output=/home/builder/output/blazingsql-files
     mkdir -p $output/libgdf_cffi
+    mkdir -p $output/blazingdb-protocol/python/
 
     cp $workspace/blazingdb-ral/testing-libgdf $output
 
@@ -18,6 +19,9 @@ function zip_files() {
 
     cp $workspace/blazingdb-orchestrator/blazingdb_orchestator_service $output
     cp $workspace/blazingdb-calcite/blazingdb-calcite-application/target/BlazingCalcite.jar $output
+
+    cp -r $workspace/blazingdb-protocol/python/* $output/blazingdb-protocol/python/
+    rm -rf $output/pyBlazing/.git/
 
     cp -r $workspace/pyBlazing/ $output/
     rm -rf $output/pyBlazing/.git/

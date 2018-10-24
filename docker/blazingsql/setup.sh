@@ -23,6 +23,10 @@ cp blazingdb_orchestator_service /usr/bin
 cp BlazingCalcite.jar /usr/bin
 
 # install pyblazing
+cd blazingdb-protocol/python/
+pip install .
+
+cd $blazingsql_files
 cd pyBlazing
 pip install .
 

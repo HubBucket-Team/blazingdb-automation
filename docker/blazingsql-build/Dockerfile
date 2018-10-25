@@ -16,6 +16,9 @@ RUN apt-get install curl -y
 RUN apt-get install git -y
 RUN apt-get clean
 
+RUN wget -O- https://cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz | tar zxf - -C /etc 
+ENV PATH $PATH:/etc/cmake-3.11.4-Linux-x86_64/bin
+
 # Create the user 'builder'
 RUN useradd -ms /bin/bash builder
 
@@ -27,10 +30,12 @@ RUN mkdir output
 
 USER root
 COPY build.sh /home/builder/
-RUN chown builder:builder /home/builder/build.sh
+RUN  chown builder:builder /home/builder/build.sh
+RUN  chmod +x /home/builder/build.sh
 
 USER builder
 WORKDIR /home/builder
+
 
 RUN mkdir -p /home/builder/.ssh
 
@@ -38,4 +43,4 @@ VOLUME /home/builder/src
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
 
-#ENTRYPOINT bash /home/builder/build.sh
+ENTRYPOINT bash /home/builder/build.sh

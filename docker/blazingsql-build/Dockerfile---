@@ -23,8 +23,8 @@ RUN apt-get update && \
     apt-get clean
 
 
-RUN wget -O- https://cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz | tar zxf - -C /opt 
-ENV PATH $PATH:/opt/cmake-3.11.4-Linux-x86_64/bin
+RUN wget -O- https://cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz | tar zxf - -C /etc 
+ENV PATH $PATH:/etc/cmake-3.11.4-Linux-x86_64/bin
 
 # Set SSH KEYS
 ####################################################
@@ -79,14 +79,31 @@ WORKDIR /opt/blazingdb-calcite
 RUN mvn clean install -Dmaven.test.skip=true
 
 RUN mkdir /shared
+WORKDIR /shared
+# RUN mkdir blazingdb-ral
+# RUN mkdir blazingdb-orchestrator
+# RUN mkdir blazingdb-calcite
+# RUN mkdir blazingdb-protocol
 
-RUN  cp -r /opt/blazingdb-ral/build/testing-libgdf /shared
-RUN  cp -r /opt/blazingdb-orchestrator/build/ /shared
-RUN  cp -r /opt/blazingdb-calcite/blazingdb-calcite-application/target/*.jar /shared
+
+#  RUN  cp -r /opt/blazingdb-ral/build/testing-libgdf /shared/blazingdb-ral
+#  RUN  cp -r /opt/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-install/ /shared/blazingdb-ral
+#  RUN  cp -r /opt/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-src/python/ /shared/blazingdb-ral
+#  RUN  cp -r /opt/blazingdb-orchestrator/build/blazingdb_orchestator_service /shared/blazingdb-orchestrator/
+#  RUN  cp -r /opt/blazingdb-calcite/blazingdb-calcite-application/target/BlazingCalcite.jar /shared/blazingdb-calcite/
+#  RUN  cp -r /opt/blazingdb-protocol/python/ /shared/blazingdb-protocol/
+
 
 VOLUME /shared
 
-ENTRYPOINT  cp -r /opt/blazingdb-ral/build/testing-libgdf /shared ; cp -r /opt/blazingdb-calcite/blazingdb-calcite-application/target/*.jar /shared ; cp -r /opt/blazingdb-orchestrator/build/ /shared
+#  ENTRYPOINT  cp -r /opt/blazingdb-ral/build/testing-libgdf /shared/blazingdb-ral/ ; \
+#              cp -r /opt/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-install/ /shared/blazingdb-ral/ ; \
+#              cp -r /opt/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-src/python/ /shared/blazingdb-ral/ ; \
+#              cp -r /opt/blazingdb-orchestrator/build/blazingdb_orchestator_service /shared/blazingdb-orchestrator ; \
+#              cp -r /opt/blazingdb-calcite/blazingdb-calcite-application/target/BlazingCalcite.jar /shared/blazingdb-calcite ; \
+#              cp -r /opt/blazingdb-protocol/python/ /shared/blazingdb-protocol/
+
+ENTRYPOINT  cp -r /opt/* /shared
 
 
 #BEFORE BUILD

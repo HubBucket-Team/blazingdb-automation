@@ -23,7 +23,7 @@ function build_blazingsql() {
     git clone git@github.com:BlazingDB/blazingdb-ral.git
     cd  ${workspace}/blazingdb-ral && git checkout feature/testdata-generator
     mkdir ${workspace}/blazingdb-ral/build && cd ${workspace}/blazingdb-ral/build
-    RUN cmake .. && RUN make -j4
+    cmake .. && make -j4
 
     # BLAZINGDB-ORCHESTRATOR
     cd ${workspace}

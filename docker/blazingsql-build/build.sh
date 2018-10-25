@@ -55,8 +55,10 @@ function zip_files() {
 
     cp $workspace/blazingdb-ral/build/testing-libgdf ${output}
 
-    cp -r $workspace/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-src/python/* ${output}/libgdf_cffi/
-    cp -r $workspace/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-install/* ${output}/libgdf_cffi/
+
+    cp -r $workspace/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-src/python/* $output/libgdf_cffi/
+    cp -r $workspace/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-install/* $output/libgdf_cffi/
+    rm -rf $output/libgdf_cffi/lib/libgdf.a
 
     cp $workspace/blazingdb-orchestrator/build/blazingdb_orchestator_service ${output}
     cp $workspace/blazingdb-calcite/blazingdb-calcite-application/target/BlazingCalcite.jar ${output}

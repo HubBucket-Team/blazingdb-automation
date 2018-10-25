@@ -8,7 +8,7 @@ This process will build and zip all the artifacts and binaries into a single fil
 ```shell-script
 cd docker/blazingsql-build
 nvidia-docker build -t demobuild .
-nvidia-docker run --rm -v /path/blazingsql/src/:/home/builder/src/ -v /path/output/:/home/builder/output demobuild
+nvidia-docker run --rm -v /path/blazingsql/src/:/home/builder/src/ -v /path/output/:/home/builder/output -v /home/user/.ssh/:/home/builder/.ssh/ demobuild
 ```
 
 then check /path/output/ there will be the file blazingsql.tar.gz
@@ -18,10 +18,15 @@ then check /path/output/ there will be the file blazingsql.tar.gz
 cd docker/blazingsql
 cp /path/output/blazingsql.tar.gz .
 nvidia-docker build -t demo .
-nvidia-docker run --rm -ti -v /tmp/:/tmp -p 8888:8888 -p 8787:8787 -p 8786:8786 demo /bin/bash
+nvidia-docker run --rm -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 demo
+
 # inside the container
 cd rapids && source activate gdf
 # untar mortgage.tar.gz is optional 
 tar -xzvf data/mortgage.tar.gz
 bash utils/start_jupyter.s
 ```
+Notes:
+- You can mount your /tmp folder into the container  with -v /tmp:/tmp so this way you can use the from your host BlazingSQL and PyBlazing from the container.
+- All the BlazingSQL stack is under supervisord, once the thing is running check: http://localhost:9001
+- This docker container will run the JupyterLab service, try to connect there with (the default token is 'rapids'): http://localhost:8884/lab

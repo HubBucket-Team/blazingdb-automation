@@ -26,6 +26,7 @@ cd rapids && source activate gdf
 tar -xzvf data/mortgage.tar.gz
 bash utils/start_jupyter.s
 ```
-
-You can mount your /tmp folder into the container  with -v /tmp:/tmp so this way you can use the from your host BlazingSQL and PyBlazing from the container.
-Note: All the BlazingSQL stack is under supervisord
+Notes:
+- You can mount your /tmp folder into the container  with -v /tmp:/tmp so this way you can use the from your host BlazingSQL and PyBlazing from the container.
+- All the BlazingSQL stack is under supervisord, once the thing is running check: http://localhost:9001
+- This docker container will run the JupyterLab service, try to connect there with (the default token is 'rapids'): http://localhost:8884/lab

@@ -12,6 +12,7 @@ RUN apt-get install -y openjdk-8-jdk
 RUN apt-get -yqq install ssh
 RUN apt-get install -y maven
 RUN apt-get install -y wget
+RUN apt-get install python3-setuptools
 RUN apt-get install curl -y
 RUN apt-get install git -y
 RUN apt-get clean
@@ -32,6 +33,9 @@ USER root
 COPY build.sh /home/builder/
 RUN  chown builder:builder /home/builder/build.sh
 RUN  chmod +x /home/builder/build.sh
+RUN  mkdir /blazingsql
+RUN  chmod 777 /blazingsql
+
 
 USER builder
 WORKDIR /home/builder

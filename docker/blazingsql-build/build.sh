@@ -29,7 +29,7 @@ function build_blazingsql() {
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
     cd  ${workspace}/blazingdb-orchestrator 
-    mkdir blazingdb-orchestrator/build && cd ${workspace}/blazingdb-orchestrator/build
+    mkdir ${workspace}/blazingdb-orchestrator/build && cd ${workspace}/blazingdb-orchestrator/build
     cmake .. && make -j8
 
     # BLAZINGDB-CALCITE

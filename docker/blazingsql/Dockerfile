@@ -7,6 +7,8 @@ LABEL Description="blazingdb/blazingsql is the official BlazingDB environment fo
 RUN apt-get update
 RUN apt-get install -y openjdk-8-jre
 RUN apt-get install -y supervisor
+# Install tools & utils
+RUN apt-get install -y --no-install-recommends bzip2 wget curl nano lsof htop net-tools
 RUN apt-get clean
 
 RUN source activate gdf && pip install --upgrade pip
@@ -20,6 +22,8 @@ COPY supervisord/blazing-calcite.conf /etc/supervisor/conf.d/blazing-calcite.con
 COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
 COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
 COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
+COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
+RUN chmod +x /usr/bin/run_jupyter.sh
 
 # Setup BlazingSQL
 RUN mkdir /tmp/blazing/

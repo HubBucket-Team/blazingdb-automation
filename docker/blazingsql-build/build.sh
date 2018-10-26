@@ -96,7 +96,7 @@ function zip_files() {
 #BEGIN MAIN
 
 # if the user did'nt mount /home/builder/src then build inside the container
-if [ -z "$(ls -A ${workspace})" ]; then
+if [ -z "$(ls -A /home/builder/src)" ]; then
     build_blazingsql
     zip_files
 else

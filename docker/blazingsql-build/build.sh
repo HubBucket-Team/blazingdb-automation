@@ -28,7 +28,7 @@ function build_blazingsql() {
     # blazingdb-calcite
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-calcite.git
-    sudo mkdir /blazingsql
+    #sudo mkdir /blazingsql
     cd ${workspace}/blazingdb-calcite
     mvn clean install -Dmaven.test.skip=true
 
@@ -44,7 +44,7 @@ function zip_cpp_project() {
     project=$3
     binary=$4
 
-    if [ -f $workspace/$project/build/testing-libgdf ]; then
+    if [ -f $workspace/$project/build/$binary ]; then
         cp $workspace/$project/build/$binary $output
     elif [ -f $workspace/$project/$binary ]; then # in-source build cmake (e.g. eclipse generator)
         cp $workspace/$project/$binary $output

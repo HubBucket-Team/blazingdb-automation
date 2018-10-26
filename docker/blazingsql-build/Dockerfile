@@ -12,12 +12,11 @@ RUN apt-get install -y openjdk-8-jdk
 RUN apt-get -yqq install ssh
 RUN apt-get install -y maven
 RUN apt-get install -y wget
-RUN apt-get install python3-setuptools
 RUN apt-get install curl -y
 RUN apt-get install git -y
 RUN apt-get clean
 
-RUN wget -O- https://cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz | tar zxf - -C /etc 
+RUN wget -O- https://cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz | tar zxf - -C /etc
 ENV PATH $PATH:/etc/cmake-3.11.4-Linux-x86_64/bin
 
 # Create the user 'builder'
@@ -31,15 +30,11 @@ RUN mkdir output
 
 USER root
 COPY build.sh /home/builder/
-RUN  chown builder:builder /home/builder/build.sh
 RUN  chmod +x /home/builder/build.sh
-RUN  mkdir /blazingsql
-RUN  chmod 777 /blazingsql
-
+RUN  chown builder:builder /home/builder/build.sh
 
 USER builder
 WORKDIR /home/builder
-
 
 RUN mkdir -p /home/builder/.ssh
 
@@ -47,4 +42,4 @@ VOLUME /home/builder/src
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
 
-ENTRYPOINT bash /home/builder/build.sh
+CMD ["/bin/bash", "/home/builder/build.sh"]

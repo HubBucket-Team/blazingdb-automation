@@ -19,6 +19,10 @@ RUN apt-get clean
 RUN wget -O- https://cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz | tar zxf - -C /etc
 ENV PATH $PATH:/etc/cmake-3.11.4-Linux-x86_64/bin
 
+# Create blazingsql directory
+RUN  mkdir /blazingsql
+RUN  chmod 777 /blazingsql
+
 # Create the user 'builder'
 RUN useradd -ms /bin/bash builder
 

@@ -7,13 +7,20 @@ LABEL Description="blazingdb/blazingsql is the official BlazingDB environment fo
 RUN apt-get update
 RUN apt-get install -y openjdk-8-jre
 RUN apt-get install -y supervisor
-# Install tools & utils
 RUN apt-get install -y --no-install-recommends bzip2 wget curl nano lsof htop net-tools
 RUN apt-get clean
 
-RUN source activate gdf && pip install --upgrade pip
+# libgdf dependencies
 RUN source activate gdf && conda install -c gpuopenanalytics/label/cuda9.2 libgdf_cffi
 RUN source activate gdf && conda install conda-build
+RUN source activate gdf && pip install --upgrade pip
+
+# blazingdb-protocol dependencies
+RUN source activate gdf && pip install flatbuffers
+
+# Pyblazing dependencies
+RUN source activate gdf && pip install numba==0.40.1
+RUN source activate gdf && pip install pycuda==2018.1.1
 
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor

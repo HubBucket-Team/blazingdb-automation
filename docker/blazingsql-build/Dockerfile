@@ -22,21 +22,14 @@ ENV PATH $PATH:/etc/cmake-3.11.4-Linux-x86_64/bin
 # Create the user 'builder'
 RUN useradd -ms /bin/bash builder
 
-USER builder
-WORKDIR /home/builder
-
-RUN mkdir src
-RUN mkdir output
-
-USER root
+# Prepare the build script
 COPY build.sh /home/builder/
 RUN  chmod +x /home/builder/build.sh
 RUN  chown builder:builder /home/builder/build.sh
 
 USER builder
 WORKDIR /home/builder
-
-RUN mkdir -p /home/builder/.ssh
+RUN mkdir src && mkdir output && mkdir .ssh
 
 VOLUME /home/builder/src
 VOLUME /home/builder/output

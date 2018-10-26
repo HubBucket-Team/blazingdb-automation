@@ -1,10 +1,9 @@
 #!/bin/bash
 
-workspace=/home/builder/src
-output=/home/builder/output/blazingsql-files
-
 # this function build the stack
 function build_blazingsql() {
+    workspace=/home/builder/src
+
     cd ${workspace}
 
     # blazingdb-protocol
@@ -39,21 +38,45 @@ function build_blazingsql() {
     cd ${workspace}/pyBlazing && git checkout develop
 }
 
+function zip_cpp_project() {
+    workspace=$1
+    output=$2
+    project=$3
+    binary=$4
+
+    if [ -f $workspace/$project/build/testing-libgdf ]; then
+        cp $workspace/$project/build/$binary $output
+    elif [ -f $workspace/$project/$binary ]; then # in-source build cmake (e.g. eclipse generator)
+        cp $workspace/$project/$binary $output
+    else
+        echo "Could not find $project/$binary, please check again!"
+        exit 1
+    fi
+}
+
 # this function just read the content of /home/builder/src and copy the binary files
 function zip_files() {
+    workspace=/home/builder/src
+    output=/home/builder/output/blazingsql-files
+
     mkdir -p ${output}/libgdf_cffi
     mkdir -p ${output}/blazingdb-protocol/python/
 
     # Package blazingdb-ral
-    cp $workspace/blazingdb-ral/build/testing-libgdf ${output}
+    zip_cpp_project $workspace $output "blazingdb-ral" "testing-libgdf"
 
+    #TODO fix cmake files, build first libgdf and bz-protocol then pass the paths
     # Package libgdf and libgdf_cffi from blazingdb-ral
-    cp -r $workspace/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-src/python/* $output/libgdf_cffi/
-    cp -r $workspace/blazingdb-ral/build/CMakeFiles/thirdparty/libgdf-install/* $output/libgdf_cffi/
+    build_directory="build"
+    if [ -f $workspace/blazingdb-ral/CMakeFiles/thirdparty/libgdf-install/lib/libgdf.so ]; then
+        build_directory=""
+    fi
+    cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-src/python/* $output/libgdf_cffi/
+    cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-install/* $output/libgdf_cffi/
     rm -rf $output/libgdf_cffi/lib/libgdf.a
 
     # Package blazingdb-orchestrator
-    cp $workspace/blazingdb-orchestrator/build/blazingdb_orchestator_service ${output}
+    zip_cpp_project $workspace $output "blazingdb-orchestrator" "blazingdb_orchestator_service"
 
     # Package blazingdb-calcite
     cp $workspace/blazingdb-calcite/blazingdb-calcite-application/target/BlazingCalcite.jar ${output}

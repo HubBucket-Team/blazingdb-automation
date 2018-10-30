@@ -44,6 +44,7 @@ RUN rm -rf /tmp/blazing
 RUN mkdir /blazingsql
 COPY bz3.trace.db /blazingsql
 COPY bz3.mv.db /blazingsql
+RUN chown jupyter:jupyter /blazingsql/*
 
 # If the user wants to persist the blazingsql catalog (schema store)
 VOLUME /blazingsql

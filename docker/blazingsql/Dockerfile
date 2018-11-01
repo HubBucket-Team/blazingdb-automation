@@ -11,7 +11,6 @@ RUN apt-get install -y --no-install-recommends bzip2 wget curl nano lsof htop ne
 RUN apt-get clean
 
 # libgdf dependencies
-RUN source activate gdf && conda install -c gpuopenanalytics/label/cuda9.2 libgdf_cffi
 RUN source activate gdf && conda install conda-build
 RUN source activate gdf && pip install --upgrade pip
 
@@ -40,17 +39,17 @@ COPY libgdf_cffi/ /tmp/blazing/libgdf_cffi/
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
 
-# Setup the Calcite catalog database
+# Setup the Calcite database catalog
 RUN mkdir /blazingsql
-RUN mkdir -p /blazingsql/data
-RUN mkdir -p /blazingsql/example
-RUN mkdir -p /blazingsql/utils
 COPY bz3.trace.db /blazingsql
 COPY bz3.mv.db /blazingsql
-COPY data /blazingsql/data
-COPY example/ /blazingsql/example
-COPY utils/ /blazingsql/utils
-RUN chown -R jupyter:jupyter  /blazingsql/*
+RUN chown -R jupyter:jupyter /blazingsql/*
+
+# Copy the demo files
+RUN mkdir -p /blazingdb/data/
+RUN mkdir -p /blazingdb/notebooks/
+COPY data /blazingdb/data/
+COPY notebooks/ /blazingdb/notebooks/
 
 # If the user wants to persist the blazingsql catalog (schema store)
 VOLUME /blazingsql

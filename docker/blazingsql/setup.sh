@@ -6,15 +6,18 @@ blazingsql_files=/tmp/blazing/blazingsql-files
 cd /tmp/blazing/ && tar xvf blazingsql-files.tar.gz
 cd $blazingsql_files
 
+source activate gdf
+
 # install libgdf and libgdf_cffi
+echo "Installing custom libgdf_cffi"
+rm -rf /conda/envs/gdf/lib/python3.5/site-packages/libgdf_cffi*
 cp libgdf_cffi/lib/libgdf.so /conda/envs/gdf/lib/
 cd libgdf_cffi/
 cp /tmp/blazing/libgdf_cffi/meta.yaml .
 cp /tmp/blazing/libgdf_cffi/build.sh .
-echo "replacing libgdf_cffi"
-source activate gdf && conda-build .
+conda-build .
 pip install .
-echo "libgdf_cffi is ready!"
+echo "Custom libgdf_cffi is ready!"
 
 # install blazingsql
 cd $blazingsql_files

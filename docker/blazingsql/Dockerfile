@@ -41,9 +41,7 @@ RUN rm -rf /tmp/blazing
 
 # Setup the Calcite database catalog
 RUN mkdir /blazingsql
-COPY bz3.trace.db /blazingsql
-COPY bz3.mv.db /blazingsql
-RUN chown -R jupyter:jupyter /blazingsql/*
+RUN chown -R jupyter:jupyter /blazingsql/
 
 # Copy the demo files
 RUN mkdir -p /blazingdb/data/

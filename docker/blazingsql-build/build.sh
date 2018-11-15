@@ -88,6 +88,13 @@ function zip_files() {
     cp -r $workspace/pyBlazing/ ${output}/
     rm -rf ${output}/pyBlazing/.git/
 
+    # cudf
+    git clone git@github.com:BlazingDB/cudf.git ${workspace}/cudf && cd ${workspace}/cudf && \
+    git checkout 6b7de97b21047c68747c327ea9f87ac921f478f0 && \
+    mkdir -p conda-recipes/cudf/ && \
+    rm -rf ${output}/cudf/.git/
+    cp -r $workspace/cudf $output/cudf
+    
     # compress files and delete temp folder
     cd /home/builder/output/ && tar czvf blazingsql-files.tar.gz blazingsql-files/
     rm -rf ${output}

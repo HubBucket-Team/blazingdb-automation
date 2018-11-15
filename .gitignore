@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+docker/blazingsql/bz3.mv.db
+docker/blazingsql/bz3.trace.db
+
 # C extensions
 *.so
 

@@ -36,7 +36,8 @@ RUN mkdir /tmp/blazing/
 COPY blazingsql-files.tar.gz /tmp/blazing/
 COPY setup.sh /tmp/blazing/
 COPY libgdf_cffi/ /tmp/blazing/libgdf_cffi/
-#COPY cudf/ /tmp/blazing/cudf/
+COPY cudf/meta.yaml /tmp/blazing/cudf/meta.yaml
+COPY cudf/build.sh /tmp/blazing/cudf/build.sh
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
 

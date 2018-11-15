@@ -19,17 +19,19 @@ conda-build .
 pip install .
 echo "Custom libgdf_cffi is ready!"
 
-echo "Installing custom pygdf"
+echo "Installing custom cudf"
 #cd /root
 #git clone git@github.com:BlazingDB/cudf.git && cd cudf
 #git checkout 6b7de97b21047c68747c327ea9f87ac921f478f0
 #mkdir conda-recipes/cudf/ &&
+rm -rf /tmp/blazingsql-files/cudf/conda-recipes/cudf/run_test.py
 cd /tmp/blazing/blazingsql-files/cudf/conda-recipes/cudf/ 
+rm run_test.py
 cp /tmp/blazing/cudf/meta.yaml .
 cp /tmp/blazing/cudf/build.sh .
 conda-build .
 rm -rf /conda/envs/gdf/lib/python3.5/site-packages/pygdf*
-cd ../../ && pip install .
+cd $blazingsql_files/cudf/ && pip install .
 python -c "import pygdf"
 echo "Custom pygdf is ready"
 

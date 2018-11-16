@@ -3,25 +3,31 @@
 # this function build the stack
 function build_blazingsql() {
     workspace=/home/builder/src
+    branch="develop"
+    commit="6b7de97b21047c68747c327ea9f87ac921f478f0"
 
     cd ${workspace}
 
+    # cudf
+    git clone git@github.com:BlazingDB/cudf.git
+    cd ${workspace}/cudf && git checkout ${commit}
+
     # blazingdb-protocol
     git clone git@github.com:BlazingDB/blazingdb-protocol.git
-    cd ${workspace}/blazingdb-protocol && git checkout develop
+    cd ${workspace}/blazingdb-protocol && git checkout ${branch}
     cd ${workspace}/blazingdb-protocol/java && mvn clean install
 
     # blazingdb-ral
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-ral.git
-    cd  ${workspace}/blazingdb-ral && git checkout feature/testdata-generator
+    cd  ${workspace}/blazingdb-ral && git checkout ${branch}
     mkdir ${workspace}/blazingdb-ral/build && cd ${workspace}/blazingdb-ral/build
     cmake .. && make
 
     # blazingdb-orchestrator
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
-    cd  ${workspace}/blazingdb-orchestrator 
+    cd  ${workspace}/blazingdb-orchestrator && git checkout ${branch}
     mkdir ${workspace}/blazingdb-orchestrator/build && cd ${workspace}/blazingdb-orchestrator/build
     cmake .. && make -j8
 
@@ -29,13 +35,13 @@ function build_blazingsql() {
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-calcite.git
     #sudo mkdir /blazingsql
-    cd ${workspace}/blazingdb-calcite
+    cd ${workspace}/blazingdb-calcite && git checkout ${branch}
     mvn clean install -Dmaven.test.skip=true
 
     # PyBlazing
     cd ${workspace}
     git clone git@github.com:BlazingDB/pyBlazing.git
-    cd ${workspace}/pyBlazing && git checkout develop
+    cd ${workspace}/pyBlazing && git checkout ${branch}
 }
 
 function zip_cpp_project() {
@@ -86,20 +92,18 @@ function zip_files() {
 
     # Package PyBlazing
     echo "### PyBlazing ###"
-    rm -rf ${workspace}/pyBlazing/.git/
     cp -r ${workspace}/pyBlazing/ ${output}/
+    rm -rf ${output}/pyBlazing/.git/
 
     # cudf
     echo "### Cudf ###"
-    git clone git@github.com:BlazingDB/cudf.git ${workspace}/cudf && cd ${workspace}/cudf && \
-    git checkout 6b7de97b21047c68747c327ea9f87ac921f478f0 && \
-    mkdir -p conda-recipes/cudf/ && \
-    cp -r ${workspace}/cudf ${output}/cudf
-    #rm -rf ${workspace}/cudf/.git/
+    mkdir -p ${workspace}/cudf/conda-recipes/cudf/ && \
+    cp -r ${workspace}/cudf/ ${output}/
+    rm -rf ${output}/cudf/.git/
     
     # compress files and delete temp folder
     cd /home/builder/output/ && tar czvf blazingsql-files.tar.gz blazingsql-files/
-    #rm -rf ${output}
+    rm -rf ${output}
 }
 
 #BEGIN MAIN

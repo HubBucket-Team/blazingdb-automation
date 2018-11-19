@@ -9,8 +9,8 @@ function build_blazingsql() {
     cd ${workspace}
 
     # cudf
-    git clone git@github.com:BlazingDB/cudf.git
-    cd ${workspace}/cudf && git checkout ${commit}
+    #git clone git@github.com:BlazingDB/cudf.git
+    #cd ${workspace}/cudf && git checkout ${commit}
 
     # blazingdb-protocol
     git clone git@github.com:BlazingDB/blazingdb-protocol.git
@@ -97,9 +97,9 @@ function zip_files() {
 
     # cudf
     echo "### Cudf ###"
-    mkdir -p ${workspace}/cudf/conda-recipes/cudf/ && \
-    cp -r ${workspace}/cudf/ ${output}/
-    rm -rf ${output}/cudf/.git/
+    #mkdir -p ${workspace}/cudf/conda-recipes/cudf/ && \
+    #cp -r ${workspace}/cudf/ ${output}/
+    #rm -rf ${output}/cudf/.git/
     
     # compress files and delete temp folder
     cd /home/builder/output/ && tar czvf blazingsql-files.tar.gz blazingsql-files/

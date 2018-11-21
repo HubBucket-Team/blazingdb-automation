@@ -71,7 +71,7 @@ function zip_files() {
     if [ -f $workspace/blazingdb-ral/CMakeFiles/thirdparty/libgdf-install/lib/libgdf.so ]; then
         build_directory=""
     fi
-    cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-src/python/* $output/libgdf_cffi/
+    cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-src/libgdf/python/* $output/libgdf_cffi/
     cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-install/* $output/libgdf_cffi/
     rm -rf $output/libgdf_cffi/lib/libgdf.a
 

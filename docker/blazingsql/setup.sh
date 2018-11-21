@@ -12,6 +12,7 @@ source activate gdf
 echo "Installing custom libgdf_cffi"
 rm -rf /conda/envs/gdf/lib/python3.5/site-packages/libgdf_cffi*
 cp libgdf_cffi/lib/libgdf.so /conda/envs/gdf/lib/
+cp libgdf_cffi/lib/librmm.so /conda/envs/gdf/lib/
 cd libgdf_cffi/
 cp /tmp/blazing/libgdf_cffi/meta.yaml .
 cp /tmp/blazing/libgdf_cffi/build.sh .

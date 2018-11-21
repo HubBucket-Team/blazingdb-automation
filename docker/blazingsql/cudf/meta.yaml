@@ -16,8 +16,7 @@ requirements:
   build:
     - python
     - setuptools
-    #- numba>=0.40.0dev
-    - numba
+    - numba>=0.40.0dev
     #- nvstrings
   run:
     - python
@@ -25,8 +24,7 @@ requirements:
     #- libgdf 0.1.0a3.*
     #- libgdf_cffi 0.1.0a3.*
     - pandas 0.20.*
-    #- numba>=0.40.0dev
-    - numba
+    - numba>=0.40.0dev
     #- nvstrings
 
 #test:

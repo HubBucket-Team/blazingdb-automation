@@ -1,23 +1,21 @@
 package:
   name: libgdf_cffi
-  version: 0.1.0a3
+  version: 0.2.0.0
 
 source:
-  # git_url: ../..
   path: ../..
 
 build:
   number: {0.1.0a3}
 
 requirements:
-  # use channel:
-  #   - defaults
   build:
     - python x.x
     - cffi
     - setuptools
+    - nvstrings
   run:
-    - libgdf {0.1.0a3}
+    - libgdf {0.2.0.0}
     - python x.x
     - cffi
 
@@ -28,5 +26,4 @@ test:
 about:
   home: http://gpuopenanalytics.com/
   license: Apache
-  # license_file: LICENSE
   summary: GPU Dataframe core library

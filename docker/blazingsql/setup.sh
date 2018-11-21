@@ -26,11 +26,12 @@ echo "Installing custom cudf"
 cd /tmp/blazing/blazingsql-files/cudf/conda-recipes/cudf/ 
 cp /tmp/blazing/cudf/meta.yaml .
 cp /tmp/blazing/cudf/build.sh .
+echo "### Iniciando conda-build cudf ###"
 conda-build .
 rm -rf /conda/envs/gdf/lib/python3.5/site-packages/pygdf*
 cd $blazingsql_files/cudf/ && pip install .
-python -c "import pygdf"
-echo "Custom pygdf is ready"
+python -c "import cudf"
+echo "Custom cudf is ready"
 
 
 # install blazingsql

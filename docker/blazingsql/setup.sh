@@ -18,7 +18,7 @@ cp /tmp/blazing/libgdf_cffi/meta.yaml .
 cp /tmp/blazing/libgdf_cffi/build.sh .
 
 echo "### Iniciando conda-build ###"
-conda-build .
+#conda-build .
 pip install .
 echo "Custom libgdf_cffi is ready!"
 
@@ -27,7 +27,7 @@ cd /tmp/blazing/blazingsql-files/cudf/conda-recipes/cudf/
 cp /tmp/blazing/cudf/meta.yaml .
 cp /tmp/blazing/cudf/build.sh .
 echo "### Iniciando conda-build cudf ###"
-conda-build .
+#conda-build .
 cd $blazingsql_files/cudf/ && pip install .
 python -c "import cudf"
 echo "Custom cudf is ready"

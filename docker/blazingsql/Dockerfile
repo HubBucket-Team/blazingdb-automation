@@ -1,4 +1,5 @@
 FROM rapidsai/rapidsai:latest
+#FROM rapidsai/rapidsai:old
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 

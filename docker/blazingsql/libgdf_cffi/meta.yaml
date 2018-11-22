@@ -9,10 +9,10 @@ build:
   number: {0.1.0a3}
 
 requirements:
-  build:
-    - python x.x
-    - cffi
-    - setuptools
+  #build:
+  #  - python x.x
+  #  - cffi
+  #  - setuptools
     #- nvstrings
   run:
     #- libgdf {0.2.0.0}

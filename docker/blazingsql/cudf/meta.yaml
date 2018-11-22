@@ -13,10 +13,10 @@ build:
   #  - PYGDF_BUILD_NO_GPU_TEST
 
 requirements:
-  build:
-    - python
-    - setuptools
-    - numba>=0.40.0dev
+  #build:
+  #  - python
+  #  - setuptools
+  #  - numba>=0.40.0dev
     #- nvstrings
   run:
     - python

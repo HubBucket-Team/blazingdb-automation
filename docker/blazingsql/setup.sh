@@ -48,6 +48,12 @@ cd $blazingsql_files
 cd pyBlazing
 pip install .
 
+echo "### Copiando los .so ###"
+mkdir -p /usr/local/nvidia/lib
+cp /conda/envs/gdf/lib/libgdf.so /usr/local/nvidia/lib/
+cp /conda/envs/gdf/lib/librmm.so /usr/local/nvidia/lib/
+cp /conda/envs/gdf/lib/libNVStrings.so /usr/local/nvidia/lib/
+
 #echo "### copiandoo bkp ###"
 #cp -rf $blazingsql_files /root/blazingsql_files/
 

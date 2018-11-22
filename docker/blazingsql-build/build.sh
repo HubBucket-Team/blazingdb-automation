@@ -76,6 +76,7 @@ function zip_files() {
     fi
     cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-src/libgdf/python/* $output/libgdf_cffi/
     cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-install/* $output/libgdf_cffi/
+    cp -r $workspace/blazingdb-ral/$build_directory/CMakeFiles/thirdparty/libgdf-src/libgdf/include/*.h $output/libgdf_cffi/include/
     rm -rf $output/libgdf_cffi/lib/libgdf.a
 
     # Package blazingdb-orchestrator

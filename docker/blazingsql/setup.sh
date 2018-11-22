@@ -32,7 +32,6 @@ cd $blazingsql_files/cudf/ && pip install .
 python -c "import cudf"
 echo "Custom cudf is ready"
 
-
 # install blazingsql
 cd $blazingsql_files
 cp testing-libgdf /usr/bin
@@ -40,13 +39,14 @@ cp blazingdb_orchestator_service /usr/bin
 cp BlazingCalcite.jar /usr/bin
 
 # install pyblazing
+echo "### Iniciando blazingdg-protocol/python ###"
 cd blazingdb-protocol/python/
 pip install .
 
+echo "### Iniciando pyblazing ###"
 cd $blazingsql_files
 cd pyBlazing
 pip install .
-
 
 #echo "### copiandoo bkp ###"
 #cp -rf $blazingsql_files /root/blazingsql_files/

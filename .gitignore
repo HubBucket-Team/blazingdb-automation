@@ -1,3 +1,6 @@
+docker/blazingsql-build/output/blazingsql-files.tar.gz
+docker/blazingsql/bz3.*.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

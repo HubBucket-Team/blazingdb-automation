@@ -20,6 +20,7 @@ RUN source activate gdf && pip install flatbuffers
 # Pyblazing dependencies
 RUN source activate gdf && pip install numba==0.40.1
 RUN source activate gdf && pip install pycuda==2018.1.1
+RUN source activate gdf && conda install -c nvidia nvstrings
 
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor

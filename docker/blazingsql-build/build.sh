@@ -7,8 +7,8 @@ function build_blazingsql() {
     cd ${workspace}
 
     # cudf
-    #git clone git@github.com:BlazingDB/cudf.git
-    #cd ${workspace}/cudf && git checkout ${commit}
+    git clone git@github.com:BlazingDB/cudf.git
+    cd ${workspace}/cudf && git checkout develop
 
     # blazingdb-protocol
     git clone git@github.com:BlazingDB/blazingdb-protocol.git
@@ -18,22 +18,21 @@ function build_blazingsql() {
     # blazingdb-ral
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-ral.git
-    cd  ${workspace}/blazingdb-ral && git checkout feature/testdata-generator
+    cd  ${workspace}/blazingdb-ral && git checkout develop
     mkdir ${workspace}/blazingdb-ral/build && cd ${workspace}/blazingdb-ral/build
     cmake .. && make
 
     # blazingdb-orchestrator
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
-    cd  ${workspace}/blazingdb-orchestrator 
+    cd  ${workspace}/blazingdb-orchestrator && git checkout develop
     mkdir ${workspace}/blazingdb-orchestrator/build && cd ${workspace}/blazingdb-orchestrator/build
     cmake .. && make -j8
 
     # blazingdb-calcite
     cd ${workspace}
     git clone git@github.com:BlazingDB/blazingdb-calcite.git
-    #sudo mkdir /blazingsql
-    cd ${workspace}/blazingdb-calcite
+    cd ${workspace}/blazingdb-calcite && git checkout develop
     mvn clean install -Dmaven.test.skip=true
 
     # PyBlazing

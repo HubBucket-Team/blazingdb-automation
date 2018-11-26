@@ -1,6 +1,9 @@
 #!/bin/bash
 
 workspace_dir=/home/builder/workspace
+output=/home/builder/output/blazingsql-files
+
+mkdir -p $output 
 
 working_directory=$PWD
 blazingsql_build_properties=blazingsql-build.properties
@@ -52,6 +55,34 @@ if [ -z "$pyblazing_branch" ]; then
 fi
 
 #END check mandatory arguments
+
+#BEGIN set default optional arguments for active/enable the build
+
+if [ -z "$cudf_enable" ]; then
+    cudf_enable=true
+fi
+
+if [ -z "$blazingdb_protocol_enable" ]; then
+    blazingdb_protocol_enable=true
+fi
+
+if [ -z "$blazingdb_ral_enable" ]; then
+    blazingdb_ral_enable=true
+fi
+
+if [ -z "$blazingdb_orchestrator_enable" ]; then
+    blazingdb_orchestrator_enable=true
+fi
+
+if [ -z "$blazingdb_calcite_enable" ]; then
+    blazingdb_calcite_enable=true
+fi
+
+if [ -z "$pyblazing_enable" ]; then
+    pyblazing_enable=true
+fi
+
+#END set default optional arguments for active/enable the build
 
 #BEGIN set default optional arguments for parallel build
 
@@ -140,331 +171,304 @@ if [ ! -d dependencies ]; then
     mkdir dependencies
 fi
 
-#BEGIN nvstrings
-
-cd dependencies
-
-nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
-nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
-
-if [ ! -d $nvstrings_package ]; then
-    wget $nvstrings_url
-    mkdir $nvstrings_package
-    tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
-fi
-
-nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
-
-#END nvstrings
-
-#BEGIN cudf
-
-cd $workspace_dir
-
-if [ ! -d cudf_project ]; then
-    mkdir cudf_project
-fi
-
-cudf_project_dir=$workspace_dir/cudf_project
-
-cd $cudf_project_dir
-
-if [ ! -d $cudf_branch_name ]; then
-    mkdir $cudf_branch_name
-    cd $cudf_branch_name
-    git clone git@github.com:BlazingDB/cudf.git
-    cd cudf
-    git checkout $cudf_branch
-fi
-
-cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
-
-cd $cudf_current_dir/cudf
-git submodule update --init --recursive
-git pull
-
-libgdf_install_dir=$cudf_current_dir/install
-
-#TODO change this to cpp for cudf >= 0.3.0
-libgdf_dir=libgdf
-cd $libgdf_dir
-
-if [ ! -d build ]; then
-    mkdir build
-    cd build
+if [ $cudf_enable == true ]; then
+    #BEGIN nvstrings
+    
+    cd dependencies
+    
+    nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
+    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
+    
+    if [ ! -d $nvstrings_package ]; then
+        wget $nvstrings_url
+        mkdir $nvstrings_package
+        tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
+    fi
+    
+    nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
+    
+    #END nvstrings
+    
+    #BEGIN cudf
+    
+    cd $workspace_dir
+    
+    if [ ! -d cudf_project ]; then
+        mkdir cudf_project
+    fi
+    
+    cudf_project_dir=$workspace_dir/cudf_project
+    
+    cd $cudf_project_dir
+    
+    if [ ! -d $cudf_branch_name ]; then
+        mkdir $cudf_branch_name
+        cd $cudf_branch_name
+        git clone git@github.com:BlazingDB/cudf.git
+        cd cudf
+        git checkout $cudf_branch
+    fi
+    
+    cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
+    
+    cd $cudf_current_dir/cudf
+    git submodule update --init --recursive
+    git pull
+    
+    libgdf_install_dir=$cudf_current_dir/install
+    
+    #TODO change this to cpp for cudf >= 0.3.0
+    libgdf_dir=libgdf
+    cd $libgdf_dir
+    
+    if [ ! -d build ]; then
+        mkdir build
+        cd build
+        NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
+    fi
+    
+    libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
+    cd $libgdf_build_dir
     NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
+    make -j$cudf_parallel install
+    
+    #END cudf
+    
+    # Package cudf
+    cd $workspace_dir
+    mkdir -p ${output}/cudf/
+    cp -r $cudf_current_dir/cudf/* ${output}/cudf/
+    rm -rf ${output}/cudf/.git/
 fi
 
-libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
-cd $libgdf_build_dir
-NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
-make -j$cudf_parallel install
-
-#END cudf
-
-#BEGIN blazingdb-protocol
-
-cd $workspace_dir
-
-if [ ! -d blazingdb-protocol_project ]; then
-    mkdir blazingdb-protocol_project
-fi
-
-blazingdb_protocol_project_dir=$workspace_dir/blazingdb-protocol_project
-
-cd $blazingdb_protocol_project_dir
-
-if [ ! -d $blazingdb_protocol_branch_name ]; then
-    mkdir $blazingdb_protocol_branch_name
-    cd $blazingdb_protocol_branch_name
-    git clone git@github.com:BlazingDB/blazingdb-protocol.git
-    cd blazingdb-protocol
-    git checkout $blazingdb_protocol_branch
-fi
-
-blazingdb_protocol_current_dir=$blazingdb_protocol_project_dir/$blazingdb_protocol_branch_name/
-
-cd $blazingdb_protocol_current_dir/blazingdb-protocol
-git pull
-
-cd cpp
-
-blazingdb_protocol_install_dir=$blazingdb_protocol_current_dir/install
-
-if [ ! -d build ]; then
-    mkdir build
-    cd build
+if [ $blazingdb_protocol_enable == true ]; then
+    #BEGIN blazingdb-protocol
+    
+    cd $workspace_dir
+    
+    if [ ! -d blazingdb-protocol_project ]; then
+        mkdir blazingdb-protocol_project
+    fi
+    
+    blazingdb_protocol_project_dir=$workspace_dir/blazingdb-protocol_project
+    
+    cd $blazingdb_protocol_project_dir
+    
+    if [ ! -d $blazingdb_protocol_branch_name ]; then
+        mkdir $blazingdb_protocol_branch_name
+        cd $blazingdb_protocol_branch_name
+        git clone git@github.com:BlazingDB/blazingdb-protocol.git
+        cd blazingdb-protocol
+        git checkout $blazingdb_protocol_branch
+    fi
+    
+    blazingdb_protocol_current_dir=$blazingdb_protocol_project_dir/$blazingdb_protocol_branch_name/
+    
+    cd $blazingdb_protocol_current_dir/blazingdb-protocol
+    git pull
+    
+    cd cpp
+    
+    blazingdb_protocol_install_dir=$blazingdb_protocol_current_dir/install
+    
+    if [ ! -d build ]; then
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
+    fi
+    
+    blazingdb_protocol_cpp_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
+    cd $blazingdb_protocol_cpp_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
+    make -j$blazingdb_protocol_parallel install
+    
+    cd $blazingdb_protocol_current_dir/blazingdb-protocol/java
+    mvn clean install -Dmaven.test.skip=true
+    blazingdb_protocol_java_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/java/target/
+    
+    #END blazingdb-protocol
+    
+    # Package blazingdb-protocol/python
+    cd $workspace_dir
+    mkdir -p $output/blazingdb-protocol/python/
+    cp -r $blazingdb_protocol_current_dir/blazingdb-protocol/python/* $output/blazingdb-protocol/python/
 fi
 
-blazingdb_protocol_cpp_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
-cd $blazingdb_protocol_cpp_build_dir
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
-make -j$blazingdb_protocol_parallel install
-
-cd $blazingdb_protocol_current_dir/blazingdb-protocol/java
-mvn clean install -Dmaven.test.skip=true
-blazingdb_protocol_java_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/java/target/
-
-#END blazingdb-protocol
-
-#BEGIN blazingdb-ral
-
-cd $workspace_dir
-
-if [ ! -d blazingdb-ral_project ]; then
-    mkdir blazingdb-ral_project
-fi
-
-blazingdb_ral_project_dir=$workspace_dir/blazingdb-ral_project
-
-cd $blazingdb_ral_project_dir
-
-if [ ! -d $blazingdb_ral_branch_name ]; then
-    mkdir $blazingdb_ral_branch_name
-    cd $blazingdb_ral_branch_name
-    git clone git@github.com:BlazingDB/blazingdb-ral.git
-    cd blazingdb-ral
-    git checkout $blazingdb_ral_branch
-fi
-
-blazingdb_ral_current_dir=$blazingdb_ral_project_dir/$blazingdb_ral_branch_name/
-
-cd $blazingdb_ral_current_dir/blazingdb-ral
-git submodule update --init --recursive
-git pull
-
-blazingdb_ral_install_dir=$blazingdb_ral_current_dir/install
-
-if [ ! -d build ]; then
-    mkdir build
-    cd build
+if [ $blazingdb_ral_enable == true ]; then
+    #BEGIN blazingdb-ral
+    
+    cd $workspace_dir
+    
+    if [ ! -d blazingdb-ral_project ]; then
+        mkdir blazingdb-ral_project
+    fi
+    
+    blazingdb_ral_project_dir=$workspace_dir/blazingdb-ral_project
+    
+    cd $blazingdb_ral_project_dir
+    
+    if [ ! -d $blazingdb_ral_branch_name ]; then
+        mkdir $blazingdb_ral_branch_name
+        cd $blazingdb_ral_branch_name
+        git clone git@github.com:BlazingDB/blazingdb-ral.git
+        cd blazingdb-ral
+        git checkout $blazingdb_ral_branch
+    fi
+    
+    blazingdb_ral_current_dir=$blazingdb_ral_project_dir/$blazingdb_ral_branch_name/
+    
+    cd $blazingdb_ral_current_dir/blazingdb-ral
+    git submodule update --init --recursive
+    git pull
+    
+    blazingdb_ral_install_dir=$blazingdb_ral_current_dir/install
+    
+    if [ ! -d build ]; then
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+    fi
+    
+    blazingdb_ral_build_dir=$blazingdb_ral_current_dir/blazingdb-ral/build/
+    cd $blazingdb_ral_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+    make -j$blazingdb_ral_parallel
+    
+    #END blazingdb-ral
+    
+    # Package blazingdb-ral
+    cd $workspace_dir
+    blazingdb_ral_artifact_name=testing-libgdf
+    cp $blazingdb_ral_build_dir/$blazingdb_ral_artifact_name $output
 fi
 
-blazingdb_ral_build_dir=$blazingdb_ral_current_dir/blazingdb-ral/build/
-cd $blazingdb_ral_build_dir
-cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
-make -j$blazingdb_ral_parallel
-
-#END blazingdb-ral
-
-#BEGIN blazingdb-orchestrator
-
-cd $workspace_dir
-
-if [ ! -d blazingdb-orchestrator_project ]; then
-    mkdir blazingdb-orchestrator_project
-fi
-
-blazingdb_orchestrator_project_dir=$workspace_dir/blazingdb-orchestrator_project
-
-cd $blazingdb_orchestrator_project_dir
-
-if [ ! -d $blazingdb_orchestrator_branch_name ]; then
-    mkdir $blazingdb_orchestrator_branch_name
-    cd $blazingdb_orchestrator_branch_name
-    git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
-    cd blazingdb-orchestrator
-    git checkout $blazingdb_orchestrator_branch
-fi
-
-blazingdb_orchestrator_current_dir=$blazingdb_orchestrator_project_dir/$blazingdb_orchestrator_branch_name/
-
-cd $blazingdb_orchestrator_current_dir/blazingdb-orchestrator
-git pull
-
-blazingdb_orchestrator_install_dir=$blazingdb_orchestrator_current_dir/install
-
-if [ ! -d build ]; then
-    mkdir build
-    cd build
+if [ $blazingdb_orchestrator_enable == true ]; then
+    #BEGIN blazingdb-orchestrator
+    
+    cd $workspace_dir
+    
+    if [ ! -d blazingdb-orchestrator_project ]; then
+        mkdir blazingdb-orchestrator_project
+    fi
+    
+    blazingdb_orchestrator_project_dir=$workspace_dir/blazingdb-orchestrator_project
+    
+    cd $blazingdb_orchestrator_project_dir
+    
+    if [ ! -d $blazingdb_orchestrator_branch_name ]; then
+        mkdir $blazingdb_orchestrator_branch_name
+        cd $blazingdb_orchestrator_branch_name
+        git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
+        cd blazingdb-orchestrator
+        git checkout $blazingdb_orchestrator_branch
+    fi
+    
+    blazingdb_orchestrator_current_dir=$blazingdb_orchestrator_project_dir/$blazingdb_orchestrator_branch_name/
+    
+    cd $blazingdb_orchestrator_current_dir/blazingdb-orchestrator
+    git pull
+    
+    blazingdb_orchestrator_install_dir=$blazingdb_orchestrator_current_dir/install
+    
+    if [ ! -d build ]; then
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+    fi
+    
+    blazingdb_orchestrator_build_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
+    cd $blazingdb_orchestrator_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+    make -j$blazingdb_orchestrator_parallel
+    
+    #END blazingdb-orchestrator
+    
+    # Package blazingdb-orchestrator
+    cd $workspace_dir
+    blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
+    cp $blazingdb_orchestrator_build_dir/$blazingdb_orchestrator_artifact_name $output
 fi
 
-blazingdb_orchestrator_build_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
-cd $blazingdb_orchestrator_build_dir
-cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
-make -j$blazingdb_orchestrator_parallel
-
-#END blazingdb-orchestrator
-
-#BEGIN blazingdb-calcite
-
-cd $workspace_dir
-
-if [ ! -d blazingdb-calcite_project ]; then
-    mkdir blazingdb-calcite_project
+if [ $blazingdb_calcite_enable == true ]; then
+    #BEGIN blazingdb-calcite
+    
+    cd $workspace_dir
+    
+    if [ ! -d blazingdb-calcite_project ]; then
+        mkdir blazingdb-calcite_project
+    fi
+    
+    blazingdb_calcite_project_dir=$workspace_dir/blazingdb-calcite_project
+    
+    cd $blazingdb_calcite_project_dir
+    
+    if [ ! -d $blazingdb_calcite_branch_name ]; then
+        mkdir $blazingdb_calcite_branch_name
+        cd $blazingdb_calcite_branch_name
+        git clone git@github.com:BlazingDB/blazingdb-calcite.git
+        cd blazingdb-calcite
+        git checkout $blazingdb_calcite_branch
+    fi
+    
+    blazingdb_calcite_current_dir=$blazingdb_calcite_project_dir/$blazingdb_calcite_branch_name/
+    
+    cd $blazingdb_calcite_current_dir/blazingdb-calcite
+    git pull
+    
+    blazingdb_calcite_install_dir=$blazingdb_calcite_current_dir/install
+    
+    mvn clean install -Dmaven.test.skip=true
+    blazingdb_calcite_build_dir=$blazingdb_calcite_current_dir/blazingdb-calcite-application/target/
+    
+    #END blazingdb-calcite
+    
+    # Package blazingdb-calcite
+    cd $workspace_dir
+    blazingdb_calcite_artifact_name=BlazingCalcite.jar
+    cp $blazingdb_calcite_build_dir/$blazingdb_calcite_artifact_name ${output}
 fi
 
-blazingdb_calcite_project_dir=$workspace_dir/blazingdb-calcite_project
-
-cd $blazingdb_calcite_project_dir
-
-if [ ! -d $blazingdb_calcite_branch_name ]; then
-    mkdir $blazingdb_calcite_branch_name
-    cd $blazingdb_calcite_branch_name
-    git clone git@github.com:BlazingDB/blazingdb-calcite.git
-    cd blazingdb-calcite
-    git checkout $blazingdb_calcite_branch
+if [ $pyblazing_enable == true ]; then
+    #BEGIN pyblazing
+    
+    cd $workspace_dir
+    
+    if [ ! -d pyblazing_project ]; then
+        mkdir pyblazing_project
+    fi
+    
+    pyblazing_project_dir=$workspace_dir/pyblazing_project
+    
+    cd $pyblazing_project_dir
+    
+    if [ ! -d $pyblazing_branch_name ]; then
+        mkdir $pyblazing_branch_name
+        cd $pyblazing_branch_name
+        git clone git@github.com:BlazingDB/pyBlazing.git
+        cd pyBlazing
+        git checkout $pyblazing_branch
+    fi
+    
+    pyblazing_current_dir=$pyblazing_project_dir/$pyblazing_branch_name/
+    
+    cd $pyblazing_current_dir/pyBlazing
+    git pull
+    
+    pyblazing_install_dir=$pyblazing_current_dir/install
+    
+    #END pyblazing
+    
+    # Package PyBlazing
+    cd $workspace_dir
+    mkdir -p ${output}/pyBlazing/
+    cp -r $pyblazing_current_dir/pyBlazing/* ${output}/pyBlazing/
+    rm -rf ${output}/pyBlazing/.git/
 fi
-
-blazingdb_calcite_current_dir=$blazingdb_calcite_project_dir/$blazingdb_calcite_branch_name/
-
-cd $blazingdb_calcite_current_dir/blazingdb-calcite
-git pull
-
-blazingdb_calcite_install_dir=$blazingdb_calcite_current_dir/install
-
-mvn clean install -Dmaven.test.skip=true
-blazingdb_calcite_build_dir=$blazingdb_calcite_current_dir/blazingdb-calcite-application/target/
-
-#END blazingdb-calcite
-
-#BEGIN pyblazing
-
-cd $workspace_dir
-
-if [ ! -d pyblazing_project ]; then
-    mkdir pyblazing_project
-fi
-
-pyblazing_project_dir=$workspace_dir/pyblazing_project
-
-cd $pyblazing_project_dir
-
-if [ ! -d $pyblazing_branch_name ]; then
-    mkdir $pyblazing_branch_name
-    cd $pyblazing_branch_name
-    git clone git@github.com:BlazingDB/pyBlazing.git
-    cd pyBlazing
-    git checkout $pyblazing_branch
-fi
-
-pyblazing_current_dir=$pyblazing_project_dir/$pyblazing_branch_name/
-
-cd $pyblazing_current_dir/pyBlazing
-git pull
-
-pyblazing_install_dir=$pyblazing_current_dir/install
-
-#END pyblazing
-
-#BEGIN collect/package artifacts
-
-cd $workspace_dir
-
-output=/home/builder/output/blazingsql-files
-
-# Package cudf
-mkdir -p ${output}/cudf/
-cp -r $cudf_current_dir/cudf/* ${output}/cudf/
-rm -rf ${output}/cudf/.git/
-
-# Package blazingdb-ral
-blazingdb_ral_artifact_name=testing-libgdf
-cp $blazingdb_ral_build_dir/$blazingdb_ral_artifact_name $output
-
-# Package blazingdb-orchestrator
-blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
-cp $blazingdb_orchestrator_build_dir/$blazingdb_orchestrator_artifact_name $output
-
-# Package blazingdb-calcite
-blazingdb_calcite_artifact_name=BlazingCalcite.jar
-cp $blazingdb_calcite_build_dir/$blazingdb_calcite_artifact_name ${output}
-
-# Package blazingdb-protocol/python
-mkdir -p $output/blazingdb-protocol/python/
-cp -r $blazingdb_protocol_current_dir/blazingdb-protocol/python/* $output/blazingdb-protocol/python/
-
-# Package PyBlazing
-mkdir -p ${output}/pyBlazing/
-cp -r $pyblazing_current_dir/pyBlazing/* ${output}/pyBlazing/
-rm -rf ${output}/pyBlazing/.git/
 
 # Final step: compress files and delete temp folder
 cd /home/builder/output/ && tar czvf blazingsql-files.tar.gz blazingsql-files/
 rm -rf ${output}
 
-#END collect/package artifacts
-
 cd $working_directory
 
 #END main
-
-exit
-
-
-
-function zip_cpp_project() {
-    workspace=$1
-    output=$2
-    project=$3
-    binary=$4
-
-    if [ -f $workspace/$project/build/$binary ]; then
-        cp $workspace/$project/build/$binary $output
-    elif [ -f $workspace/$project/$binary ]; then # in-source build cmake (e.g. eclipse generator)
-        cp $workspace/$project/$binary $output
-    else
-        echo "Could not find $project/$binary, please check again!"
-        exit 1
-    fi
-}
-
-# this function just read the content of /home/builder/src and copy the binary files
-function zip_files() {
-
-}
-
-#BEGIN MAIN
-
-# if the user did'nt mount /home/builder/src then build inside the container
-if [ -z "$(ls -A /home/builder/src)" ]; then
-    build_blazingsql
-    zip_files
-else
-    zip_files
-fi
-
-#END MAIN

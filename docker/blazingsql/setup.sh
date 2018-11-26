@@ -21,7 +21,7 @@ cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /usr/lib/
 cp /conda/envs/cudf/lib/libNVStrings.so /usr/lib/
 
 # Install libgdf_cffi
-cp -r $cudf_dir/libgdf/install/* $cudf_dir/libgdf/python
+cp -r $cudf_dir/$libgdf_dir/install/* $cudf_dir/libgdf/python
 pip install $cudf_dir/libgdf/python
 
 # Install cudf

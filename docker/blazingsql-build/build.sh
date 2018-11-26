@@ -236,9 +236,13 @@ if [ $cudf_enable == true ]; then
     
     # Package cudf
     cd $workspace_dir
-    mkdir -p ${output}/cudf/
+    mkdir -p ${output}/cudf/libgdf/install
     cp -r $cudf_current_dir/cudf/* ${output}/cudf/
+    cp -r $libgdf_install_dir/* ${output}/cudf/libgdf/install
     rm -rf ${output}/cudf/.git/
+    rm -rf ${output}/cudf/$libgdf_dir/build/src
+    rm -rf ${output}/cudf/$libgdf_dir/build/Testing
+    rm -rf ${output}/cudf/$libgdf_dir/build/CMakeFiles
 fi
 
 if [ $blazingdb_protocol_enable == true ]; then

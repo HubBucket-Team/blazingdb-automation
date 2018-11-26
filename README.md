@@ -6,12 +6,15 @@ blazingdb-automation for blazingdb > 3.0
 This process will build and zip all the artifacts and binaries into a single file called blazingsql.tar.gz
 
 ```shell-script
+mkdir -p /path/blazingsql/your/local/workspace/
+cp blazingsql-build/blazingsql-build.properties /path/blazingsql/your/local/workspace/
 cd docker/blazingsql-build
 nvidia-docker build -t demobuild .
-nvidia-docker run --rm -v /path/blazingsql/src/:/home/builder/src/ -v /path/output/:/home/builder/output -v /home/user/.ssh/:/home/builder/.ssh/ demobuild
+nvidia-docker run --rm -v /path/blazingsql/your/local/workspace/:/home/builder/workspace/ -v /path/output/:/home/builder/output -v /home/user/.ssh/:/home/builder/.ssh/ demobuild
 ```
 
 then check /path/output/ there will be the file blazingsql.tar.gz
+ 
 
 # Demo
 ```shell-script

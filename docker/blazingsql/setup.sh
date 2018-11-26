@@ -6,14 +6,17 @@ blazingsql_files=/tmp/blazing/blazingsql-files
 cd /tmp/blazing/ && tar xvf blazingsql-files.tar.gz
 cd $blazingsql_files
 
-source activate gdf
+source activate cudf
 
-# install libgdf and libgdf_cffi
-echo "Installing custom libgdf_cffi"
-rm -rf /conda/envs/gdf/lib/python3.5/site-packages/pygdf-*
-cp libgdf_cffi/lib/libgdf.so /conda/envs/gdf/lib/
-cp libgdf_cffi/lib/librmm.so /conda/envs/gdf/lib/
-cd libgdf_cffi/ && \
+# install libgdf, libgdf/python and cudf
+cudf_dir=$blazingsql_files/cudf
+cp $cudf_dir/libgdf/install/lib/libgdf.so /conda/envs/cudf/lib/
+cp $cudf_dir/libgdf/install/lib/librmm.so /conda/envs/cudf/lib/
+cp -r $cudf_dir/libgdf/install/* $cudf_dir/libgdf/python
+pip install $cudf_dir/libgdf/python
+
+
+exit
 cp /tmp/blazing/libgdf_cffi/meta.yaml .
 cp /tmp/blazing/libgdf_cffi/build.sh .
 
@@ -23,6 +26,7 @@ pip install .
 echo "Custom libgdf_cffi is ready!"
 
 echo "Installing custom cudf"
+rm -rf /conda/envs/cudf/lib/python3.5/site-packages/pygdf-*
 cd /tmp/blazing/blazingsql-files/cudf/conda-recipes/cudf/ 
 cp /tmp/blazing/cudf/meta.yaml .
 cp /tmp/blazing/cudf/build.sh .
@@ -50,9 +54,9 @@ pip install .
 
 echo "### Copiando los .so ###"
 mkdir -p /usr/local/nvidia/lib
-cp /conda/envs/gdf/lib/libgdf.so /usr/local/nvidia/lib/
-cp /conda/envs/gdf/lib/librmm.so /usr/local/nvidia/lib/
-cp /conda/envs/gdf/lib/libNVStrings.so /usr/local/nvidia/lib/
+cp /conda/envs/cudf/lib/libgdf.so /usr/local/nvidia/lib/
+cp /conda/envs/cudf/lib/librmm.so /usr/local/nvidia/lib/
+cp /conda/envs/cudf/lib/libNVStrings.so /usr/local/nvidia/lib/
 
 #echo "### copiandoo bkp ###"
 #cp -rf $blazingsql_files /root/blazingsql_files/

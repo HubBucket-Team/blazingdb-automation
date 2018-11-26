@@ -10,10 +10,14 @@ source activate cudf
 
 # Install libgdf
 cudf_dir=$blazingsql_files/cudf
-cp $cudf_dir/libgdf/install/lib/libgdf.so /conda/envs/cudf/lib/
-cp $cudf_dir/libgdf/install/lib/librmm.so /conda/envs/cudf/lib/
-cp $cudf_dir/libgdf/install/lib/libgdf.so /usr/lib/
-cp $cudf_dir/libgdf/install/lib/librmm.so /usr/lib/
+
+#TODO change this to cpp for cudf >= 0.3.0
+libgdf_dir=libgdf
+
+cp $cudf_dir/$libgdf_dir/install/lib/libgdf.so /conda/envs/cudf/lib/
+cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /conda/envs/cudf/lib/
+cp $cudf_dir/$libgdf_dir/install/lib/libgdf.so /usr/lib/
+cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /usr/lib/
 cp /conda/envs/cudf/lib/libNVStrings.so /usr/lib/
 
 # Install libgdf_cffi

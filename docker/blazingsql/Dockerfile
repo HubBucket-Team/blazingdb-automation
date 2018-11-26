@@ -63,8 +63,6 @@ RUN chmod +x /usr/bin/run_jupyter.sh
 RUN mkdir /tmp/blazing/
 COPY blazingsql-files.tar.gz /tmp/blazing/
 COPY setup.sh /tmp/blazing/
-COPY libgdf_cffi/ /tmp/blazing/libgdf_cffi/
-COPY cudf/ /tmp/blazing/cudf/
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
 
@@ -81,8 +79,6 @@ COPY notebooks/ /blazingdb/notebooks/
 # Solve numba issues (NvvmSupportError: libNVVM cannot be found)
 ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
 ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
-
-ENV LD_LIBRARY_PATH LD_LIBRARY_PATH:/conda/envs/cudf/lib
 
 # If the user wants to persist the blazingsql catalog (schema store)
 VOLUME /blazingsql

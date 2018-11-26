@@ -24,7 +24,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/blazingsql-build/blazingdb-orchestrator"){
-        sh "./docker-build.sh ${env.BUILD_NUMBER}"
+        sh "./docker-build.sh"
         }
       }
     }

@@ -29,7 +29,7 @@ pipeline {
     stage("Build") {
        steps {
          dir("docker/blazingsql-build/blazingdb-orchestrator/src_orchestrator"){
-         sh "../docker-run.sh 6"
+         sh "../docker-run.sh"
          }
        }
      }

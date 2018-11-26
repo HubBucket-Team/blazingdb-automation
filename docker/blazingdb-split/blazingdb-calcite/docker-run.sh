@@ -1,3 +1,3 @@
 #!/bin/bash
-nvidia-docker run --rm -v $PWD:/home/builder/workspace -v $HOME/.ssh/:/home/builder/.ssh/ -v /$HOME/.m2/:/home/builder/.m2 -ti blazingdb/calcite:build bash
+nvidia-docker run --rm -v $PWD:/home/builder/workspace -v $HOME/.ssh/:/home/builder/.ssh/ -v /$HOME/.m2/:/home/builder/.m2 -ti blazingdb/calcite
 

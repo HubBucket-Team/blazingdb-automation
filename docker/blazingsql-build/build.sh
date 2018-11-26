@@ -153,7 +153,7 @@ if [ ! -d $nvstrings_package ]; then
     tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
 fi
 
-nvstrings_dir=$workspace_dir/dependencies/$nvstrings_package
+nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
 #END nvstrings
 
@@ -175,15 +175,15 @@ if [ ! -d $cudf_branch_name ]; then
     git clone git@github.com:BlazingDB/cudf.git
     cd cudf
     git checkout $cudf_branch
-    git submodule update --init --recursive
 fi
 
 cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
 
 cd $cudf_current_dir/cudf
+git submodule update --init --recursive
 git pull
 
-cudf_install_dir=$cudf_current_dir/install
+libgdf_install_dir=$cudf_current_dir/install
 
 #TODO change this to cpp for cudf >= 0.3.0
 libgdf_dir=libgdf
@@ -192,11 +192,11 @@ cd $libgdf_dir
 if [ ! -d build ]; then
     mkdir build
     cd build
-    NVSTRINGS_ROOT=$nvstrings_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$cudf_install_dir ..
+    NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
 fi
 
 cd $cudf_current_dir/cudf/$libgdf_dir/build/
-NVSTRINGS_ROOT=$nvstrings_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$cudf_install_dir ..
+NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
 make -j$cudf_parallel install
 
 #END cudf
@@ -240,7 +240,89 @@ cd $blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
 make -j$blazingdb_protocol_parallel install
 
-#END blazingdb-protocol 
+cd $blazingdb_protocol_current_dir/blazingdb-protocol/java
+mvn clean install -Dmaven.test.skip=true
+
+#END blazingdb-protocol
+
+#BEGIN blazingdb-ral
+
+cd $workspace_dir
+
+if [ ! -d blazingdb-ral_project ]; then
+    mkdir blazingdb-ral_project
+fi
+
+blazingdb_ral_project_dir=$workspace_dir/blazingdb-ral_project
+
+cd $blazingdb_ral_project_dir
+
+if [ ! -d $blazingdb_ral_branch_name ]; then
+    mkdir $blazingdb_ral_branch_name
+    cd $blazingdb_ral_branch_name
+    git clone git@github.com:BlazingDB/blazingdb-ral.git
+    cd blazingdb-ral
+    git checkout $blazingdb_ral_branch
+fi
+
+blazingdb_ral_current_dir=$blazingdb_ral_project_dir/$blazingdb_ral_branch_name/
+
+cd $blazingdb_ral_current_dir/blazingdb-ral
+git submodule update --init --recursive
+git pull
+
+blazingdb_ral_install_dir=$blazingdb_ral_current_dir/install
+
+if [ ! -d build ]; then
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+fi
+
+cd $blazingdb_ral_current_dir/blazingdb-ral/build/
+cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+make -j$blazingdb_ral_parallel
+
+#END blazingdb-ral
+
+#BEGIN blazingdb-orchestrator
+
+cd $workspace_dir
+
+if [ ! -d blazingdb-orchestrator_project ]; then
+    mkdir blazingdb-orchestrator_project
+fi
+
+blazingdb_orchestrator_project_dir=$workspace_dir/blazingdb-orchestrator_project
+
+cd $blazingdb_orchestrator_project_dir
+
+if [ ! -d $blazingdb_orchestrator_branch_name ]; then
+    mkdir $blazingdb_orchestrator_branch_name
+    cd $blazingdb_orchestrator_branch_name
+    git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
+    cd blazingdb-orchestrator
+    git checkout $blazingdb_orchestrator_branch
+fi
+
+blazingdb_orchestrator_current_dir=$blazingdb_orchestrator_project_dir/$blazingdb_orchestrator_branch_name/
+
+cd $blazingdb_orchestrator_current_dir/blazingdb-orchestrator
+git pull
+
+blazingdb_orchestrator_install_dir=$blazingdb_orchestrator_current_dir/install
+
+if [ ! -d build ]; then
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+fi
+
+cd $blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
+cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+make -j$blazingdb_orchestrator_parallel
+
+#END blazingdb-orchestrator
 
 echo "alla"
 

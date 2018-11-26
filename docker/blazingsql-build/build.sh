@@ -324,6 +324,66 @@ make -j$blazingdb_orchestrator_parallel
 
 #END blazingdb-orchestrator
 
+#BEGIN blazingdb-calcite
+
+cd $workspace_dir
+
+if [ ! -d blazingdb-calcite_project ]; then
+    mkdir blazingdb-calcite_project
+fi
+
+blazingdb_calcite_project_dir=$workspace_dir/blazingdb-calcite_project
+
+cd $blazingdb_calcite_project_dir
+
+if [ ! -d $blazingdb_calcite_branch_name ]; then
+    mkdir $blazingdb_calcite_branch_name
+    cd $blazingdb_calcite_branch_name
+    git clone git@github.com:BlazingDB/blazingdb-calcite.git
+    cd blazingdb-calcite
+    git checkout $blazingdb_calcite_branch
+fi
+
+blazingdb_calcite_current_dir=$blazingdb_calcite_project_dir/$blazingdb_calcite_branch_name/
+
+cd $blazingdb_calcite_current_dir/blazingdb-calcite
+git pull
+
+blazingdb_calcite_install_dir=$blazingdb_calcite_current_dir/install
+
+mvn clean install -Dmaven.test.skip=true
+
+#END blazingdb-calcite
+
+#BEGIN pyblazing
+
+cd $workspace_dir
+
+if [ ! -d pyblazing_project ]; then
+    mkdir pyblazing_project
+fi
+
+pyblazing_project_dir=$workspace_dir/pyblazing_project
+
+cd $pyblazing_project_dir
+
+if [ ! -d $pyblazing_branch_name ]; then
+    mkdir $pyblazing_branch_name
+    cd $pyblazing_branch_name
+    git clone git@github.com:BlazingDB/pyBlazing.git
+    cd pyBlazing
+    git checkout $pyblazing_branch
+fi
+
+pyblazing_current_dir=$pyblazing_project_dir/$pyblazing_branch_name/
+
+cd $pyblazing_current_dir/pyBlazing
+git pull
+
+pyblazing_install_dir=$pyblazing_current_dir/install
+
+#END pyblazing
+
 echo "alla"
 
 

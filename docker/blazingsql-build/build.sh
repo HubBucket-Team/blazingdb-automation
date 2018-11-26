@@ -1,14 +1,233 @@
 #!/bin/bash
 
+workspace_dir=/home/builder/workspace
+
+working_directory=$PWD
+blazingsql_build_properties=blazingsql-build.properties
+
+cd $workspace_dir
+
+# Clean the FAILED file (in case exists)
+rm -rf FAILED 
+
+# Load the build properties file
+source $blazingsql_build_properties
+
+#BEGIN check mandatory arguments
+
+if [ -z "$cudf_branch" ]; then
+    echo "Error: Need the 'cudf_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+if [ -z "$blazingdb_protocol_branch" ]; then
+    echo "Error: Need the 'blazingdb_protocol_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+if [ -z "$blazingdb_ral_branch" ]; then
+    echo "Error: Need the 'blazingdb_ral_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+if [ -z "$blazingdb_orchestrator_branch" ]; then
+    echo "Error: Need the 'blazingdb_orchestrator_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+if [ -z "$blazingdb_calcite_branch" ]; then
+    echo "Error: Need the 'blazingdb_calcite_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+if [ -z "$pyblazing_branch" ]; then
+    echo "Error: Need the 'pyblazing_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+#END check mandatory arguments
+
+#BEGIN set default optional arguments for parallel build
+
+if [ -z "$cudf_parallel" ]; then
+    cudf_parallel=4
+fi
+
+if [ -z "$blazingdb_protocol_parallel" ]; then
+    blazingdb_protocol_parallel=4
+fi
+
+if [ -z "$blazingdb_ral_parallel" ]; then
+    blazingdb_ral_parallel=4
+fi
+
+if [ -z "$blazingdb_orchestrator_parallel" ]; then
+    blazingdb_orchestrator_parallel=4
+fi
+
+if [ -z "$blazingdb_calcite_parallel" ]; then
+    blazingdb_calcite_parallel=4
+fi
+
+#END set default optional arguments for parallel build
+
+#BEGIN set default optional arguments for tests
+
+if [ -z "$cudf_tests" ]; then
+    cudf_tests=false
+fi
+
+if [ -z "$blazingdb_protocol_tests" ]; then
+    blazingdb_protocol_tests=false
+fi
+
+if [ -z "$blazingdb_ral_tests" ]; then
+    blazingdb_ral_tests=false
+fi
+
+if [ -z "$blazingdb_orchestrator_tests" ]; then
+    blazingdb_orchestrator_tests=false
+fi
+
+if [ -z "$blazingdb_calcite_tests" ]; then
+    blazingdb_calcite_tests=false
+fi
+
+if [ -z "$pyblazing_tests" ]; then
+    pyblazing_tests=false
+fi
+
+#END set default optional arguments for tests
+
+#BEGIN functions
+
+#usage: replace_str "hi jack :)" "jack" "mike" ... result "hi mike :)" 
+function replace_str() {
+    input=$1
+    replace=$2
+    with=$3
+    result=${input/${replace}/${with}}
+    echo $result
+}
+
+# converts string feature/branchx to feature_branchx
+function normalize_branch_name() {
+    branch_name=$1
+    result=$(replace_str $branch_name "/" "_")
+    echo $result
+}
+
+#END functions
+
+#BEGIN main
+
+cudf_branch_name=$(normalize_branch_name $cudf_branch)
+blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
+blazingdb_ral_branch_name=$(normalize_branch_name $blazingdb_ral_branch)
+blazingdb_orchestrator_branch_name=$(normalize_branch_name $blazingdb_orchestrator_branch)
+blazingdb_calcite_branch_name=$(normalize_branch_name $blazingdb_calcite_branch)
+pyblazing_branch_name=$(normalize_branch_name $pyblazing_branch)
+
+cd $workspace_dir
+
+if [ ! -d dependencies ]; then
+    mkdir dependencies
+fi
+
+#BEGIN nvstrings
+
+cd dependencies
+
+nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
+nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
+
+if [ ! -d $nvstrings_package ]; then
+    wget $nvstrings_url
+    mkdir $nvstrings_package
+    tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
+fi
+
+nvstrings_dir=$workspace_dir/dependencies/$nvstrings_package
+
+#END nvstrings
+
+#BEGIN cudf
+
+cd $workspace_dir
+
+if [ ! -d cudf_project ]; then
+    mkdir cudf_project
+fi
+
+cudf_project_dir=$workspace_dir/cudf_project
+
+cd $cudf_project_dir
+
+if [ ! -d $cudf_branch_name ]; then
+    mkdir $cudf_branch_name
+    cd $cudf_branch_name
+    git clone git@github.com:BlazingDB/cudf.git
+    cd cudf
+    git checkout $cudf_branch
+    git submodule update --init --recursive
+fi
+
+cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
+
+cd $cudf_current_dir/cudf
+git pull
+
+cudf_install_dir=$cudf_current_dir/install
+
+#TODO change this to cpp for cudf >= 0.3.0
+libgdf_dir=libgdf
+cd $libgdf_dir
+
+cudf_cmake="NVSTRINGS_ROOT=$nvstrings_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$cudf_install_dir .."
+if [ ! -d build ]; then
+    mkdir build
+    cd build
+    $cudf_cmake
+fi
+
+cd $cudf_current_dir/cudf/$libgdf_dir/build/
+$cudf_cmake
+make -j$cudf_parallel install
+
+#BEGIN cudf
+
+echo "alla"
+
+
+
+cd $working_directory
+
+#END main
+
+exit
+
+
 # this function build the stack
 function build_blazingsql() {
-    workspace=/home/builder/src
+	
+
+
 
     cd ${workspace}
 
     # cudf
+    if [ -d cudf ]; then
+    fi
+
     git clone git@github.com:BlazingDB/cudf.git
-    cd ${workspace}/cudf && git checkout develop
+    cd cudf
+    git checkout develop
 
     # blazingdb-protocol
     git clone git@github.com:BlazingDB/blazingdb-protocol.git
@@ -39,6 +258,8 @@ function build_blazingsql() {
     cd ${workspace}
     git clone git@github.com:BlazingDB/pyBlazing.git
     cd ${workspace}/pyBlazing && git checkout develop
+    
+    
 }
 
 function zip_cpp_project() {

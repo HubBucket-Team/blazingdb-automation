@@ -39,9 +39,9 @@ RUN  chown builder:builder /home/builder/build.sh
 
 USER builder
 WORKDIR /home/builder
-RUN mkdir src && mkdir output && mkdir .ssh
+RUN mkdir workspace && mkdir output && mkdir .ssh
 
-VOLUME /home/builder/src
+VOLUME /home/builder/workspace
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
 

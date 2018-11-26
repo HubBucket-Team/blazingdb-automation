@@ -1,4 +1,4 @@
-FROM nvidia/cuda:9.2-runtime-ubuntu16.04
+FROM nvidia/cuda:9.2-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
@@ -43,8 +43,11 @@ RUN source activate cudf && conda install -c nvidia nvstrings
 RUN source activate cudf && pip install flatbuffers
 
 # Pyblazing dependencies
-RUN source activate cudf && python3 -m pip install --upgrade pip
-RUN source activate cudf && python3 -m pip install jupyter
+RUN source activate cudf && conda install -c conda-forge jupyterlab
+#RUN source activate cudf && pip install numba==0.40.1
+#RUN source activate cudf && pip install pycuda==2018.1.1
+
+RUN useradd -ms /bin/bash jupyter
 
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor
@@ -74,6 +77,12 @@ RUN mkdir -p /blazingdb/data/
 RUN mkdir -p /blazingdb/notebooks/
 COPY data /blazingdb/data/
 COPY notebooks/ /blazingdb/notebooks/
+
+# Solve numba issues (NvvmSupportError: libNVVM cannot be found)
+ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
+
+ENV LD_LIBRARY_PATH LD_LIBRARY_PATH:/conda/envs/cudf/lib
 
 # If the user wants to persist the blazingsql catalog (schema store)
 VOLUME /blazingsql

@@ -189,18 +189,58 @@ cudf_install_dir=$cudf_current_dir/install
 libgdf_dir=libgdf
 cd $libgdf_dir
 
-cudf_cmake="NVSTRINGS_ROOT=$nvstrings_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$cudf_install_dir .."
 if [ ! -d build ]; then
     mkdir build
     cd build
-    $cudf_cmake
+    NVSTRINGS_ROOT=$nvstrings_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$cudf_install_dir ..
 fi
 
 cd $cudf_current_dir/cudf/$libgdf_dir/build/
-$cudf_cmake
+NVSTRINGS_ROOT=$nvstrings_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$cudf_install_dir ..
 make -j$cudf_parallel install
 
-#BEGIN cudf
+#END cudf
+
+#BEGIN blazingdb-protocol
+
+cd $workspace_dir
+
+if [ ! -d blazingdb-protocol_project ]; then
+    mkdir blazingdb-protocol_project
+fi
+
+blazingdb_protocol_project_dir=$workspace_dir/blazingdb-protocol_project
+
+cd $blazingdb_protocol_project_dir
+
+if [ ! -d $blazingdb_protocol_branch_name ]; then
+    mkdir $blazingdb_protocol_branch_name
+    cd $blazingdb_protocol_branch_name
+    git clone git@github.com:BlazingDB/blazingdb-protocol.git
+    cd blazingdb-protocol
+    git checkout $blazingdb_protocol_branch
+fi
+
+blazingdb_protocol_current_dir=$blazingdb_protocol_project_dir/$blazingdb_protocol_branch_name/
+
+cd $blazingdb_protocol_current_dir/blazingdb-protocol
+git pull
+
+cd cpp
+
+blazingdb_protocol_install_dir=$blazingdb_protocol_current_dir/install
+
+if [ ! -d build ]; then
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
+fi
+
+cd $blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
+make -j$blazingdb_protocol_parallel install
+
+#END blazingdb-protocol 
 
 echo "alla"
 

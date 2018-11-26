@@ -422,7 +422,7 @@ if [ $blazingdb_calcite_enable == true ]; then
     blazingdb_calcite_install_dir=$blazingdb_calcite_current_dir/install
     
     mvn clean install -Dmaven.test.skip=true
-    blazingdb_calcite_build_dir=$blazingdb_calcite_current_dir/blazingdb-calcite-application/target/
+    blazingdb_calcite_build_dir=$blazingdb_calcite_current_dir/blazingdb-calcite/blazingdb-calcite-application/target/
     
     #END blazingdb-calcite
     

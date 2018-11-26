@@ -232,6 +232,10 @@ if [ $cudf_enable == true ]; then
     NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
     make -j$cudf_parallel install
     
+    #TODO remove this patch once cudf can install rmm
+    cp $cudf_current_dir/cudf/$libgdf_dir/include/memory.h $libgdf_install_dir/include
+    cp $cudf_current_dir/cudf/$libgdf_dir/include/rmm.h $libgdf_install_dir/include
+    
     #END cudf
     
     # Package cudf

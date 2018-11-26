@@ -240,9 +240,9 @@ if [ $cudf_enable == true ]; then
     
     # Package cudf
     cd $workspace_dir
-    mkdir -p ${output}/cudf/libgdf/install
+    mkdir -p ${output}/cudf/$libgdf_dir/install
     cp -r $cudf_current_dir/cudf/* ${output}/cudf/
-    cp -r $libgdf_install_dir/* ${output}/cudf/libgdf/install
+    cp -r $libgdf_install_dir/* ${output}/cudf/$libgdf_dir/install
     rm -rf ${output}/cudf/.git/
     rm -rf ${output}/cudf/$libgdf_dir/build/src
     rm -rf ${output}/cudf/$libgdf_dir/build/Testing

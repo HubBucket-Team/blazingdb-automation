@@ -25,6 +25,20 @@ RUN apt-get clean
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh
 RUN bash cmake-3.12.4-Linux-x86_64.sh --skip-license --prefix=/usr
 
+#BEGIN Fix Maven so it can always use the repository from a fixed location instead of .m2 
+
+#NOTE this avoid maven to download all the dependencies for the current image each time we need to build the java artefacts
+RUN rm /etc/maven/settings.xml
+RUN echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > /etc/maven/settings.xml
+RUN echo "<settings xmlns=\"http://maven.apache.org/SETTINGS/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd\">" >> /etc/maven/settings.xml
+RUN echo "<localRepository>" >> /etc/maven/settings.xml
+
+#NOTE This image is ubuntu16.04-cuda9.2 so we put this in the final Maven repo path
+RUN echo "/home/builder/workspace/maven-repository/ubuntu16.04-cuda9.2/" >> /etc/maven/settings.xml 
+RUN echo "</localRepository> </settings>" >> /etc/maven/settings.xml
+
+#END Fix Maven
+
 # Create the user 'builder'
 RUN useradd -ms /bin/bash builder
 

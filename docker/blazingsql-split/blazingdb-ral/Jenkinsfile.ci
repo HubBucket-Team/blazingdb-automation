@@ -19,7 +19,7 @@ pipeline {
     stage("Repository") {
       steps {
         checkout scm
-        dir("docker/blazingsql-build/blazingdb-ral/src_ral") {
+        dir("docker/blazingsql-split/blazingdb-ral/src_ral") {
           git branch: "${BRANCH}",
           url: "ssh://git@github.com:BlazingDB/blazingdb-ral.git"
         }

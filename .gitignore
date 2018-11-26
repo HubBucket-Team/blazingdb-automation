@@ -112,3 +112,4 @@ venv.bak/
 
 # docker files
 docker/blazingsql/blazingsql-files.tar.gz
+docker/blazingsql/Miniconda3-latest-Linux-x86_64.sh

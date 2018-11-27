@@ -12,20 +12,25 @@ source activate cudf
 cudf_dir=$blazingsql_files/cudf
 
 #TODO change this to cpp for cudf >= 0.3.0
-libgdf_dir=libgdf
+libgdf_dir=cpp
 
-cp $cudf_dir/$libgdf_dir/install/lib/libgdf.so /conda/envs/cudf/lib/
+cp $cudf_dir/$libgdf_dir/install/lib/libcudf.so /conda/envs/cudf/lib/
 cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /conda/envs/cudf/lib/
-cp $cudf_dir/$libgdf_dir/install/lib/libgdf.so /usr/lib/
+cp $cudf_dir/$libgdf_dir/install/lib/libcudf.so /usr/lib/
 cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /usr/lib/
 cp /conda/envs/cudf/lib/libNVStrings.so /usr/lib/
 
+# Install libgdf
+cp -r $cudf_dir/$libgdf_dir/install/* /usr/
+
 # Install libgdf_cffi
-cp -r $cudf_dir/$libgdf_dir/install/* $cudf_dir/$libgdf_dir/python
+sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/libgdf_cffi/libgdf_build.py
+sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/librmm_cffi/librmm_build.py
+
 pip install $cudf_dir/$libgdf_dir/python
 
 # Install cudf
-pip install $cudf_dir
+pip install $cudf_dir/python
 
 # Install blazingsql
 blazingdb_ral_artifact_name=testing-libgdf

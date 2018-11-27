@@ -218,7 +218,7 @@ if [ $cudf_enable == true ]; then
     libgdf_install_dir=$cudf_current_dir/install
     
     #TODO change this to cpp for cudf >= 0.3.0
-    libgdf_dir=libgdf
+    libgdf_dir=cpp
     cd $libgdf_dir
     
     if [ ! -d build ]; then
@@ -233,8 +233,8 @@ if [ $cudf_enable == true ]; then
     make -j$cudf_parallel install
     
     #TODO remove this patch once cudf can install rmm
-    cp $cudf_current_dir/cudf/$libgdf_dir/include/memory.h $libgdf_install_dir/include
-    cp $cudf_current_dir/cudf/$libgdf_dir/include/rmm.h $libgdf_install_dir/include
+    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
+    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include
     
     #END cudf
     

@@ -46,6 +46,7 @@ RUN source activate cudf && pip install flatbuffers
 RUN source activate cudf && conda install -c conda-forge jupyterlab
 #RUN source activate cudf && pip install numba==0.40.1
 #RUN source activate cudf && pip install pycuda==2018.1.1
+RUN source activate cudf && pip install cython
 
 RUN useradd -ms /bin/bash jupyter
 

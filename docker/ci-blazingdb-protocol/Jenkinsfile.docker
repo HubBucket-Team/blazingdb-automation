@@ -23,7 +23,7 @@ pipeline {
 
     stage("Build") {
       steps {
-        dir("docker/blazingsql-split/blazingdb-protocol/"){
+        dir("docker/ci-blazingdb-protocol"){
         sh "./docker-build.sh"
         }
       }

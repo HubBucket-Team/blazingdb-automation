@@ -19,7 +19,7 @@ pipeline {
     stage("Repository") {
       steps {
         checkout scm
-        dir("docker/blazingsql-build/blazingdb-orchestrator/src_orchestrator") {
+        dir("docker/blazingsql-split/blazingdb-orchestrator/src_orchestrator") {
           git branch: "${BRANCH}",
           url: "ssh://git@github.com:BlazingDB/blazingdb-orchestrator.git"
         }
@@ -29,7 +29,7 @@ pipeline {
     stage("Build") {
        steps {
          dir("docker/blazingsql-build/blazingdb-orchestrator/src_orchestrator"){
-         sh "../docker-run.sh"
+         sh "../../docker-run.sh"
          }
        }
      }

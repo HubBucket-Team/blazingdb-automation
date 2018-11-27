@@ -21,7 +21,7 @@ pipeline {
         checkout scm
         dir("docker/blazingsql-split/blazingdb-calcite/src_calcite") {
           git branch: "${BRANCH}",
-          url: "ssh://git@github.com:BlazingDB/blazingdb-calcite.git"
+          git url: "https://github.com/BlazingDB/blazingdb-calcite.git"
         }
       }
     }

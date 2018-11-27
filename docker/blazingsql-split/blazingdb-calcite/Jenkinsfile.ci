@@ -19,10 +19,9 @@ pipeline {
     stage("Repository") {
       steps {
         checkout scm
-        dir("docker/blazingsql-split/blazingdb-calcite/src_calcite") {
-          url: "https://github.com/BlazingDB/blazingdb-calcite.git",
-          credentialsId: 'edith-credentials',
-          git branch: "${BRANCH}"          
+          dir("docker/blazingsql-split/blazingdb-protocol/src_calcite") {
+          git branch: "${BRANCH}",
+          url: "ssh://git@github.com:BlazingDB/blazingdb-calcite.git"  
         }
       }
     }

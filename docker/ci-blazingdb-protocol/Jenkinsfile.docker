@@ -1,0 +1,53 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  environment {
+    SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
+  }
+
+  parameters {
+    string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage("Build") {
+      steps {
+        dir("docker/blazingsql-split/blazingdb-protocol/"){
+        sh "./docker-build.sh"
+        }
+      }
+    }
+
+    stage("Test") {
+      steps {
+        parallel (
+          bins: { echo "bins" },
+          files: { echo "files" }
+        )
+      }
+    }
+
+    stage("Deploy") {
+      steps {
+        echo "Enjoy"
+      }
+    }
+  } 
+  
+  post {
+    always {
+      echo "Job has finished"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  environment {
+    SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
+  }
+
+  parameters {
+    string(name: 'BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+        dir("docker/ci-blazingdb-orchestrator/src_orchestrator") {
+          git branch: "${BRANCH}",
+          url: "ssh://git@github.com:BlazingDB/blazingdb-orchestrator.git"
+        }
+      }
+    }
+
+    stage("Build") {
+       steps {
+         dir("docker/ci-blazingsql-build/blazingdb-orchestrator/src_orchestrator"){
+         sh "../docker-run.sh"
+         }
+       }
+     }
+
+    stage("Test") {
+      steps {
+        parallel (
+          bins: { echo "bins" },
+          files: { echo "files" }
+        )
+      }
+    }
+
+    stage("Deploy") {
+      steps {
+        echo "Enjoy"
+      }
+    }
+  } 
+  
+  post {
+    always {
+      echo "Job has finished"
+    }
+  }
+}

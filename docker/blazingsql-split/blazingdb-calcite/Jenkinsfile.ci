@@ -25,7 +25,8 @@ pipeline {
     stage("Build") {
        steps {
          dir("docker/blazingsql-build/blazingdb-calcite/src_calcite"){
-         sh "../docker-run.sh"
+         #sh "../docker-run.sh"
+         sh "../../docker-run.sh
          }
        }
      }

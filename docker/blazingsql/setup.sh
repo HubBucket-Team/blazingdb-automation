@@ -10,8 +10,6 @@ source activate cudf
 
 # Install libgdf
 cudf_dir=$blazingsql_files/cudf
-
-#TODO change this to cpp for cudf >= 0.3.0
 libgdf_dir=cpp
 
 cp $cudf_dir/$libgdf_dir/install/lib/libcudf.so /conda/envs/cudf/lib/

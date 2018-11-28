@@ -222,12 +222,12 @@ if [ $cudf_enable == true ]; then
     if [ ! -d build ]; then
         mkdir build
         cd build
-        NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_CUDA_FLAGS="-Xptxas" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
+        NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
     fi
     
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
     cd $libgdf_build_dir
-    NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_CUDA_FLAGS="-Xptxas" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
+    NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
     make -j$cudf_parallel install
     
     #TODO remove this patch once cudf can install rmm

@@ -283,7 +283,12 @@ if [ $blazingdb_protocol_enable == true ]; then
     fi
     
     blazingdb_protocol_cpp_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
+    
     cd $blazingdb_protocol_cpp_build_dir
+    
+    blazingdb_protocol_artifact_name=libblazingdb-protocol.a
+    rm -rf lib/$blazingdb_ral_artifact_name
+    
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
     make -j$blazingdb_protocol_parallel install
     
@@ -335,6 +340,11 @@ if [ $blazingdb_ral_enable == true ]; then
     
     blazingdb_ral_build_dir=$blazingdb_ral_current_dir/blazingdb-ral/build/
     cd $blazingdb_ral_build_dir
+    
+    #TODO fix the artifacts name
+    blazingdb_ral_artifact_name=testing-libgdf
+    rm -f $blazingdb_ral_artifact_name
+    
     cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
     make -j$blazingdb_ral_parallel
     
@@ -380,7 +390,13 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     fi
     
     blazingdb_orchestrator_build_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
+    
     cd $blazingdb_orchestrator_build_dir
+    
+    #TODO fix the artifacts name
+    blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
+    rm -f $blazingdb_orchestrator_artifact_name
+    
     cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
     make -j$blazingdb_orchestrator_parallel
     

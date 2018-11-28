@@ -16,7 +16,11 @@ RUN apt-get update && \
 USER builder
 WORKDIR /home/builder/workspace
 
+COPY build.sh /home/builder/
+
 VOLUME /home/builder/workspace
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
 VOLUME /home/builder/.m2
+
+CMD ["/bin/bash", "/home/builder/build.sh"]

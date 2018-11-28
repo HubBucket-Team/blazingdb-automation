@@ -15,7 +15,7 @@ pipeline {
     stage("Repository") {
       steps {
         checkout scm
-        sh "mkdir -p docker/blazingdb-calcite/src_calcite"
+        sh "mkdir -p docker/ci-blazingdb-calcite/src_calcite"
         dir("docker/ci-blazingdb-calcite/src_calcite") {
           git branch: "${BRANCH}",
           url: "git@github.com:BlazingDB/blazingdb-calcite.git"  

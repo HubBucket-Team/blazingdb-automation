@@ -205,17 +205,14 @@ if [ $cudf_enable == true ]; then
         mkdir $cudf_branch_name
         cd $cudf_branch_name
         git clone git@github.com:BlazingDB/cudf.git
-        cd cudf
-        git checkout $cudf_branch
-        git submodule update --init --recursive
     fi
     
     cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
     
     cd $cudf_current_dir/cudf
     git checkout $cudf_branch
-    git submodule update --init --recursive
     git pull
+    git submodule update --init --recursive
     
     libgdf_install_dir=$cudf_current_dir/install
     libgdf_dir=cpp
@@ -267,8 +264,6 @@ if [ $blazingdb_protocol_enable == true ]; then
         mkdir $blazingdb_protocol_branch_name
         cd $blazingdb_protocol_branch_name
         git clone git@github.com:BlazingDB/blazingdb-protocol.git
-        cd blazingdb-protocol
-        git checkout $blazingdb_protocol_branch
     fi
     
     blazingdb_protocol_current_dir=$blazingdb_protocol_project_dir/$blazingdb_protocol_branch_name/
@@ -321,16 +316,14 @@ if [ $blazingdb_ral_enable == true ]; then
         mkdir $blazingdb_ral_branch_name
         cd $blazingdb_ral_branch_name
         git clone git@github.com:BlazingDB/blazingdb-ral.git
-        cd blazingdb-ral
-        git checkout $blazingdb_ral_branch
     fi
     
     blazingdb_ral_current_dir=$blazingdb_ral_project_dir/$blazingdb_ral_branch_name/
     
     cd $blazingdb_ral_current_dir/blazingdb-ral
     git checkout $blazingdb_ral_branch
-    git submodule update --init --recursive
     git pull
+    git submodule update --init --recursive
     
     blazingdb_ral_install_dir=$blazingdb_ral_current_dir/install
     
@@ -370,8 +363,6 @@ if [ $blazingdb_orchestrator_enable == true ]; then
         mkdir $blazingdb_orchestrator_branch_name
         cd $blazingdb_orchestrator_branch_name
         git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
-        cd blazingdb-orchestrator
-        git checkout $blazingdb_orchestrator_branch
     fi
     
     blazingdb_orchestrator_current_dir=$blazingdb_orchestrator_project_dir/$blazingdb_orchestrator_branch_name/
@@ -418,8 +409,6 @@ if [ $blazingdb_calcite_enable == true ]; then
         mkdir $blazingdb_calcite_branch_name
         cd $blazingdb_calcite_branch_name
         git clone git@github.com:BlazingDB/blazingdb-calcite.git
-        cd blazingdb-calcite
-        git checkout $blazingdb_calcite_branch
     fi
     
     blazingdb_calcite_current_dir=$blazingdb_calcite_project_dir/$blazingdb_calcite_branch_name/
@@ -458,8 +447,6 @@ if [ $pyblazing_enable == true ]; then
         mkdir $pyblazing_branch_name
         cd $pyblazing_branch_name
         git clone git@github.com:BlazingDB/pyBlazing.git
-        cd pyBlazing
-        git checkout $pyblazing_branch
     fi
     
     pyblazing_current_dir=$pyblazing_project_dir/$pyblazing_branch_name/

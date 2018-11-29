@@ -4,8 +4,8 @@ pipeline {
   }
 
   parameters {
-    string(name: 'IMAGE', defaultValue: 'dockerhub-mario21ic', description: 'The docker image to publish')
-    string(name: 'CREDENTIALS', defaultValue: 'blazingsql/deploy:5', description: 'The docker image to publish')
+    string(name: 'IMAGE', defaultValue: 'blazingsql/deploy:5', description: 'The docker image to publish')
+    string(name: 'CREDENTIALS', defaultValue: 'dockerhub-mario21ic', description: 'The docker image to publish')
   }
 
   stages {

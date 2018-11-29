@@ -3,6 +3,11 @@ pipeline {
       label 'slave-gpu'
   }
 
+  parameters {
+    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
+    string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
+  }
+
   stages {
     stage("Repository") {
       steps {
@@ -15,6 +20,20 @@ pipeline {
         dir("docker/") {
           sh "./build-deploy.sh ${env.BUILD_NUMBER}"
         }
+      }
+    }
+    
+    stage("Publish") {
+      when {
+        expression {
+          return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        build job: "02.PUBLISH_BLAZINGSQL_DOCKERHUB", parameters: [
+          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:${env.BUILD_NUMBER}"],
+          [$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
+        ]
       }
     }
   }

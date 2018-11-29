@@ -4,7 +4,8 @@ pipeline {
   }
 
   parameters {
-    string(name: 'IMAGE', defaultValue: 'blazingsql/deploy:5', description: 'The docker image to publish')
+    string(name: 'IMAGE', defaultValue: 'dockerhub-mario21ic', description: 'The docker image to publish')
+    string(name: 'CREDENTIALS', defaultValue: 'blazingsql/deploy:5', description: 'The docker image to publish')
   }
 
   stages {
@@ -17,7 +18,7 @@ pipeline {
     stage("Build") {
       steps {
         script {
-          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-mario21ic') {
+          docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
             sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
             app = docker.image("${params.IMAGE}")
             app.push()

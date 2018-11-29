@@ -1,0 +1,21 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage("Build") {
+      steps {
+        dir("docker/") {
+          sh "./publish-dockerhub.sh ${env.BUILD_NUMBER}"
+        }
+      }
+    }
+  }
+}

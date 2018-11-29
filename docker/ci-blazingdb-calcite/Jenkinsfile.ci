@@ -12,8 +12,9 @@ pipeline {
   }
 
   environment {
-    DIR_WORK = "docker/ci-blazingdb-calcite/"
-    DIR_SRC = "docker/ci-blazingdb-calcite/src_calcite_${BRANCH}"
+    DIR_SRC = "src_calcite_${BRANCH}/"
+    PATH_SRC = "docker/ci-blazingdb-calcite/src_calcite_${BRANCH}"
+    PATH_WORK = "docker/ci-blazingdb-calcite/"
     SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
   }
 
@@ -21,8 +22,8 @@ pipeline {
     stage("Repository") {
       steps {
         checkout scm
-        sh "mkdir -p ${DIR_SRC}"
-        dir("${DIR_SRC}") {
+        sh "mkdir -p ${PATH_SRC}"
+        dir("${PATH_SRC}") {
           git branch: "${BRANCH}",
           url: "git@github.com:BlazingDB/blazingdb-calcite.git"  
         }
@@ -31,8 +32,8 @@ pipeline {
 
     stage("Build") {
       steps {
-        dir("${DIR_WORK}"){
-          sh "./docker-run.sh ${DIR_SRC}"
+        dir("${PATH_WORK}"){
+          sh "./docker-run.sh ${DIR_SRC} $HOME/.ssh/ $HOME/.m2/"
         }
       }
     }

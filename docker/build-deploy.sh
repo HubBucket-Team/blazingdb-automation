@@ -5,6 +5,7 @@ cd blazingsql-build/
 
 workspace=$HOME/blazingsql/workspace/
 output=$HOME/blazingsql/output/
+ssh_key=$HOME/.ssh_jenkins/
 image_build="blazingsql/build:$1"
 image_deploy="blazingsql/deploy:$1"
 
@@ -12,14 +13,14 @@ mkdir -p $workspace $output
 
 sudo chown 1000:1000 -R $workspace
 sudo chown 1000:1000 -R $ouput
-sudo chown 1000:1000 -R $HOME/.ssh
+sudo chown 1000:1000 -R $ssh_key
 
 cp blazingsql-build.properties $workspace
 
 
 nvidia-docker build -t $image_build .
 # User builder uid=1000, but user jenkins uid=123
-nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $HOME/.ssh/:/home/builder/.ssh/ $image_build
+nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
 
 cp $output/blazingsql-files.tar.gz ./blazingsql/
 

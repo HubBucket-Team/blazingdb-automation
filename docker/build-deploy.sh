@@ -1,7 +1,9 @@
 #!/bin/bash
 
 #BUILD
-cd blazingsql-build/
+WORKSPACE=$PWD
+
+cd $WORKSPACE/blazingsql-build/
 
 workspace=$HOME/blazingsql/workspace/
 output=$HOME/blazingsql/output/
@@ -26,7 +28,7 @@ cp $output/blazingsql-files.tar.gz ./blazingsql/
 
 
 # BEFORE DEPLOY
-cd blazingsql 
+cd $WORKSPACE/blazingsql/
 
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod +x Miniconda3-latest-Linux-x86_64.sh

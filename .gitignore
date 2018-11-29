@@ -1,3 +1,6 @@
+docker/blazingsql-build/output/blazingsql-files.tar.gz
+docker/blazingsql/bz3.*.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -108,4 +111,6 @@ venv.bak/
 *.pydevproject
 
 # docker files
+docker/blazingsql/blazingsql-files
 docker/blazingsql/blazingsql-files.tar.gz
+docker/blazingsql/Miniconda3-latest-Linux-x86_64.sh

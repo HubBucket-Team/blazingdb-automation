@@ -2,23 +2,42 @@ FROM nvidia/cuda:9.2-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
-LABEL Description="blazingdb/build:ubuntu16.04-cuda9.2 is the BlazingDB build environment (for the CI System) that uses CUDA 8.0 on Ubuntu 16.04." Vendor="BlazingDB" Version="1.0"
+LABEL Description="blazingdb/blazingsql:ubuntu16.04-cuda9.2-devel is the BlazingSQL build environment (for the CI System) that uses CUDA 9.2 on Ubuntu 16.04." Vendor="BlazingDB" Version="1.0"
+
+RUN apt-get update
+
+# Install tools & utils
+RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
+
+# Install common dev tools
+RUN apt-get install -y build-essential libssl-dev
+RUN apt-get install -y ssh wget curl
+RUN apt-get install -y git
 
 # Install BlazingSQL build dependencies
-RUN apt-get update
-RUN apt-get install build-essential libssl-dev -y
-RUN apt-get install libboost-all-dev -y
+RUN apt-get install -y libboost-all-dev
 RUN apt-get install -y openjdk-8-jdk
-RUN apt-get -yqq install ssh
 RUN apt-get install -y maven
-RUN apt-get install -y wget
-RUN apt-get install curl -y
-RUN apt-get install git -y
+
 RUN apt-get clean
 
-RUN wget -O- https://cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz | tar zxf - -C /etc
-ENV PATH $PATH:/etc/cmake-3.11.4-Linux-x86_64/bin
+# Install CMake 3.12
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh
+RUN bash cmake-3.12.4-Linux-x86_64.sh --skip-license --prefix=/usr
 
+#BEGIN Fix Maven so it can always use the repository from a fixed location instead of .m2 
+
+#NOTE this avoid maven to download all the dependencies for the current image each time we need to build the java artefacts
+RUN rm /etc/maven/settings.xml
+RUN echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > /etc/maven/settings.xml
+RUN echo "<settings xmlns=\"http://maven.apache.org/SETTINGS/1.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd\">" >> /etc/maven/settings.xml
+RUN echo "<localRepository>" >> /etc/maven/settings.xml
+
+#NOTE This image is ubuntu16.04-cuda9.2 so we put this in the final Maven repo path
+RUN echo "/home/builder/workspace/maven-repository/ubuntu16.04-cuda9.2/" >> /etc/maven/settings.xml 
+RUN echo "</localRepository> </settings>" >> /etc/maven/settings.xml
+
+#END Fix Maven
 
 # Create the user 'builder'
 RUN useradd -ms /bin/bash builder
@@ -34,9 +53,9 @@ RUN  chown builder:builder /home/builder/build.sh
 
 USER builder
 WORKDIR /home/builder
-RUN mkdir src && mkdir output && mkdir .ssh
+RUN mkdir workspace && mkdir output && mkdir .ssh
 
-VOLUME /home/builder/src
+VOLUME /home/builder/workspace
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
 

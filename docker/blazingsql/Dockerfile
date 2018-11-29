@@ -1,4 +1,4 @@
-FROM rapidsai/rapidsai:latest
+FROM nvidia/cuda:9.2-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
@@ -7,19 +7,48 @@ LABEL Description="blazingdb/blazingsql is the official BlazingDB environment fo
 RUN apt-get update
 RUN apt-get install -y openjdk-8-jre
 RUN apt-get install -y supervisor
-RUN apt-get install -y --no-install-recommends bzip2 wget curl nano lsof htop net-tools
+RUN apt-get install -y --no-install-recommends bzip2 wget curl nano vim-tiny lsof htop net-tools
 RUN apt-get clean
 
+# Install conda: get from https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+COPY Miniconda3-latest-Linux-x86_64.sh /miniconda.sh
+RUN sh /miniconda.sh -b -p /conda && /conda/bin/conda update -n base conda
+ENV PATH=${PATH}:/conda/bin
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+
+# Build cuDF conda env
+ARG PYTHON_VERSION=3.5
+RUN conda create -n cudf python=${PYTHON_VERSION}
+
+ARG NUMBA_VERSION=0.40.0
+ARG NUMPY_VERSION=1.14.3
+# Locked to Pandas 0.20.3 by https://github.com/rapidsai/cudf/issues/118
+ARG PANDAS_VERSION=0.20.3
+ARG PYARROW_VERSION=0.10.0
+RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c rapidsai -c defaults \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      nvstrings \
+      cmake=3.12 \
+      gtest=1.8.0
+
 # libgdf dependencies
-RUN source activate gdf && conda install conda-build
-RUN source activate gdf && pip install --upgrade pip
+RUN source activate cudf && pip install --upgrade pip
+RUN source activate cudf && conda install -c nvidia nvstrings
 
 # blazingdb-protocol dependencies
-RUN source activate gdf && pip install flatbuffers
+RUN source activate cudf && pip install flatbuffers
 
 # Pyblazing dependencies
-RUN source activate gdf && pip install numba==0.40.1
-RUN source activate gdf && pip install pycuda==2018.1.1
+RUN source activate cudf && conda install -c conda-forge jupyterlab
+#RUN source activate cudf && pip install numba==0.40.1
+#RUN source activate cudf && pip install pycuda==2018.1.1
+RUN source activate cudf && pip install cython
+
+RUN useradd -ms /bin/bash jupyter
 
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor
@@ -35,21 +64,22 @@ RUN chmod +x /usr/bin/run_jupyter.sh
 RUN mkdir /tmp/blazing/
 COPY blazingsql-files.tar.gz /tmp/blazing/
 COPY setup.sh /tmp/blazing/
-COPY libgdf_cffi/ /tmp/blazing/libgdf_cffi/
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
 
 # Setup the Calcite database catalog
 RUN mkdir /blazingsql
-COPY bz3.trace.db /blazingsql
-COPY bz3.mv.db /blazingsql
-RUN chown -R jupyter:jupyter /blazingsql/*
+RUN chown -R jupyter:jupyter /blazingsql/
 
 # Copy the demo files
 RUN mkdir -p /blazingdb/data/
 RUN mkdir -p /blazingdb/notebooks/
 COPY data /blazingdb/data/
 COPY notebooks/ /blazingdb/notebooks/
+
+# Solve numba issues (NvvmSupportError: libNVVM cannot be found)
+ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 
 # If the user wants to persist the blazingsql catalog (schema store)
 VOLUME /blazingsql

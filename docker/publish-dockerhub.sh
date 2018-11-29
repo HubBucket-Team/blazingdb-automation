@@ -1,11 +1,9 @@
 #!/bin/bash
 
 #JOB PUBLISH
-
-docker login
+# docker login
 
 #nvidia-docker
-docker tag demo blazingdb/blazingsql:version01
+nvidia-docker tag $1 mario21ic/nginx:latest
 
-
-docker push
+#docker push

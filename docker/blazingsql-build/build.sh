@@ -217,17 +217,22 @@ if [ $cudf_enable == true ]; then
     libgdf_install_dir=$cudf_current_dir/install
     libgdf_dir=cpp
     
+    #TODO percy felipe : remove this line when nvidia fix the current state of ptx build
+    echo "Patch cudf CMakeLists.txt" 
+    sed -i 's/-Xptxas/-Xptxas --maxrregcount=48/g' $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
+    cat $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
+    
     cd $cudf_current_dir/cudf/$libgdf_dir
     
     if [ ! -d build ]; then
         mkdir build
         cd build
-        NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
+        CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
     fi
     
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
     cd $libgdf_build_dir
-    NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
+    CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
     make -j$cudf_parallel install
     
     #TODO remove this patch once cudf can install rmm

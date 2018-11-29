@@ -29,7 +29,7 @@ pipeline {
 
     stage("Build") {
       steps {
-        sh "mkdir $HOME/e $HOME/output"
+        sh "mkdir -p $HOME/e $HOME/output"
         dir("${PATH_WORK_BUILD}") {
           sh "cp blazingsql-build.properties $HOME/blazingsql-build.properties"
 

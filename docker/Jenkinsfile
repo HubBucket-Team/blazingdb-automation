@@ -13,7 +13,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "/build-deploy.sh ${env.BUILD_NUMBER}"
+          sh "./build-deploy.sh ${env.BUILD_NUMBER}"
         }
       }
     }

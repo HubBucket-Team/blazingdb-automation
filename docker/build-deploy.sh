@@ -12,7 +12,7 @@ image_deploy="blazingsql/deploy:$1"
 mkdir -p $workspace $output
 
 sudo chown 1000:1000 -R $workspace
-sudo chown 1000:1000 -R $ouput
+sudo chown 1000:1000 -R $output
 sudo chown 1000:1000 -R $ssh_key
 
 cp blazingsql-build.properties $workspace

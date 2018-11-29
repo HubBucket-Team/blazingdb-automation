@@ -1,0 +1,64 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  parameters {
+    string(name: 'BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
+  }
+
+  environment {
+    PATH_INPUT = "$HOME/input/"
+    PATH_OUTPUT = "$HOME/output/"
+    PATH_WORK = "docker/"
+    PATH_WORK_BUILD = "docker/blazingsql-build/"
+    PATH_WORK_DEPLOY = "docker/blazingsql/"
+    SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+        }
+      }
+    }
+
+    stage("Build") {
+      steps {
+        sh "mkdir $HOME/e $HOME/output"
+        dir("${PATH_WORK_BUILD}") {
+          sh "cp blazingsql-build.properties $HOME/blazingsql-build.properties"
+
+          sh "./docker_build.sh ${env.BUILD_NUMBER}"
+          sh "./docker_run.sh ${PATH_INPUT} ${env.BUILD_NUMBER}"
+        }
+      }
+    }
+
+    stage("Test") {
+      steps {
+        parallel (
+          bins: { echo "bins" },
+          files: { echo "files" }
+        )
+      }
+    }
+
+    stage("Deploy") {
+      steps {
+        echo "Enjoy"
+      }
+    }
+  } 
+  
+  post {
+    always {
+      echo "Job has finished"
+    }
+  }
+}

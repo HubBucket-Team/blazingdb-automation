@@ -1,34 +1,42 @@
 pipeline {
   agent any
+
   options {
     timestamps()
     timeout(time: 1, unit: 'HOURS')
   }
-  environment {
-    SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
-  }
+
   parameters {
     string(name: 'BRANCH', defaultValue: 'develop', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
   }
+
+  environment {
+    DIR_WORK = "docker/ci-blazingdb-calcite/"
+    DIR_SRC = "docker/ci-blazingdb-calcite/src_calcite_${BRANCH}"
+    SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
+  }
+
   stages {
     stage("Repository") {
       steps {
         checkout scm
-        sh "mkdir -p docker/ci-blazingdb-calcite/src_calcite"
-        dir("docker/ci-blazingdb-calcite/src_calcite") {
+        sh "mkdir -p ${DIR_SRC}"
+        dir("${DIR_SRC}") {
           git branch: "${BRANCH}",
           url: "git@github.com:BlazingDB/blazingdb-calcite.git"  
         }
       }
     }
+
     stage("Build") {
-       steps {
-         dir("docker/ci-blazingdb-calcite"){
-         sh "./docker-run.sh"
-         }
-       }
-     }
+      steps {
+        dir("${DIR_WORK}"){
+          sh "./docker-run.sh ${DIR_SRC}"
+        }
+      }
+    }
+
     stage("Test") {
       steps {
         parallel (
@@ -37,6 +45,7 @@ pipeline {
         )
       }
     }
+
     stage("Deploy") {
       steps {
         echo "Enjoy"

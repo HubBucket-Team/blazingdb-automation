@@ -9,7 +9,7 @@ workspace=$HOME/blazingsql/workspace/
 output=$HOME/blazingsql/output/
 ssh_key=$HOME/.ssh_jenkins/
 image_build="blazingsql/build:$1"
-image_deploy="blazingsql/deploy:$1"
+image_deploy="blazingdb/blazingsql:$1"
 
 mkdir -p $workspace $output
 
@@ -44,4 +44,5 @@ echo "### Run de Deploy ###"
 nvidia-docker rm -f myjupyter
 nvidia-docker run --name myjupyter --rm -d -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 $image_deploy
 
-echo "http://35.229.51.253:884"
+echo "### Open with browser ###"
+echo "http://35.229.51.253:8884"

@@ -1,39 +1,34 @@
 pipeline {
   agent any
-
   options {
     timestamps()
     timeout(time: 1, unit: 'HOURS')
   }
-
   environment {
     SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
   }
-
   parameters {
     string(name: 'BRANCH', defaultValue: 'develop', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
   }
-
   stages {
     stage("Repository") {
       steps {
         checkout scm
+        sh "mkdir -p docker/ci-blazingdb-protocol/src_protocol"
         dir("docker/ci-blazingdb-protocol/src_protocol") {
           git branch: "${BRANCH}",
-          url: "ssh://git@github.com:BlazingDB/blazingdb-protocol.git"
+          url: "git@github.com:BlazingDB/blazingdb-protocol.git"  
         }
       }
     }
-
     stage("Build") {
        steps {
-         dir("docker/ci-blazingdb-protocol/src_protocol"){
-         sh "../docker-run.sh"
+         dir("docker/ci-blazingdb-protocol"){
+         sh "./docker-run.sh"
          }
        }
      }
-
     stage("Test") {
       steps {
         parallel (
@@ -42,7 +37,6 @@ pipeline {
         )
       }
     }
-
     stage("Deploy") {
       steps {
         echo "Enjoy"

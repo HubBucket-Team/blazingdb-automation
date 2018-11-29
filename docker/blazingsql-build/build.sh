@@ -218,7 +218,8 @@ if [ $cudf_enable == true ]; then
     libgdf_dir=cpp
     
     #TODO percy felipe : remove this line when nvidia fix the current state of ptx build
-    echo "Patch cudf CMakeLists.txt" 
+    echo "Patch cudf CMakeLists.txt"
+    git checkout $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
     sed -i 's/-Xptxas/-Xptxas --maxrregcount=48/g' $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
     cat $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
     

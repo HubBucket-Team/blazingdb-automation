@@ -30,6 +30,12 @@ if [ -z "$blazingdb_protocol_branch" ]; then
     exit 1
 fi
 
+if [ -z "$blazingdb_io_branch" ]; then
+    echo "Error: Need the 'blazingdb_io_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
 if [ -z "$blazingdb_ral_branch" ]; then
     echo "Error: Need the 'blazingdb_ral_branch' argument in order to run the build process."
     touch FAILED
@@ -66,6 +72,10 @@ if [ -z "$blazingdb_protocol_enable" ]; then
     blazingdb_protocol_enable=true
 fi
 
+if [ -z "$blazingdb_io_enable" ]; then
+    blazingdb_protocol_enable=true
+fi
+
 if [ -z "$blazingdb_ral_enable" ]; then
     blazingdb_ral_enable=true
 fi
@@ -94,6 +104,10 @@ if [ -z "$blazingdb_protocol_parallel" ]; then
     blazingdb_protocol_parallel=4
 fi
 
+if [ -z "$blazingdb_io_parallel" ]; then
+    blazingdb_protocol_parallel=4
+fi
+
 if [ -z "$blazingdb_ral_parallel" ]; then
     blazingdb_ral_parallel=4
 fi
@@ -115,6 +129,10 @@ if [ -z "$cudf_tests" ]; then
 fi
 
 if [ -z "$blazingdb_protocol_tests" ]; then
+    blazingdb_protocol_tests=false
+fi
+
+if [ -z "$blazingdb_io_tests" ]; then
     blazingdb_protocol_tests=false
 fi
 
@@ -160,6 +178,7 @@ function normalize_branch_name() {
 
 cudf_branch_name=$(normalize_branch_name $cudf_branch)
 blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
+blazingdb_io_branch_name=$(normalize_branch_name $blazingdb_io_branch)
 blazingdb_ral_branch_name=$(normalize_branch_name $blazingdb_ral_branch)
 blazingdb_orchestrator_branch_name=$(normalize_branch_name $blazingdb_orchestrator_branch)
 blazingdb_calcite_branch_name=$(normalize_branch_name $blazingdb_calcite_branch)
@@ -308,6 +327,52 @@ if [ $blazingdb_protocol_enable == true ]; then
     cd $workspace_dir
     mkdir -p $output/blazingdb-protocol/python/
     cp -r $blazingdb_protocol_current_dir/blazingdb-protocol/python/* $output/blazingdb-protocol/python/
+fi
+
+if [ $blazingdb_io_enable == true ]; then
+    #BEGIN blazingdb-io
+    
+    cd $workspace_dir
+    
+    if [ ! -d blazingdb-io_project ]; then
+        mkdir blazingdb-io_project
+    fi
+    
+    blazingdb_io_project_dir=$workspace_dir/blazingdb-io_project
+    
+    cd $blazingdb_io_project_dir
+    
+    if [ ! -d $blazingdb_io_branch_name ]; then
+        mkdir $blazingdb_io_branch_name
+        cd $blazingdb_io_branch_name
+        git clone git@github.com:BlazingDB/blazingdb-io.git
+    fi
+    
+    blazingdb_io_current_dir=$blazingdb_io_project_dir/$blazingdb_io_branch_name/
+    
+    cd $blazingdb_io_current_dir/blazingdb-io
+    git checkout $blazingdb_io_branch
+    git pull
+    
+    blazingdb_io_install_dir=$blazingdb_io_current_dir/install
+    
+    if [ ! -d build ]; then
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
+    fi
+    
+    blazingdb_io_cpp_build_dir=$blazingdb_io_current_dir/blazingdb-io/build/
+    
+    cd $blazingdb_io_cpp_build_dir
+    
+    blazingdb_io_artifact_name=libblazingdb-io.a
+    rm -rf lib/$blazingdb_ral_artifact_name
+    
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
+    make -j$blazingdb_io_parallel install
+    
+    #END blazingdb-io
 fi
 
 if [ $blazingdb_ral_enable == true ]; then

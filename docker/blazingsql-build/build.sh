@@ -407,7 +407,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     blazingdb_protocol_install_dir=$blazingdb_protocol_current_dir/install
     
     blazingdb_protocol_cpp_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
-    mkdir -p blazingdb_protocol_cpp_build_dir
+    mkdir -p $blazingdb_protocol_cpp_build_dir
     
     cd $blazingdb_protocol_cpp_build_dir
     

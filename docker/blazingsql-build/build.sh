@@ -281,6 +281,35 @@ arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 
 #END arrow
 
+#BEGIN aws-sdk-cpp
+
+cd $workspace_dir/dependencies
+
+if [ ! -d aws-sdk-cpp ]; then
+    git clone https://github.com/aws/aws-sdk-cpp.git
+fi
+
+cd $workspace_dir/dependencies/aws-sdk-cpp
+git checkout 864eb0bca8b48427f94850b7a8311ef0ae0f433b
+
+aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
+
+mkdir -p $aws_sdk_cpp_build_dir
+cd $aws_sdk_cpp_build_dir
+
+# NOTE we only need core, s3 and s3-encryption, also we don't need to install this package
+cmake -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_ONLY="core;s3;s3-encryption" \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DENABLE_TESTING=OFF \
+    -DENABLE_UNITY_BUILD=ON \
+    -DCUSTOM_MEMORY_MANAGEMENT=0 \
+    -DCPP_STANDARD=14 \
+    ..
+make -j4
+
+#END aws-sdk-cpp
+
 #END dependencies
 
 if [ $cudf_enable == true ]; then
@@ -435,7 +464,7 @@ if [ $blazingdb_io_enable == true ]; then
     blazingdb_io_artifact_name=libblazingdb-io.a
     rm -rf $blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release -DARROW_INSTALL_DIR=${arrow_install_dir} -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
+    cmake -DCMAKE_BUILD_TYPE=Release -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} -DARROW_INSTALL_DIR=${arrow_install_dir} -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
     make -j$blazingdb_io_parallel install
     
     #END blazingdb-io

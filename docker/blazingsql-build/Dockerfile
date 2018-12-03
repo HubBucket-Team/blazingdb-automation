@@ -10,12 +10,20 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
 
 # Install common dev tools
-RUN apt-get install -y build-essential libssl-dev
+RUN apt-get install -y build-essential
 RUN apt-get install -y ssh wget curl
 RUN apt-get install -y git
 
-# Install BlazingSQL build dependencies
+# Install AWS C++ SDK dependencies
+RUN apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev uuid-dev zlib1g-dev
+
+# Install Apache Arrow dependencies
 RUN apt-get install -y libboost-all-dev
+
+# Install Apache Parquet dependencies
+RUN apt-get install -y libzstd-dev liblz4-dev
+
+# Install BlazingSQL Java build dependencies
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y maven
 

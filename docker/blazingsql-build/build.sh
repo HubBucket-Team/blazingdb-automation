@@ -186,28 +186,104 @@ pyblazing_branch_name=$(normalize_branch_name $pyblazing_branch)
 
 cd $workspace_dir
 
+#BEGIN dependencies
+
 if [ ! -d dependencies ]; then
     mkdir dependencies
 fi
 
+#BEGIN nvstrings
+
+cd $workspace_dir/dependencies
+
+nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
+nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
+
+if [ ! -d $nvstrings_package ]; then
+    wget $nvstrings_url
+    mkdir $nvstrings_package
+    tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
+fi
+
+nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
+
+#END nvstrings
+
+#BEGIN flatbuffers
+
+cd $workspace_dir/dependencies
+
+if [ ! -d flatbuffers ]; then
+    git clone https://github.com/google/flatbuffers.git
+fi
+
+cd $workspace_dir/dependencies/flatbuffers
+git checkout 02a7807dd8d26f5668ffbbec0360dc107bbfabd5
+
+flatbuffers_build_dir=$workspace_dir/dependencies/flatbuffers/build/
+
+mkdir -p $flatbuffers_build_dir
+cd $flatbuffers_build_dir
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$workspace_dir/dependencies/flatbuffers_install_dir ..
+make -j4 install
+
+flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
+
+#END flatbuffers
+
+#BEGIN arrow
+
+cd $workspace_dir/dependencies
+
+if [ ! -d arrow ]; then
+    git clone https://github.com/apache/arrow.git
+fi
+
+cd $workspace_dir/dependencies/arrow
+git checkout apache-arrow-0.11.1
+
+arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
+
+mkdir -p $arrow_build_dir
+cd $arrow_build_dir
+
+# NOTE for the arrow cmake arguments:
+# -DARROW_IPC=ON \ # need ipc for blazingdb-ral (because cudf)
+# -DARROW_HDFS=ON \ # disable when blazingdb-io don't use arrow for hdfs
+# -DARROW_TENSORFLOW=ON \ # enable old ABI for C/C++
+# -DARROW_PARQUET=OFF \ # we don't need parquet for blazingdb-
+
+FLATBUFFERS_HOME=$flatbuffers_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$workspace_dir/dependencies/arrow_install_dir  \
+    -DARROW_WITH_LZ4=OFF \
+    -DARROW_WITH_ZSTD=OFF \
+    -DARROW_WITH_BROTLI=OFF \
+    -DARROW_WITH_SNAPPY=OFF \
+    -DARROW_WITH_ZLIB=OFF \
+    -DARROW_BUILD_STATIC=ON \
+    -DARROW_BUILD_SHARED=OFF \
+    -DARROW_BOOST_USE_SHARED=OFF \
+    -DARROW_BUILD_TESTS=OFF \
+    -DARROW_TEST_MEMCHECK=OFF \
+    -DARROW_BUILD_BENCHMARKS=OFF \
+    -DARROW_IPC=ON \
+    -DARROW_COMPUTE=OFF \
+    -DARROW_GPU=OFF \
+    -DARROW_JEMALLOC=OFF \
+    -DARROW_BOOST_VENDORED=OFF \
+    -DARROW_PYTHON=OFF \
+    -DARROW_HDFS=ON \
+    -DARROW_TENSORFLOW=ON \
+    -DARROW_PARQUET=OFF \
+    ..
+make -j4 install
+
+arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
+
+#END arrow
+
+#END dependencies
+
 if [ $cudf_enable == true ]; then
-    #BEGIN nvstrings
-    
-    cd dependencies
-    
-    nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
-    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
-    
-    if [ ! -d $nvstrings_package ]; then
-        wget $nvstrings_url
-        mkdir $nvstrings_package
-        tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
-    fi
-    
-    nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
-    
-    #END nvstrings
-    
     #BEGIN cudf
     
     cd $workspace_dir
@@ -301,20 +377,15 @@ if [ $blazingdb_protocol_enable == true ]; then
     
     blazingdb_protocol_install_dir=$blazingdb_protocol_current_dir/install
     
-    if [ ! -d build ]; then
-        mkdir build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
-    fi
-    
     blazingdb_protocol_cpp_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
+    mkdir -p blazingdb_protocol_cpp_build_dir
     
     cd $blazingdb_protocol_cpp_build_dir
     
     blazingdb_protocol_artifact_name=libblazingdb-protocol.a
     rm -rf lib/$blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
+    cmake -DCMAKE_BUILD_TYPE=Release -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
     make -j$blazingdb_protocol_parallel install
     
     cd $blazingdb_protocol_current_dir/blazingdb-protocol/java
@@ -355,21 +426,16 @@ if [ $blazingdb_io_enable == true ]; then
     git pull
     
     blazingdb_io_install_dir=$blazingdb_io_current_dir/install
-    
-    if [ ! -d build ]; then
-        mkdir build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
-    fi
-    
     blazingdb_io_cpp_build_dir=$blazingdb_io_current_dir/blazingdb-io/build/
+    
+    mkdir -p $blazingdb_io_cpp_build_dir
     
     cd $blazingdb_io_cpp_build_dir
     
     blazingdb_io_artifact_name=libblazingdb-io.a
-    rm -rf lib/$blazingdb_ral_artifact_name
+    rm -rf $blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
+    cmake -DCMAKE_BUILD_TYPE=Release -DARROW_INSTALL_DIR=${arrow_install_dir} -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
     make -j$blazingdb_io_parallel install
     
     #END blazingdb-io

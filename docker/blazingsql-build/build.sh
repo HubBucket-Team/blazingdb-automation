@@ -220,14 +220,16 @@ fi
 cd $workspace_dir/dependencies/flatbuffers
 git checkout 02a7807dd8d26f5668ffbbec0360dc107bbfabd5
 
+flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
 flatbuffers_build_dir=$workspace_dir/dependencies/flatbuffers/build/
 
 mkdir -p $flatbuffers_build_dir
 cd $flatbuffers_build_dir
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$workspace_dir/dependencies/flatbuffers_install_dir ..
+cmake -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX:PATH=$flatbuffers_install_dir \
+      ..
 make -j4 install
 
-flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
 
 #END flatbuffers
 
@@ -242,6 +244,7 @@ fi
 cd $workspace_dir/dependencies/arrow
 git checkout apache-arrow-0.11.1
 
+arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
 
 mkdir -p $arrow_build_dir
@@ -253,31 +256,30 @@ cd $arrow_build_dir
 # -DARROW_TENSORFLOW=ON \ # enable old ABI for C/C++
 # -DARROW_PARQUET=OFF \ # we don't need parquet for blazingdb-
 
-FLATBUFFERS_HOME=$flatbuffers_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$workspace_dir/dependencies/arrow_install_dir  \
-    -DARROW_WITH_LZ4=OFF \
-    -DARROW_WITH_ZSTD=OFF \
-    -DARROW_WITH_BROTLI=OFF \
-    -DARROW_WITH_SNAPPY=OFF \
-    -DARROW_WITH_ZLIB=OFF \
+FLATBUFFERS_HOME=$flatbuffers_install_dir cmake \
+    -DCMAKE_INSTALL_PREFIX:PATH=$arrow_install_dir \
+    -DARROW_WITH_LZ4=ON \
+    -DARROW_WITH_ZSTD=ON \
+    -DARROW_WITH_BROTLI=ON \
+    -DARROW_WITH_SNAPPY=ON \
+    -DARROW_WITH_ZLIB=ON \
     -DARROW_BUILD_STATIC=ON \
-    -DARROW_BUILD_SHARED=OFF \
-    -DARROW_BOOST_USE_SHARED=OFF \
+    -DARROW_BUILD_SHARED=ON \
+    -DARROW_BOOST_USE_SHARED=ON \
     -DARROW_BUILD_TESTS=OFF \
     -DARROW_TEST_MEMCHECK=OFF \
     -DARROW_BUILD_BENCHMARKS=OFF \
     -DARROW_IPC=ON \
-    -DARROW_COMPUTE=OFF \
+    -DARROW_COMPUTE=ON \
     -DARROW_GPU=OFF \
     -DARROW_JEMALLOC=OFF \
     -DARROW_BOOST_VENDORED=OFF \
     -DARROW_PYTHON=OFF \
     -DARROW_HDFS=ON \
     -DARROW_TENSORFLOW=ON \
-    -DARROW_PARQUET=OFF \
+    -DARROW_PARQUET=ON \
     ..
 make -j4 install
-
-arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 
 #END arrow
 
@@ -347,17 +349,14 @@ if [ $cudf_enable == true ]; then
     sed -i 's/-Xptxas/-Xptxas --maxrregcount=48/g' $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
     cat $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
     
-    cd $cudf_current_dir/cudf/$libgdf_dir
-    
-    if [ ! -d build ]; then
-        mkdir build
-        cd build
-        CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
-    fi
-    
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
+
+    mkdir -p $libgdf_build_dir
     cd $libgdf_build_dir
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir ..
+    CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake  \
+        -DCMAKE_BUILD_TYPE=Release  \
+        -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
+        ..
     make -j$cudf_parallel install
     
     #TODO remove this patch once cudf can install rmm
@@ -414,7 +413,10 @@ if [ $blazingdb_protocol_enable == true ]; then
     blazingdb_protocol_artifact_name=libblazingdb-protocol.a
     rm -rf lib/$blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir ..
+    cmake -DCMAKE_BUILD_TYPE=Release  \
+          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir  \
+          -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir  \
+          ..
     make -j$blazingdb_protocol_parallel install
     
     cd $blazingdb_protocol_current_dir/blazingdb-protocol/java
@@ -464,7 +466,11 @@ if [ $blazingdb_io_enable == true ]; then
     blazingdb_io_artifact_name=libblazingdb-io.a
     rm -rf $blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} -DARROW_INSTALL_DIR=${arrow_install_dir} -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir ..
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
+          -DARROW_INSTALL_DIR=${arrow_install_dir} \
+          -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
+          ..
     make -j$blazingdb_io_parallel install
     
     #END blazingdb-io
@@ -497,21 +503,24 @@ if [ $blazingdb_ral_enable == true ]; then
     git submodule update --init --recursive
     
     blazingdb_ral_install_dir=$blazingdb_ral_current_dir/install
-    
-    if [ ! -d build ]; then
-        mkdir build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
-    fi
-    
     blazingdb_ral_build_dir=$blazingdb_ral_current_dir/blazingdb-ral/build/
+    
+    mkdir -p $blazingdb_ral_build_dir
+    
     cd $blazingdb_ral_build_dir
     
     #TODO fix the artifacts name
     blazingdb_ral_artifact_name=testing-libgdf
     rm -f $blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release -DNVSTRINGS_HOME=$nvstrings_install_dir -DLIBGDF_HOME=$libgdf_install_dir -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
+          -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
+          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
+          -DARROW_INSTALL_DIR=$arrow_install_dir \
+          -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
+          -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
+          ..
     make -j$blazingdb_ral_parallel
     
     #END blazingdb-ral

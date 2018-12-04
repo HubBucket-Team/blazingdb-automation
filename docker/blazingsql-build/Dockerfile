@@ -21,7 +21,11 @@ RUN apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev u
 RUN apt-get install -y libboost-all-dev
 
 # Install Apache Parquet dependencies
-RUN apt-get install -y libzstd-dev liblz4-dev
+RUN apt-get install -y libboost-dev libboost-filesystem-dev \
+                       libboost-program-options-dev libboost-regex-dev \
+                       libboost-system-dev libboost-test-dev \
+                       libzstd-dev liblz4-dev \
+                       libssl-dev libtool bison flex pkg-config
 
 # Install BlazingSQL Java build dependencies
 RUN apt-get install -y openjdk-8-jdk

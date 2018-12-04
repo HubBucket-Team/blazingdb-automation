@@ -607,9 +607,9 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     
     # TODO percy FIX orchestrator
     #-DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
+    # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
+    # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
     cmake -DCMAKE_BUILD_TYPE=Release \
-          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
-          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           ..
     make -j$blazingdb_orchestrator_parallel
     

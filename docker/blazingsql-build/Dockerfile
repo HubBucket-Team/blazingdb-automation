@@ -71,4 +71,4 @@ VOLUME /home/builder/workspace
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
 
-CMD ["/bin/bash", "/home/builder/build.sh /home/builder/workspace /home/builder/output/"]
+CMD ["/bin/bash", "/home/builder/build.sh", "/home/builder/workspace", "/home/builder/output/"]

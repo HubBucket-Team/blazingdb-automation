@@ -4,6 +4,10 @@
 workspace_dir=$1
 output_dir=$2
 
+# Expand args to absolute/full paths (if the user pass relative paths as args)
+workspace_dir=$(readlink -f $workspace_dir)
+output_dir=$(readlink -f $output_dir)
+
 output=$output_dir/blazingsql-files
 
 mkdir -p $output 

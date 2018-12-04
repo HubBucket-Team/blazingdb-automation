@@ -200,6 +200,7 @@ fi
 nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
 if [ ! -d $nvstrings_install_dir ]; then
+    cd $workspace_dir/dependencies/
     nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
     nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
     wget $nvstrings_url
@@ -214,6 +215,7 @@ fi
 googletest_install_dir=$workspace_dir/dependencies/googletest_install_dir
 
 if [ ! -d $googletest_install_dir ]; then
+    cd $workspace_dir/dependencies/
     git clone https://github.com/google/googletest.git
     cd $workspace_dir/dependencies/googletest
     git checkout release-1.8.0
@@ -237,6 +239,7 @@ fi
 flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
 
 if [ ! -d $flatbuffers_install_dir ]; then
+    cd $workspace_dir/dependencies/
     git clone https://github.com/google/flatbuffers.git
     cd $workspace_dir/dependencies/flatbuffers
     git checkout 02a7807dd8d26f5668ffbbec0360dc107bbfabd5
@@ -247,6 +250,8 @@ if [ ! -d $flatbuffers_install_dir ]; then
     cd $flatbuffers_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX:PATH=$flatbuffers_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
     make -j4 install
 fi
@@ -258,6 +263,7 @@ fi
 arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 
 if [ ! -d $arrow_install_dir ]; then
+    cd $workspace_dir/dependencies/
     git clone https://github.com/apache/arrow.git
     cd $workspace_dir/dependencies/arrow
     git checkout apache-arrow-0.11.1
@@ -326,6 +332,8 @@ if [ ! -d $aws_sdk_cpp_build_dir ]; then
         -DENABLE_UNITY_BUILD=ON \
         -DCUSTOM_MEMORY_MANAGEMENT=0 \
         -DCPP_STANDARD=14 \
+        -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+        -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         ..
     make -j4
 fi

@@ -197,31 +197,27 @@ fi
 
 #BEGIN nvstrings
 
-cd $workspace_dir/dependencies
+nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
-nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
-nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
-
-if [ ! -d $nvstrings_package ]; then
+if [ ! -d $nvstrings_install_dir ]; then
+    nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
+    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
     wget $nvstrings_url
     mkdir $nvstrings_package
     tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
 fi
 
-nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
-
 #END nvstrings
 
 #BEGIN googletest
 
-cd $workspace_dir/dependencies
+googletest_install_dir=$workspace_dir/dependencies/googletest_install_dir
 
-if [ ! -d googletest ]; then
+if [ ! -d $googletest_install_dir ]; then
     git clone https://github.com/google/googletest.git
     cd $workspace_dir/dependencies/googletest
     git checkout release-1.8.0
 
-    googletest_install_dir=$workspace_dir/dependencies/googletest_install_dir
     googletest_build_dir=$workspace_dir/dependencies/googletest/build/
     mkdir -p $googletest_build_dir
     cd $googletest_build_dir
@@ -238,14 +234,13 @@ fi
 
 #BEGIN flatbuffers
 
-cd $workspace_dir/dependencies
+flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
 
-if [ ! -d flatbuffers ]; then
+if [ ! -d $flatbuffers_install_dir ]; then
     git clone https://github.com/google/flatbuffers.git
     cd $workspace_dir/dependencies/flatbuffers
     git checkout 02a7807dd8d26f5668ffbbec0360dc107bbfabd5
 
-    flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
     flatbuffers_build_dir=$workspace_dir/dependencies/flatbuffers/build/
 
     mkdir -p $flatbuffers_build_dir
@@ -260,14 +255,13 @@ fi
 
 #BEGIN arrow
 
-cd $workspace_dir/dependencies
+arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 
-if [ ! -d arrow ]; then
+if [ ! -d $arrow_install_dir ]; then
     git clone https://github.com/apache/arrow.git
     cd $workspace_dir/dependencies/arrow
     git checkout apache-arrow-0.11.1
 
-    arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
     arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
     
     mkdir -p $arrow_build_dir
@@ -314,14 +308,12 @@ fi
 
 #BEGIN aws-sdk-cpp
 
-cd $workspace_dir/dependencies
+aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
-if [ ! -d aws-sdk-cpp ]; then
+if [ ! -d $aws_sdk_cpp_build_dir ]; then
     git clone https://github.com/aws/aws-sdk-cpp.git
     cd $workspace_dir/dependencies/aws-sdk-cpp
     git checkout 864eb0bca8b48427f94850b7a8311ef0ae0f433b
-
-    aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
     mkdir -p $aws_sdk_cpp_build_dir
     cd $aws_sdk_cpp_build_dir

@@ -450,6 +450,8 @@ if [ $blazingdb_protocol_enable == true ]; then
           -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
     make -j$blazingdb_protocol_parallel install
     
@@ -603,8 +605,10 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
     rm -f $blazingdb_orchestrator_artifact_name
     
+    # TODO percy FIX orchestrator
+    #-DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
     cmake -DCMAKE_BUILD_TYPE=Release \
-          -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
+          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           ..
     make -j$blazingdb_orchestrator_parallel

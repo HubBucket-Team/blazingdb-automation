@@ -256,6 +256,11 @@ cd $arrow_build_dir
 # -DARROW_TENSORFLOW=ON \ # enable old ABI for C/C++
 # -DARROW_PARQUET=OFF \ # we don't need parquet for blazingdb-
 
+# If you enable ARROW_BOOST_USE_SHARED=ON and have ARROW_BOOST_USE_SHARED=OFF then will fail:
+# /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libboost_system.a(error_code.o): relocation
+# R_X86_64_32 against `.rodata.str1.1' can not be used when making a shared object; recompile with -fPIC
+# /usr/lib/x86_64-linux-gnu/libboost_system.a: error adding symbols: Bad value
+
 FLATBUFFERS_HOME=$flatbuffers_install_dir cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=$arrow_install_dir \
     -DARROW_WITH_LZ4=ON \
@@ -264,8 +269,8 @@ FLATBUFFERS_HOME=$flatbuffers_install_dir cmake \
     -DARROW_WITH_SNAPPY=ON \
     -DARROW_WITH_ZLIB=ON \
     -DARROW_BUILD_STATIC=ON \
-    -DARROW_BUILD_SHARED=ON \
-    -DARROW_BOOST_USE_SHARED=ON \
+    -DARROW_BUILD_SHARED=OFF \
+    -DARROW_BOOST_USE_SHARED=OFF \
     -DARROW_BUILD_TESTS=OFF \
     -DARROW_TEST_MEMCHECK=OFF \
     -DARROW_BUILD_BENCHMARKS=OFF \

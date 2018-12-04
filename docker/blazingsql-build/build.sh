@@ -604,7 +604,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     rm -f $blazingdb_orchestrator_artifact_name
     
     cmake -DCMAKE_BUILD_TYPE=Release \
-          -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir \
+          -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           ..
     make -j$blazingdb_orchestrator_parallel

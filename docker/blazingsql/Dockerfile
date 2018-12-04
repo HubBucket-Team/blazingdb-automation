@@ -7,7 +7,13 @@ LABEL Description="blazingdb/blazingsql is the official BlazingDB environment fo
 RUN apt-get update
 RUN apt-get install -y openjdk-8-jre
 RUN apt-get install -y supervisor
-RUN apt-get install -y --no-install-recommends bzip2 wget curl nano vim-tiny lsof htop net-tools
+
+# Install tools & utils
+RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
+
+# Install blazingdb-io runtime dependencies
+RUN apt-get install -y --no-install-recommends libxerces-c3.1 libcurl3 libssl1.0.0 zlib1g libuuid1 libzstd0
+
 RUN apt-get clean
 
 # Install conda: get from https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh

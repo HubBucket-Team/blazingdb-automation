@@ -197,11 +197,11 @@ fi
 
 #BEGIN nvstrings
 
+nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
 nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
 if [ ! -d $nvstrings_install_dir ]; then
     cd $workspace_dir/dependencies/
-    nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
     nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
     wget $nvstrings_url
     mkdir $nvstrings_package
@@ -543,7 +543,7 @@ if [ $blazingdb_ral_enable == true ]; then
     blazingdb_ral_artifact_name=testing-libgdf
     rm -f $blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \

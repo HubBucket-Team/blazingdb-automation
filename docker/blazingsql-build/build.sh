@@ -441,9 +441,10 @@ if [ $blazingdb_protocol_enable == true ]; then
     blazingdb_protocol_artifact_name=libblazingdb-protocol.a
     rm -rf lib/$blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release  \
-          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir  \
-          -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir  \
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
+          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
+          -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
           ..
     make -j$blazingdb_protocol_parallel install
     
@@ -497,7 +498,7 @@ if [ $blazingdb_io_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
           -DARROW_INSTALL_DIR=${arrow_install_dir} \
-          -DGOOGLETEST_INSTALL_DIR=${googletest_install_dir} \
+          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
           ..
     make -j$blazingdb_io_parallel install
@@ -547,8 +548,10 @@ if [ $blazingdb_ral_enable == true ]; then
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
           -DARROW_INSTALL_DIR=$arrow_install_dir \
+          -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
+          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           ..
     make -j$blazingdb_ral_parallel
     
@@ -595,7 +598,10 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
     rm -f $blazingdb_orchestrator_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir \
+          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
+          ..
     make -j$blazingdb_orchestrator_parallel
     
     #END blazingdb-orchestrator

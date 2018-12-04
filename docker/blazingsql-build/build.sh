@@ -696,7 +696,7 @@ if [ $pyblazing_enable == true ]; then
 fi
 
 # Final step: compress files and delete temp folder
-cd $output_dir && tar czvf blazingsql-files.tar.gz blazingsql-files/
+cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
 rm -rf ${output}
 
 cd $working_directory

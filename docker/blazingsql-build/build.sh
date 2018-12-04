@@ -223,16 +223,17 @@ fi
 cd $workspace_dir/dependencies/flatbuffers
 git checkout 02a7807dd8d26f5668ffbbec0360dc107bbfabd5
 
-flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
 flatbuffers_build_dir=$workspace_dir/dependencies/flatbuffers/build/
 
-mkdir -p $flatbuffers_build_dir
-cd $flatbuffers_build_dir
-cmake -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX:PATH=$flatbuffers_install_dir \
-      ..
-make -j4 install
-
+if [ ! -d $flatbuffers_build_dir ]; then
+    flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
+    mkdir -p $flatbuffers_build_dir
+    cd $flatbuffers_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$flatbuffers_install_dir \
+          ..
+    make -j4 install
+fi
 
 #END flatbuffers
 
@@ -247,47 +248,50 @@ fi
 cd $workspace_dir/dependencies/arrow
 git checkout apache-arrow-0.11.1
 
-arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
 
-mkdir -p $arrow_build_dir
-cd $arrow_build_dir
+if [ ! -d $arrow_build_dir ]; then
+    arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
+    mkdir -p $arrow_build_dir
+    cd $arrow_build_dir
+    
+    # NOTE for the arrow cmake arguments:
+    # -DARROW_IPC=ON \ # need ipc for blazingdb-ral (because cudf)
+    # -DARROW_HDFS=ON \ # disable when blazingdb-io don't use arrow for hdfs
+    # -DARROW_TENSORFLOW=ON \ # enable old ABI for C/C++
+    # -DARROW_PARQUET=OFF \ # we don't need parquet for blazingdb-
+    
+    # If you enable ARROW_BOOST_USE_SHARED=ON and have ARROW_BOOST_USE_SHARED=OFF then will fail:
+    # /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libboost_system.a(error_code.o): relocation
+    # R_X86_64_32 against `.rodata.str1.1' can not be used when making a shared object; recompile with -fPIC
+    # /usr/lib/x86_64-linux-gnu/libboost_system.a: error adding symbols: Bad value
+    
+    FLATBUFFERS_HOME=$flatbuffers_install_dir cmake \
+        -DCMAKE_INSTALL_PREFIX:PATH=$arrow_install_dir \
+        -DARROW_WITH_LZ4=ON \
+        -DARROW_WITH_ZSTD=ON \
+        -DARROW_WITH_BROTLI=ON \
+        -DARROW_WITH_SNAPPY=ON \
+        -DARROW_WITH_ZLIB=ON \
+        -DARROW_BUILD_STATIC=ON \
+        -DARROW_BUILD_SHARED=OFF \
+        -DARROW_BOOST_USE_SHARED=OFF \
+        -DARROW_BUILD_TESTS=OFF \
+        -DARROW_TEST_MEMCHECK=OFF \
+        -DARROW_BUILD_BENCHMARKS=OFF \
+        -DARROW_IPC=ON \
+        -DARROW_COMPUTE=ON \
+        -DARROW_GPU=OFF \
+        -DARROW_JEMALLOC=OFF \
+        -DARROW_BOOST_VENDORED=OFF \
+        -DARROW_PYTHON=OFF \
+        -DARROW_HDFS=ON \
+        -DARROW_TENSORFLOW=ON \
+        -DARROW_PARQUET=ON \
+        ..
+    make -j4 install
 
-# NOTE for the arrow cmake arguments:
-# -DARROW_IPC=ON \ # need ipc for blazingdb-ral (because cudf)
-# -DARROW_HDFS=ON \ # disable when blazingdb-io don't use arrow for hdfs
-# -DARROW_TENSORFLOW=ON \ # enable old ABI for C/C++
-# -DARROW_PARQUET=OFF \ # we don't need parquet for blazingdb-
-
-# If you enable ARROW_BOOST_USE_SHARED=ON and have ARROW_BOOST_USE_SHARED=OFF then will fail:
-# /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libboost_system.a(error_code.o): relocation
-# R_X86_64_32 against `.rodata.str1.1' can not be used when making a shared object; recompile with -fPIC
-# /usr/lib/x86_64-linux-gnu/libboost_system.a: error adding symbols: Bad value
-
-FLATBUFFERS_HOME=$flatbuffers_install_dir cmake \
-    -DCMAKE_INSTALL_PREFIX:PATH=$arrow_install_dir \
-    -DARROW_WITH_LZ4=ON \
-    -DARROW_WITH_ZSTD=ON \
-    -DARROW_WITH_BROTLI=ON \
-    -DARROW_WITH_SNAPPY=ON \
-    -DARROW_WITH_ZLIB=ON \
-    -DARROW_BUILD_STATIC=ON \
-    -DARROW_BUILD_SHARED=OFF \
-    -DARROW_BOOST_USE_SHARED=OFF \
-    -DARROW_BUILD_TESTS=OFF \
-    -DARROW_TEST_MEMCHECK=OFF \
-    -DARROW_BUILD_BENCHMARKS=OFF \
-    -DARROW_IPC=ON \
-    -DARROW_COMPUTE=ON \
-    -DARROW_GPU=OFF \
-    -DARROW_JEMALLOC=OFF \
-    -DARROW_BOOST_VENDORED=OFF \
-    -DARROW_PYTHON=OFF \
-    -DARROW_HDFS=ON \
-    -DARROW_TENSORFLOW=ON \
-    -DARROW_PARQUET=ON \
-    ..
-make -j4 install
+fi
 
 #END arrow
 
@@ -304,19 +308,21 @@ git checkout 864eb0bca8b48427f94850b7a8311ef0ae0f433b
 
 aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
-mkdir -p $aws_sdk_cpp_build_dir
-cd $aws_sdk_cpp_build_dir
-
-# NOTE we only need core, s3 and s3-encryption, also we don't need to install this package
-cmake -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_ONLY="core;s3;s3-encryption" \
-    -DBUILD_SHARED_LIBS=OFF \
-    -DENABLE_TESTING=OFF \
-    -DENABLE_UNITY_BUILD=ON \
-    -DCUSTOM_MEMORY_MANAGEMENT=0 \
-    -DCPP_STANDARD=14 \
-    ..
-make -j4
+if [ ! -d $aws_sdk_cpp_build_dir ]; then
+    mkdir -p $aws_sdk_cpp_build_dir
+    cd $aws_sdk_cpp_build_dir
+    
+    # NOTE we only need core, s3 and s3-encryption, also we don't need to install this package
+    cmake -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_ONLY="core;s3;s3-encryption" \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DENABLE_TESTING=OFF \
+        -DENABLE_UNITY_BUILD=ON \
+        -DCUSTOM_MEMORY_MANAGEMENT=0 \
+        -DCPP_STANDARD=14 \
+        ..
+    make -j4
+fi
 
 #END aws-sdk-cpp
 
@@ -565,15 +571,9 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     git pull
     
     blazingdb_orchestrator_install_dir=$blazingdb_orchestrator_current_dir/install
-    
-    if [ ! -d build ]; then
-        mkdir build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DBLAZINGDB_PROTOCOL_HOME=$blazingdb_protocol_install_dir ..
-    fi
-    
     blazingdb_orchestrator_build_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
     
+    mkdir -i $blazingdb_orchestrator_build_dir
     cd $blazingdb_orchestrator_build_dir
     
     #TODO fix the artifacts name

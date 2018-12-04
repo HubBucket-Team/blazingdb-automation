@@ -321,6 +321,7 @@ fi
 aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
 if [ ! -d $aws_sdk_cpp_build_dir ]; then
+    cd $workspace_dir/dependencies/
     git clone https://github.com/aws/aws-sdk-cpp.git
     cd $workspace_dir/dependencies/aws-sdk-cpp
     git checkout 864eb0bca8b48427f94850b7a8311ef0ae0f433b

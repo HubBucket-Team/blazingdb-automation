@@ -1,7 +1,10 @@
 #!/bin/bash
 
-workspace_dir=/home/builder/workspace
-output=/home/builder/output/blazingsql-files
+# NOTE you need to have the blazingsql-build.properties file inside the workspace_dir
+workspace_dir=$1
+output_dir=$2
+
+output=$output_dir/blazingsql-files
 
 mkdir -p $output 
 
@@ -663,7 +666,7 @@ if [ $pyblazing_enable == true ]; then
 fi
 
 # Final step: compress files and delete temp folder
-cd /home/builder/output/ && tar czvf blazingsql-files.tar.gz blazingsql-files/
+cd $output_dir && tar czvf blazingsql-files.tar.gz blazingsql-files/
 rm -rf ${output}
 
 cd $working_directory

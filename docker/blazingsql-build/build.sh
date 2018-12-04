@@ -596,7 +596,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     blazingdb_orchestrator_install_dir=$blazingdb_orchestrator_current_dir/install
     blazingdb_orchestrator_build_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
     
-    mkdir -i $blazingdb_orchestrator_build_dir
+    mkdir -p $blazingdb_orchestrator_build_dir
     cd $blazingdb_orchestrator_build_dir
     
     #TODO fix the artifacts name

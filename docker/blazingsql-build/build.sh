@@ -212,21 +212,42 @@ nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
 #END nvstrings
 
+#BEGIN googletest
+
+cd $workspace_dir/dependencies
+
+if [ ! -d googletest ]; then
+    git clone https://github.com/google/googletest.git
+    cd $workspace_dir/dependencies/googletest
+    git checkout release-1.8.0
+
+    googletest_install_dir=$workspace_dir/dependencies/googletest_install_dir
+    googletest_build_dir=$workspace_dir/dependencies/googletest/build/
+    mkdir -p $googletest_build_dir
+    cd $googletest_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$googletest_install_dir \
+          -Dgtest_build_samples=ON \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          ..
+    make -j4 install
+fi
+
+#END googletest
+
 #BEGIN flatbuffers
 
 cd $workspace_dir/dependencies
 
 if [ ! -d flatbuffers ]; then
     git clone https://github.com/google/flatbuffers.git
-fi
+    cd $workspace_dir/dependencies/flatbuffers
+    git checkout 02a7807dd8d26f5668ffbbec0360dc107bbfabd5
 
-cd $workspace_dir/dependencies/flatbuffers
-git checkout 02a7807dd8d26f5668ffbbec0360dc107bbfabd5
-
-flatbuffers_build_dir=$workspace_dir/dependencies/flatbuffers/build/
-
-if [ ! -d $flatbuffers_build_dir ]; then
     flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
+    flatbuffers_build_dir=$workspace_dir/dependencies/flatbuffers/build/
+
     mkdir -p $flatbuffers_build_dir
     cd $flatbuffers_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release \
@@ -243,15 +264,12 @@ cd $workspace_dir/dependencies
 
 if [ ! -d arrow ]; then
     git clone https://github.com/apache/arrow.git
-fi
+    cd $workspace_dir/dependencies/arrow
+    git checkout apache-arrow-0.11.1
 
-cd $workspace_dir/dependencies/arrow
-git checkout apache-arrow-0.11.1
-
-arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
-
-if [ ! -d $arrow_build_dir ]; then
     arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
+    arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
+    
     mkdir -p $arrow_build_dir
     cd $arrow_build_dir
     
@@ -290,7 +308,6 @@ if [ ! -d $arrow_build_dir ]; then
         -DARROW_PARQUET=ON \
         ..
     make -j4 install
-
 fi
 
 #END arrow
@@ -301,14 +318,11 @@ cd $workspace_dir/dependencies
 
 if [ ! -d aws-sdk-cpp ]; then
     git clone https://github.com/aws/aws-sdk-cpp.git
-fi
+    cd $workspace_dir/dependencies/aws-sdk-cpp
+    git checkout 864eb0bca8b48427f94850b7a8311ef0ae0f433b
 
-cd $workspace_dir/dependencies/aws-sdk-cpp
-git checkout 864eb0bca8b48427f94850b7a8311ef0ae0f433b
+    aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
-aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
-
-if [ ! -d $aws_sdk_cpp_build_dir ]; then
     mkdir -p $aws_sdk_cpp_build_dir
     cd $aws_sdk_cpp_build_dir
     
@@ -483,6 +497,7 @@ if [ $blazingdb_io_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
           -DARROW_INSTALL_DIR=${arrow_install_dir} \
+          -DGOOGLETEST_INSTALL_DIR=${googletest_install_dir} \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
           ..
     make -j$blazingdb_io_parallel install

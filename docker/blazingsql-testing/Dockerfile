@@ -9,7 +9,7 @@ RUN source activate cudf && pip install pydrill
 # Create the user 'tester'
 RUN useradd -ms /bin/bash kharoly
 
-RUN chown -R kharoly:kharoly /blazingsql/
+RUN chown -R kharoly:kharoly /blazingsql/*
 
 USER kharoly
 WORKDIR /home/kharoly/
@@ -26,3 +26,5 @@ VOLUME /home/kharoly/blazing
 # nvidia-docker exec bzsqlcontainer /usr/bin/testing-libgdf
 # nvidia-docker exec bzsqlcontainer /usr/bin/blazingdb_orchestator_service
 # nvidia-docker exec bzsqlcontainer java -jar /usr/bin/BlazingCalcite.jar
+
+# nvidia-docker exec -u root bzsqlcontainer chown -R kharoly:kharoly /blazingsql/

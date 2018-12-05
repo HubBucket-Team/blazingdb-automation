@@ -14,7 +14,7 @@ RUN apt-get update && \
   chown builder:builder -R /home/builder/
 
 USER builder
-WORKDIR /home/builder/workspace/java
+WORKDIR /home/builder/workspace
 
 COPY build.sh /home/builder/
 

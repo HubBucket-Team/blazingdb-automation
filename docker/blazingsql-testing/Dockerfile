@@ -13,7 +13,7 @@ RUN source activate cudf && pip install pydrill
 # Create the user 'tester'
 RUN useradd -ms /bin/bash kharoly
 
-RUN cat /blazingsql/hi.txt
+RUN touch /blazingsql/hi.txt
 RUN chown -R kharoly:kharoly /blazingsql/*
 
 USER kharoly

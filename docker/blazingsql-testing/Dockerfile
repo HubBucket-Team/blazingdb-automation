@@ -14,7 +14,7 @@ RUN source activate cudf && pip install pydrill
 RUN useradd -ms /bin/bash kharoly
 
 RUN touch /blazingsql/hi.txt
-RUN chown -R kharoly:kharoly /blazingsql/*
+RUN chown -R kharoly:kharoly /blazingsql/
 
 USER kharoly
 WORKDIR /home/kharoly/

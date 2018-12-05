@@ -9,6 +9,7 @@ RUN apt-get install -y openjdk-8-jdk
 RUN apt-get clean
 
 RUN source activate cudf && pip install pydrill
+RUN source activate cudf && pip install openpyxl
 
 # Create the user 'tester'
 RUN useradd -ms /bin/bash kharoly

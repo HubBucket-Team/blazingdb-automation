@@ -7,7 +7,7 @@ LABEL Description="blazingdb/blazingsql is the official BlazingDB environment fo
 RUN source activate cudf && pip install pydrill
 
 # Create the user 'tester'
-RUN useradd -ms /bin/bash tester
+RUN useradd -ms /bin/bash kharoly
 
 USER kharoly
 WORKDIR /home/kharoly/

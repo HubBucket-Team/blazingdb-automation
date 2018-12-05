@@ -9,6 +9,8 @@ RUN source activate cudf && pip install pydrill
 # Create the user 'tester'
 RUN useradd -ms /bin/bash kharoly
 
+RUN chown -R kharoly:kharoly /blazingsql/
+
 USER kharoly
 WORKDIR /home/kharoly/
 

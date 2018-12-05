@@ -4,7 +4,9 @@ MAINTAINER BlazingDB <percy@blazingdb.com>
 
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 
+RUN apt-get update
 RUN apt-get install -y openjdk-8-jdk
+RUN apt-get clean
 
 RUN source activate cudf && pip install pydrill
 

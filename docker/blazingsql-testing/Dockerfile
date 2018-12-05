@@ -4,6 +4,8 @@ MAINTAINER BlazingDB <percy@blazingdb.com>
 
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 
+RUN apt-get install -y openjdk-8-jdk
+
 RUN source activate cudf && pip install pydrill
 
 # Create the user 'tester'
@@ -20,11 +22,17 @@ RUN mkdir -p /home/kharoly/blazing
 VOLUME /home/kharoly/blazing
 
 # nvidia-docker build -t blazingsqltest
-# nvidia-docker run --name bzsqlcontainer --rm -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 -v /home/kharoly/:/home/kharoly/ -ti blazingsqltest bash
+# nvidia-docker run --name bzsqlcontainer --rm -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 -v /home/kharoly/blazing:/home/kharoly/blazing -ti blazingsqltest bash
 # 
 # Start up BlazingSQL
 # nvidia-docker exec bzsqlcontainer /usr/bin/testing-libgdf
 # nvidia-docker exec bzsqlcontainer /usr/bin/blazingdb_orchestator_service
+
+# Also these:
+# nvidia-docker exec -u root bzsqlcontainer chown -R kharoly:kharoly /blazingsql/
+# nvidia-docker exec -u root bzsqlcontainer chown -R kharoly:kharoly /home/kharoly/blazing/apache-drill-1.12.0/*
+
 # nvidia-docker exec bzsqlcontainer java -jar /usr/bin/BlazingCalcite.jar
 
-# nvidia-docker exec -u root bzsqlcontainer chown -R kharoly:kharoly /blazingsql/
+# Finally start spache drill too
+# nvidia-docker exec bzsqlcontainer ./drill-embedded

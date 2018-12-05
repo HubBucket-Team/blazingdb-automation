@@ -18,7 +18,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "./build-deploy.sh ${env.BUILD_NUMBER}"
+          sh "./build-deploy.sh test"
         }
       }
     }
@@ -31,7 +31,7 @@ pipeline {
       }
       steps {
         build job: "02.PUBLISH_BLAZINGSQL_DOCKERHUB", parameters: [
-          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:${env.BUILD_NUMBER}"],
+          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:test"],
           [$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
         ]
       }

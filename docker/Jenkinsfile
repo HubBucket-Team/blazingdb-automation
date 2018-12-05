@@ -5,6 +5,8 @@ pipeline {
 
   parameters {
     booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
+    string(name: 'TAG_BUILD', defaultValue: '#latest', description: 'Tag to build the blazingsql')
+    string(name: 'TAG_DEPLOY', defaultValue: '#lates', description: 'Tag to deploy blazingsql')
     string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
   }
 
@@ -18,7 +20,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "./build-deploy.sh test"
+          sh "./build-deploy.sh $TAG_BUILD $TAG_DEPLOY"
         }
       }
     }
@@ -31,7 +33,7 @@ pipeline {
       }
       steps {
         build job: "02.PUBLISH_BLAZINGSQL_DOCKERHUB", parameters: [
-          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:test"],
+          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:$TAG_DEPLOY"],
           [$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
         ]
       }

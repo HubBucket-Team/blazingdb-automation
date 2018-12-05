@@ -1,2 +1,2 @@
 #!/bin/bash
-cd java && mvn clean install
+mvn clean install

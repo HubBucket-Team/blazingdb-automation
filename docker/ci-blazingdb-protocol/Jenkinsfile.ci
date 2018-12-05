@@ -15,7 +15,7 @@ pipeline {
     stage("Repository") {
       steps {
         checkout scm
-        sh "mkdir -p docker/ci-blazingdb-protocol/src_protocol"
+        sh "mkdir -p docker/ci-blazingdb-protocol/src_protocol/java"
         dir("docker/ci-blazingdb-protocol/src_protocol") {
           git branch: "${BRANCH}",
           url: "git@github.com:BlazingDB/blazingdb-protocol.git"  

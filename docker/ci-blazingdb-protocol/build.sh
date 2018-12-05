@@ -1,2 +1,2 @@
 #!/bin/bash
-cd java && mvn clean install
+cd src_protocol/java && mvn clean install

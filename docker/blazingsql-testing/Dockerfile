@@ -10,6 +10,7 @@ RUN apt-get clean
 
 RUN source activate cudf && pip install pydrill
 RUN source activate cudf && pip install openpyxl
+RUN source activate cudf && pip install tpch
 
 # Create the user 'tester'
 RUN useradd -ms /bin/bash kharoly
@@ -35,6 +36,7 @@ VOLUME /home/kharoly/blazing
 # Also these:
 # nvidia-docker exec -u root bzsqlcontainer chown -R kharoly:kharoly /blazingsql/
 # nvidia-docker exec -u root bzsqlcontainer chown -R kharoly:kharoly /home/kharoly/blazing/apache-drill-1.12.0/*
+# nvidia-docker exec -u root bzsqlcontainer chown -R kharoly:kharoly /home/kharoly/blazing/blazingdb-testing/*
 
 # nvidia-docker exec bzsqlcontainer java -jar /usr/bin/BlazingCalcite.jar
 

@@ -10,7 +10,6 @@ RUN apt-get clean
 
 RUN source activate cudf && pip install pydrill
 RUN source activate cudf && pip install openpyxl
-RUN source activate cudf && pip install tpch
 
 # Create the user 'tester'
 RUN useradd -ms /bin/bash kharoly

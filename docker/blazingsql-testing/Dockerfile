@@ -12,8 +12,10 @@ RUN useradd -ms /bin/bash tester
 USER kharoly
 WORKDIR /home/kharoly/
 
+RUN mkdir -p /home/kharoly/blazing
+
 # For the tester user
-VOLUME /home/kharoly/
+VOLUME /home/kharoly/blazing
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 

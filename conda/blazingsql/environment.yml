@@ -1,0 +1,17 @@
+name: blazingsql_dev_py35
+channels:
+  - numba
+  - conda-forge
+  - nvidia
+  - rapidsai
+  - defaults
+dependencies:
+  - python=3.5.*
+  - numba=0.40.0
+  - numpy=1.14.3
+  - pandas=0.20.3
+  - pyarrow=0.10.0
+  - nvstrings
+  - cmake>=3.12
+  - gtest=1.8.0
+  - flatbuffers

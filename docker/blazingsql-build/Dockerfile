@@ -24,6 +24,7 @@ RUN apt-get install -y libboost-all-dev
 RUN apt-get install -y libboost-dev libboost-filesystem-dev \
                        libboost-program-options-dev libboost-regex-dev \
                        libboost-system-dev libboost-test-dev \
+                       libboost-thread-dev libboost-chrono-dev \
                        libzstd-dev liblz4-dev \
                        libssl-dev libtool bison flex pkg-config
 

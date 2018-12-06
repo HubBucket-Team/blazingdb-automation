@@ -16,7 +16,7 @@ pyblazing_current_dir=$workspace_dir
 conda_workspace=${workspace_package}/blazingsql
 mkdir -p ${conda_workspace}/blazingdb-protocol/python/
 mkdir -p ${conda_workspace}/pyBlazing/
-mkdir -p ${conda_workspace}/blazingsql/
+#mkdir -p ${conda_workspace}/blazingsql/
 
 # Copy the binaries into package
 cp $blazingdb_ral_artifact_name ${conda_workspace}/

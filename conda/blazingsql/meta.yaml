@@ -3,22 +3,21 @@ package:
     version: 0.1.5
 
 source:
-    #git_url: git://source.ffmpeg.org/ffmpeg.git
-    #git_tag: n2.2.4
-    path: ./
+    path: ./blazingsql.tar.gz
+    #url: https://miweb.com/blazingsql.tar.gz  [unix]
+    #fn: blazingsql.tar.gz                                       [unix]
 
 build:
     number: 0
 
 requirements:
     build:
-        - openssl
+
     run:
-        - openssl
 
 #test:
-#  imports:
-#    - blazingsql
+#  command:
+#    - java -jar /tmp/BlazingCalcite.jar
 
 about:
     home: https://blazingdb.com/

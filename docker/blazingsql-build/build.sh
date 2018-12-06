@@ -507,6 +507,8 @@ if [ $blazingdb_io_enable == true ]; then
           -DARROW_INSTALL_DIR=${arrow_install_dir} \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
     make -j$blazingdb_io_parallel install
     
@@ -610,6 +612,11 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
     cmake -DCMAKE_BUILD_TYPE=Release \
+          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
+          -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
+          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
     make -j$blazingdb_orchestrator_parallel
     

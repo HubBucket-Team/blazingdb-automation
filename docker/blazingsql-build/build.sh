@@ -376,12 +376,6 @@ if [ $cudf_enable == true ]; then
     libgdf_install_dir=$cudf_current_dir/install
     libgdf_dir=cpp
     
-    #TODO percy felipe : remove this line when nvidia fix the current state of ptx build
-    echo "Patch cudf CMakeLists.txt"
-    git checkout $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
-    sed -i 's/-Xptxas/-Xptxas --maxrregcount=48/g' $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
-    cat $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
-    
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
 
     mkdir -p $libgdf_build_dir

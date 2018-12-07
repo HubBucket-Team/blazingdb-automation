@@ -85,7 +85,8 @@ COPY notebooks/ /blazingdb/notebooks/
 
 # Copy rapids folder (data, tools, notebooks, etc.)
 RUN mkdir -p /rapids/
-COPY rapids /rapids/
+#TODO percy edith mario
+#COPY rapids /rapids/
 
 # Solve numba issues (NvvmSupportError: libNVVM cannot be found)
 ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so

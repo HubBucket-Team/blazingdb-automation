@@ -110,6 +110,9 @@ venv.bak/
 *.project
 *.pydevproject
 
+# conda files
+conda/blazingsql/blazingsql.tar.gz
+
 # docker files
 docker/blazingsql/rapids
 docker/blazingsql/blazingsql-files

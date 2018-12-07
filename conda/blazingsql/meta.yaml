@@ -4,8 +4,8 @@ package:
 
 source:
     path: ./blazingsql.tar.gz
-    #url: https://miweb.com/blazingsql.tar.gz  [unix]
     #fn: blazingsql.tar.gz                                       [unix]
+    #url: https://github.com/editaxz/infraestructure-as-code/releases/download/01/blazingsql.tar.gz  [unix]
 
 build:
     number: 0

@@ -331,6 +331,32 @@ fi
 
 #END zstd
 
+#BEGIN brotli
+
+brotli_install_dir=$workspace_dir/dependencies/brotli_install_dir
+
+if [ ! -d $brotli_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/google/brotli.git
+    cd $workspace_dir/dependencies/brotli
+    git checkout v0.6.0
+
+    brotli_build_dir=$workspace_dir/dependencies/brotli/build/
+
+    mkdir -p $brotli_build_dir
+    cd $brotli_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$brotli_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+          -DBUILD_SHARED_LIBS=OFF \
+          ..
+    make -j4 install
+fi
+
+#END brotli
+
 #BEGIN arrow
 
 arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir

@@ -378,6 +378,45 @@ fi
 
 #END snappy
 
+#BEGIN thrift
+
+thrift_install_dir=$workspace_dir/dependencies/thrift_install_dir
+
+if [ ! -d $thrift_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/apache/thrift.git
+    cd $workspace_dir/dependencies/thrift
+    git checkout 0.11.0
+
+    thrift_build_dir=$workspace_dir/dependencies/thrift/build/
+
+    mkdir -p $thrift_build_dir
+    cd $thrift_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$thrift_install_dir \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DBUILD_TESTING=OFF \
+          -DBUILD_EXAMPLES=OFF \
+          -DBUILD_TUTORIALS=OFF \
+          -DWITH_QT4=OFF \
+          -DWITH_C_GLIB=OFF \
+          -DWITH_JAVA=OFF \
+          -DWITH_PYTHON=OFF \
+          -DWITH_HASKELL=OFF \
+          -DWITH_CPP=ON \
+          -DWITH_STATIC_LIB=ON \
+          -DWITH_LIBEVENT=OFF \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          ..
+
+    make -j4 install
+fi
+
+#END thrift
+
 #BEGIN arrow
 
 arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir

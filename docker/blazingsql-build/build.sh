@@ -279,11 +279,31 @@ if [ ! -d $flatbuffers_install_dir ]; then
           -DCMAKE_INSTALL_PREFIX:PATH=$flatbuffers_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           ..
     make -j4 install
 fi
 
 #END flatbuffers
+
+#BEGIN lz4
+
+lz4_install_dir=$workspace_dir/dependencies/lz4_install_dir
+
+if [ ! -d $lz4_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/lz4/lz4.git
+    cd $workspace_dir/dependencies/lz4
+    git checkout v1.7.5
+
+    lz4_build_dir=$workspace_dir/dependencies/lz4
+
+    # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    cd $lz4_build_dir
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" PREFIX=$lz4_install_dir make -j4 install
+fi
+
+#END lz4
 
 #BEGIN arrow
 

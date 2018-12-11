@@ -357,6 +357,27 @@ fi
 
 #END brotli
 
+#BEGIN snappy
+
+snappy_install_dir=$workspace_dir/dependencies/snappy_install_dir
+
+if [ ! -d $snappy_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/google/snappy.git
+    cd $workspace_dir/dependencies/snappy
+    git checkout 1.1.3
+
+    snappy_build_dir=$workspace_dir/dependencies/snappy
+
+    # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    cd $snappy_build_dir
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" ./autogen.sh
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" ./configure --prefix=$snappy_install_dir
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" make -j4 install
+fi
+
+#END snappy
+
 #BEGIN arrow
 
 arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir

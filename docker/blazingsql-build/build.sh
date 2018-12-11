@@ -305,6 +305,32 @@ fi
 
 #END lz4
 
+#BEGIN zstd
+
+zstd_install_dir=$workspace_dir/dependencies/zstd_install_dir
+
+if [ ! -d $zstd_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/facebook/zstd.git
+    cd $workspace_dir/dependencies/zstd
+    git checkout v1.2.0
+
+    zstd_build_dir=$workspace_dir/dependencies/zstd/build/cmake/build
+
+    mkdir -p $zstd_build_dir
+    cd $zstd_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$zstd_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+          -DZSTD_BUILD_STATIC=ON \
+          ..
+    make -j4 install
+fi
+
+#END zstd
+
 #BEGIN arrow
 
 arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir

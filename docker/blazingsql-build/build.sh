@@ -199,6 +199,29 @@ if [ ! -d dependencies ]; then
     mkdir dependencies
 fi
 
+#BEGIN boost
+
+boost_install_dir=$workspace_dir/dependencies/boost_install_dir
+
+if [ ! -d $boost_install_dir ]; then
+    cd $workspace_dir/dependencies/
+
+    boost_dir=$workspace_dir/dependencies/boost/
+    mkdir -p $boost_dir
+
+    wget http://archive.ubuntu.com/ubuntu/pool/main/b/boost1.58/boost1.58_1.58.0+dfsg.orig.tar.gz
+    tar xvf boost1.58_1.58.0+dfsg.orig.tar.gz -C $boost_dir
+
+    boost_build_dir=$boost_dir/boost_1_58_0
+
+    # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    cd $boost_build_dir
+    ./bootstrap.sh --with-libraries=system,filesystem,regex,atomic,chrono,container,context,thread --with-icu --prefix=$boost_install_dir
+    ./b2 install variant=release define=_GLIBCXX_USE_CXX11_ABI=0 stage cxxflags=-fPIC cflags=-fPIC link=static runtime-link=static threading=multi --exec-prefix=$boost_install_dir --prefix=$boost_install_dir -a
+fi
+
+#END boost
+
 #BEGIN nvstrings
 
 nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0

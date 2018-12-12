@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# NOTE you need to have the blazingsql-build.properties file inside the workspace_dir
-workspace_dir=$1
-workspace_package=$2
+blazingsql_files_tar_gz_path=$1
+
+temp_directory=/tmp
+
+working_directory=$PWD
+cd $working_directory
 
 
 # Define binaries path
@@ -27,6 +30,4 @@ cp -r $pyblazing_current_dir/pyBlazing/* ${conda_workspace}/pyBlazing/
 
 # Generate the packages
 cd ${workspace_package} && tar czf blazingsql.tar.gz blazingsql/
-
-
 

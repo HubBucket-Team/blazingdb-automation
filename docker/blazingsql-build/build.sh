@@ -703,8 +703,7 @@ if [ $blazingdb_ral_enable == true ]; then
     rm -f $blazingdb_ral_artifact_name
     
     # Configure blazingdb-ral with dependencies
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake \ 
-          -DCMAKE_BUILD_TYPE=Release \
+    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
           -DBOOST_INSTALL_DIR=$boost_install_dir \
           -DAWS_SDK_CPP_BUILD_DIR=$aws_sdk_cpp_build_dir \
@@ -718,8 +717,9 @@ if [ $blazingdb_ral_enable == true ]; then
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
-          -DDGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
+          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           ..
+
     make -j$blazingdb_ral_parallel
     
     #END blazingdb-ral

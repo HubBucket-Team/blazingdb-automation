@@ -250,7 +250,7 @@ if [ ! -d $googletest_install_dir ]; then
     googletest_build_dir=$workspace_dir/dependencies/googletest/build/
     mkdir -p $googletest_build_dir
     cd $googletest_build_dir
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=Debug \
           -DCMAKE_INSTALL_PREFIX:PATH=$googletest_install_dir \
           -Dgtest_build_samples=ON \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \

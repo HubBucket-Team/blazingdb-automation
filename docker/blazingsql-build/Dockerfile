@@ -24,6 +24,7 @@ RUN apt-get install -y libboost-all-dev
 RUN apt-get install -y libboost-dev libboost-filesystem-dev \
                        libboost-program-options-dev libboost-regex-dev \
                        libboost-system-dev libboost-test-dev \
+                       libboost-thread-dev libboost-chrono-dev \
                        libzstd-dev liblz4-dev \
                        libssl-dev libtool bison flex pkg-config
 
@@ -62,6 +63,10 @@ RUN  chown builder:builder /blazingsql
 COPY build.sh /home/builder/
 RUN  chmod +x /home/builder/build.sh
 RUN  chown builder:builder /home/builder/build.sh
+
+# Add autotool for RAL/parquet dependencies
+RUN apt-get -y install libtool automake autoconf
+RUN apt-get clean
 
 USER builder
 WORKDIR /home/builder

@@ -199,6 +199,29 @@ if [ ! -d dependencies ]; then
     mkdir dependencies
 fi
 
+#BEGIN boost
+
+boost_install_dir=$workspace_dir/dependencies/boost_install_dir
+
+if [ ! -d $boost_install_dir ]; then
+    cd $workspace_dir/dependencies/
+
+    boost_dir=$workspace_dir/dependencies/boost/
+    mkdir -p $boost_dir
+
+    wget http://archive.ubuntu.com/ubuntu/pool/main/b/boost1.58/boost1.58_1.58.0+dfsg.orig.tar.gz
+    tar xvf boost1.58_1.58.0+dfsg.orig.tar.gz -C $boost_dir
+
+    boost_build_dir=$boost_dir/boost_1_58_0
+
+    # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    cd $boost_build_dir
+    ./bootstrap.sh --with-libraries=system,filesystem,regex,atomic,chrono,container,context,thread --with-icu --prefix=$boost_install_dir
+    ./b2 install variant=release define=_GLIBCXX_USE_CXX11_ABI=0 stage cxxflags=-fPIC cflags=-fPIC link=static runtime-link=static threading=multi --exec-prefix=$boost_install_dir --prefix=$boost_install_dir -a
+fi
+
+#END boost
+
 #BEGIN nvstrings
 
 nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
@@ -227,7 +250,7 @@ if [ ! -d $googletest_install_dir ]; then
     googletest_build_dir=$workspace_dir/dependencies/googletest/build/
     mkdir -p $googletest_build_dir
     cd $googletest_build_dir
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=Debug \
           -DCMAKE_INSTALL_PREFIX:PATH=$googletest_install_dir \
           -Dgtest_build_samples=ON \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
@@ -256,11 +279,143 @@ if [ ! -d $flatbuffers_install_dir ]; then
           -DCMAKE_INSTALL_PREFIX:PATH=$flatbuffers_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           ..
     make -j4 install
 fi
 
 #END flatbuffers
+
+#BEGIN lz4
+
+lz4_install_dir=$workspace_dir/dependencies/lz4_install_dir
+
+if [ ! -d $lz4_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/lz4/lz4.git
+    cd $workspace_dir/dependencies/lz4
+    git checkout v1.7.5
+
+    lz4_build_dir=$workspace_dir/dependencies/lz4
+
+    # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    cd $lz4_build_dir
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" PREFIX=$lz4_install_dir make -j4 install
+fi
+
+#END lz4
+
+#BEGIN zstd
+
+zstd_install_dir=$workspace_dir/dependencies/zstd_install_dir
+
+if [ ! -d $zstd_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/facebook/zstd.git
+    cd $workspace_dir/dependencies/zstd
+    git checkout v1.2.0
+
+    zstd_build_dir=$workspace_dir/dependencies/zstd/build/cmake/build
+
+    mkdir -p $zstd_build_dir
+    cd $zstd_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$zstd_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+          -DZSTD_BUILD_STATIC=ON \
+          ..
+    make -j4 install
+fi
+
+#END zstd
+
+#BEGIN brotli
+
+brotli_install_dir=$workspace_dir/dependencies/brotli_install_dir
+
+if [ ! -d $brotli_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/google/brotli.git
+    cd $workspace_dir/dependencies/brotli
+    git checkout v0.6.0
+
+    brotli_build_dir=$workspace_dir/dependencies/brotli/build/
+
+    mkdir -p $brotli_build_dir
+    cd $brotli_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$brotli_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+          -DBUILD_SHARED_LIBS=OFF \
+          ..
+    make -j4 install
+fi
+
+#END brotli
+
+#BEGIN snappy
+
+snappy_install_dir=$workspace_dir/dependencies/snappy_install_dir
+
+if [ ! -d $snappy_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/google/snappy.git
+    cd $workspace_dir/dependencies/snappy
+    git checkout 1.1.3
+
+    snappy_build_dir=$workspace_dir/dependencies/snappy
+
+    # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    cd $snappy_build_dir
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" ./autogen.sh
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" ./configure --prefix=$snappy_install_dir
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" make -j4 install
+fi
+
+#END snappy
+
+#BEGIN thrift
+
+thrift_install_dir=$workspace_dir/dependencies/thrift_install_dir
+
+if [ ! -d $thrift_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/apache/thrift.git
+    cd $workspace_dir/dependencies/thrift
+    git checkout 0.11.0
+
+    thrift_build_dir=$workspace_dir/dependencies/thrift/build/
+
+    mkdir -p $thrift_build_dir
+    cd $thrift_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$thrift_install_dir \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DBUILD_TESTING=OFF \
+          -DBUILD_EXAMPLES=OFF \
+          -DBUILD_TUTORIALS=OFF \
+          -DWITH_QT4=OFF \
+          -DWITH_C_GLIB=OFF \
+          -DWITH_JAVA=OFF \
+          -DWITH_PYTHON=OFF \
+          -DWITH_HASKELL=OFF \
+          -DWITH_CPP=ON \
+          -DWITH_STATIC_LIB=ON \
+          -DWITH_LIBEVENT=OFF \
+          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          ..
+
+    make -j4 install
+fi
+
+#END thrift
 
 #BEGIN arrow
 
@@ -279,16 +434,17 @@ if [ ! -d $arrow_install_dir ]; then
     
     # NOTE for the arrow cmake arguments:
     # -DARROW_IPC=ON \ # need ipc for blazingdb-ral (because cudf)
-    # -DARROW_HDFS=ON \ # disable when blazingdb-io don't use arrow for hdfs
+    # -DARROW_HDFS=ON \ # blazingdb-io use arrow for hdfs
     # -DARROW_TENSORFLOW=ON \ # enable old ABI for C/C++
-    # -DARROW_PARQUET=OFF \ # we don't need parquet for blazingdb-
     
-    # If you enable ARROW_BOOST_USE_SHARED=ON and have ARROW_BOOST_USE_SHARED=OFF then will fail:
-    # /usr/bin/ld: /usr/lib/x86_64-linux-gnu/libboost_system.a(error_code.o): relocation
-    # R_X86_64_32 against `.rodata.str1.1' can not be used when making a shared object; recompile with -fPIC
-    # /usr/lib/x86_64-linux-gnu/libboost_system.a: error adding symbols: Bad value
-    
-    FLATBUFFERS_HOME=$flatbuffers_install_dir cmake \
+    BOOST_ROOT=$boost_install_dir \
+    FLATBUFFERS_HOME=$flatbuffers_install_dir \
+    LZ4_HOME=$lz4_install_dir \
+    ZSTD_HOME=$zstd_install_dir \
+    BROTLI_HOME=$brotli_install_dir \
+    SNAPPY_HOME=$snappy_install_dir \
+    THRIFT_HOME=$thrift_install_dir \
+    cmake -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX:PATH=$arrow_install_dir \
         -DARROW_WITH_LZ4=ON \
         -DARROW_WITH_ZSTD=ON \
@@ -296,7 +452,7 @@ if [ ! -d $arrow_install_dir ]; then
         -DARROW_WITH_SNAPPY=ON \
         -DARROW_WITH_ZLIB=ON \
         -DARROW_BUILD_STATIC=ON \
-        -DARROW_BUILD_SHARED=OFF \
+        -DARROW_BUILD_SHARED=ON \
         -DARROW_BOOST_USE_SHARED=OFF \
         -DARROW_BUILD_TESTS=OFF \
         -DARROW_TEST_MEMCHECK=OFF \
@@ -375,12 +531,6 @@ if [ $cudf_enable == true ]; then
     
     libgdf_install_dir=$cudf_current_dir/install
     libgdf_dir=cpp
-    
-    #TODO percy felipe : remove this line when nvidia fix the current state of ptx build
-    echo "Patch cudf CMakeLists.txt"
-    git checkout $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
-    sed -i 's/-Xptxas/-Xptxas --maxrregcount=48/g' $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
-    cat $cudf_current_dir/cudf/$libgdf_dir/CMakeLists.txt
     
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
 
@@ -507,6 +657,8 @@ if [ $blazingdb_io_enable == true ]; then
           -DARROW_INSTALL_DIR=${arrow_install_dir} \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
     make -j$blazingdb_io_parallel install
     
@@ -550,16 +702,24 @@ if [ $blazingdb_ral_enable == true ]; then
     blazingdb_ral_artifact_name=testing-libgdf
     rm -f $blazingdb_ral_artifact_name
     
+    # Configure blazingdb-ral with dependencies
     CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
-          -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
+          -DBOOST_INSTALL_DIR=$boost_install_dir \
+          -DAWS_SDK_CPP_BUILD_DIR=$aws_sdk_cpp_build_dir \
           -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
+          -DLZ4_INSTALL_DIR=$lz4_install_dir \
+          -DZSTD_INSTALL_DIR=$zstd_install_dir \
+          -DBROTLI_INSTALL_DIR=$brotli_install_dir \
+          -DSNAPPY_INSTALL_DIR=$snappy_install_dir \
+          -DTHRIFT_INSTALL_DIR=$thrift_install_dir \
           -DARROW_INSTALL_DIR=$arrow_install_dir \
-          -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
+          -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           ..
+
     make -j$blazingdb_ral_parallel
     
     #END blazingdb-ral

@@ -64,6 +64,10 @@ COPY build.sh /home/builder/
 RUN  chmod +x /home/builder/build.sh
 RUN  chown builder:builder /home/builder/build.sh
 
+# Add autotool for RAL/parquet dependencies
+RUN apt-get -y install libtool automake autoconf
+RUN apt-get clean
+
 USER builder
 WORKDIR /home/builder
 RUN mkdir workspace && mkdir output && mkdir .ssh

@@ -444,7 +444,7 @@ if [ ! -d $arrow_install_dir ]; then
     BROTLI_HOME=$brotli_install_dir \
     SNAPPY_HOME=$snappy_install_dir \
     THRIFT_HOME=$thrift_install_dir \
-    cmake \
+    cmake -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX:PATH=$arrow_install_dir \
         -DARROW_WITH_LZ4=ON \
         -DARROW_WITH_ZSTD=ON \

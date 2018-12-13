@@ -6,6 +6,7 @@ output_dir=$2
 source activate cudf
 
 blazingsql_dir=$output_dir/blazingsql
+blazingsql_pkg=$blazingsql_dir/blazingsql
 
 working_directory=$PWD
 
@@ -22,12 +23,15 @@ echo "Decompressing blazingsql-files.tar.gz ..."
 tar xf $blazingsql_files_tar_gz_path -C $working_space
 echo "blazingsql-files.tar.gz was decompressed at $working_space"
 
-# Creating the blazingsql python package
-mkdir -p $blazingsql_dir/bin
-mkdir -p $blazingsql_dir/pyblazing
-mkdir -p $blazingsql_dir/runtime
-
+# Creating the blazingsql python package using the template
+mkdir -p $blazingsql_pkg
 cp -r blazingsql-template/* $blazingsql_dir
+
+# Copy the binaries
+mkdir -p $blazingsql_dir/bin
+mkdir -p $blazingsql_dir/runtime
+mkdir -p $blazingsql_pkg/blazingdb
+mkdir -p $blazingsql_pkg/pyblazing
 
 blazingdb_ral_artifact_name=testing-libgdf
 blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
@@ -37,12 +41,33 @@ cp $blazingsql_files_dir/$blazingdb_ral_artifact_name $blazingsql_dir/bin
 cp $blazingsql_files_dir/$blazingdb_orchestrator_artifact_name $blazingsql_dir/bin
 cp $blazingsql_files_dir/$blazingdb_calcite_artifact_name $blazingsql_dir/bin
 
-cp -r $blazingsql_files_dir/blazingdb-protocol/python/blazingdb/* $blazingsql_dir/blazingdb
-cp -r $blazingsql_files_dir/pyBlazing/pyblazing/* $blazingsql_dir/pyblazing
+# Copy the blazingdb-protocol/python and pyblazing
+cp -r $blazingsql_files_dir/blazingdb-protocol/python/blazingdb/* $blazingsql_pkg/blazingdb
+cp -r $blazingsql_files_dir/pyBlazing/pyblazing/* $blazingsql_pkg/pyblazing
 
-cd $blazingsql_files_dir/cudf/python
-python setup.py build_ext --inplace
-pip install .
+#cd $blazingsql_files_dir/cudf/python
+#python setup.py build_ext --inplace
+#pip install .
 # --prefix $blazingsql_dir/runtime
 
+
+#TEST the packages installation TODO percy make this using arguments
+
+rm -rf /conda/envs/cudf/lib/python3.5/site-packages/blazing*
+rm -rf /conda/envs/cudf/lib/python3.5/site-packages/pyblazing*
+
+cd $blazingsql_dir
+pip install -v .
+
+ls -alh /conda/envs/cudf/lib/python3.5/site-packages/ | grep blazing
+
+echo "DENTRO FUNKAAA"
+
+ls -alh /conda/envs/cudf/lib/python3.5/site-packages/blazingsql 
+
+
+
 cd $working_directory
+
+
+

@@ -210,7 +210,9 @@ if [ ! -d $boost_install_dir ]; then
     mkdir -p $boost_dir
 
     wget http://archive.ubuntu.com/ubuntu/pool/main/b/boost1.58/boost1.58_1.58.0+dfsg.orig.tar.gz
-    tar xvf boost1.58_1.58.0+dfsg.orig.tar.gz -C $boost_dir
+    echo "Decompressing boost1.58_1.58.0+dfsg.orig.tar.gz ..."
+    tar xf boost1.58_1.58.0+dfsg.orig.tar.gz -C $boost_dir
+    echo "Boost package boost1.58_1.58.0+dfsg.orig.tar.gz was decompressed at $boost_dir"
 
     boost_build_dir=$boost_dir/boost_1_58_0
 
@@ -371,9 +373,9 @@ if [ ! -d $snappy_install_dir ]; then
 
     # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
     cd $snappy_build_dir
-    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" ./autogen.sh
-    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" ./configure --prefix=$snappy_install_dir
-    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" make -j4 install
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./autogen.sh
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./configure --prefix=$snappy_install_dir
+    CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" make -j4 install
 fi
 
 #END snappy
@@ -410,6 +412,7 @@ if [ ! -d $thrift_install_dir ]; then
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DBOOST_ROOT=$boost_install_dir \
           ..
 
     make -j4 install
@@ -536,7 +539,7 @@ if [ $cudf_enable == true ]; then
 
     mkdir -p $libgdf_build_dir
     cd $libgdf_build_dir
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake  \
+    BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
         -DCMAKE_BUILD_TYPE=Release  \
         -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
         ..

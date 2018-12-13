@@ -539,7 +539,7 @@ if [ $cudf_enable == true ]; then
 
     mkdir -p $libgdf_build_dir
     cd $libgdf_build_dir
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake  \
+    BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
         -DCMAKE_BUILD_TYPE=Release  \
         -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
         ..

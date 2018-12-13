@@ -10,23 +10,19 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
 
 # Install common dev tools
-RUN apt-get install -y build-essential
-RUN apt-get install -y ssh wget curl
-RUN apt-get install -y git
+RUN apt-get install -y build-essential ssh wget curl git
+
+# Add autotools suite to build some Apache Parquet dependencies
+RUN apt-get -y install libtool automake autoconf
+
+# Install Boost regex dependency
+RUN apt-get install -y libicu-dev
 
 # Install AWS C++ SDK dependencies
 RUN apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev uuid-dev zlib1g-dev
 
-# Install Apache Arrow dependencies
-RUN apt-get install -y libboost-all-dev
-
-# Install Apache Parquet dependencies
-RUN apt-get install -y libboost-dev libboost-filesystem-dev \
-                       libboost-program-options-dev libboost-regex-dev \
-                       libboost-system-dev libboost-test-dev \
-                       libboost-thread-dev libboost-chrono-dev \
-                       libzstd-dev liblz4-dev \
-                       libssl-dev libtool bison flex pkg-config
+# Install Apache Arrow / Thrift dependencies
+RUN apt-get install -y libssl-dev libtool bison flex pkg-config
 
 # Install BlazingSQL Java build dependencies
 RUN apt-get install -y openjdk-8-jdk
@@ -63,10 +59,6 @@ RUN  chown builder:builder /blazingsql
 COPY build.sh /home/builder/
 RUN  chmod +x /home/builder/build.sh
 RUN  chown builder:builder /home/builder/build.sh
-
-# Add autotool for RAL/parquet dependencies
-RUN apt-get -y install libtool automake autoconf
-RUN apt-get clean
 
 USER builder
 WORKDIR /home/builder

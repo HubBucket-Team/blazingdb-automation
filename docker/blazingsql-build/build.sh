@@ -210,7 +210,9 @@ if [ ! -d $boost_install_dir ]; then
     mkdir -p $boost_dir
 
     wget http://archive.ubuntu.com/ubuntu/pool/main/b/boost1.58/boost1.58_1.58.0+dfsg.orig.tar.gz
-    tar xvf boost1.58_1.58.0+dfsg.orig.tar.gz -C $boost_dir
+    echo "Decompressing boost1.58_1.58.0+dfsg.orig.tar.gz ..."
+    tar xf boost1.58_1.58.0+dfsg.orig.tar.gz -C $boost_dir
+    echo "Boost package boost1.58_1.58.0+dfsg.orig.tar.gz was decompressed at $boost_dir"
 
     boost_build_dir=$boost_dir/boost_1_58_0
 
@@ -410,6 +412,7 @@ if [ ! -d $thrift_install_dir ]; then
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DBOOST_ROOT=$boost_install_dir \
           ..
 
     make -j4 install

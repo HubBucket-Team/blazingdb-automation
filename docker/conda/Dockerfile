@@ -1,3 +1,4 @@
+#TODO do not use deployment env
 FROM blazingdb/blazingsql:latest
 
 MAINTAINER BlazingDB <percy@blazingdb.com>

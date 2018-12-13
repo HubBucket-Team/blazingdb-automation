@@ -1,6 +1,9 @@
 # Copyright (c) 2018, BlazingDB
 
 from setuptools import setup, find_packages
+import os
+
+os.system("echo 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'")
 
 setup(
     name='blazingsql',
@@ -12,3 +15,8 @@ setup(
     install_requires=['flatbuffers'],
     zip_safe=False
 )
+
+
+
+os.system("echo 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'")
+

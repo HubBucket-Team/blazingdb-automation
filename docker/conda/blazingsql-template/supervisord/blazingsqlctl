@@ -13,7 +13,7 @@ def main(action="start"):
         exit(0)
 
     #logging.info("action:", action)
-    print("action", action)
+    print("action:", action)
     command = ["supervisorctl", "-c", "supervisord.conf", "-s", "unix://./run/supervisor.sock", action]
     try:
         command.append(sys.argv[2])

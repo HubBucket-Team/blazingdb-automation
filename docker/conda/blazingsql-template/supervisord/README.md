@@ -1,17 +1,17 @@
 Start services:
 ```
 $ ./blazingsqlctl start
-$ ./blazingsqlctl start blazing-ral
+$ ./blazingsqlctl start ral
 ```
 
 Check status:
 ```
 $ ./blazingsqlctl status
-$ ./blazingsqlctl status blazing-ral
+$ ./blazingsqlctl status ral
 ```
 
 Stop services:
 ```
 $ ./blazingsqlctl stop
-$ ./blazingsqlctl stop blazing-ral
+$ ./blazingsqlctl stop ral
 ```

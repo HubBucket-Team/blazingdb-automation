@@ -4,6 +4,11 @@ MAINTAINER BlazingDB <percy@blazingdb.com>
 
 LABEL Description="blazingdb/blazingsql:conda is the conda build environment for BlazingSQL over CUDA 9.2 on Ubuntu 16.04." Vendor="BlazingDB" Version="1.0"
 
+# Clean home folder
+RUN rm -f /home/jupyter/testing-libgdf
+RUN rm -f /home/jupyter/blazingdb_orchestator_service
+RUN rm -f /home/jupyter/BlazingCalcite.jar
+
 USER jupyter
 WORKDIR /home/jupyter
 
@@ -20,8 +25,8 @@ COPY recipes /home/jupyter/recipes
 # Fix user permissions
 USER root
 RUN chown -R jupyter:jupyter /home/jupyter/
-RUN chown -R jupyter:jupyter /conda/
 
+# NOTE Always use this container with non-root user
 USER jupyter
 WORKDIR /home/jupyter
 

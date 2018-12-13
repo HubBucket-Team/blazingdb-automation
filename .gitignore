@@ -119,7 +119,6 @@ docker/blazingsql/blazingsql-files
 docker/blazingsql/blazingsql-files.tar.gz
 docker/blazingsql/Miniconda3-latest-Linux-x86_64.sh
 
-# conda files
-conda/blazingsql-files
-conda/blazingsql-files.tar.gz
-conda/blazingsql
+docker/conda/blazingsql-files
+docker/conda/blazingsql-files.tar.gz
+docker/conda/blazingsql

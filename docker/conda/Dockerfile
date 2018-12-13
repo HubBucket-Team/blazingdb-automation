@@ -18,9 +18,9 @@ RUN mkdir -p /home/jupyter/output
 # Prepare the conda build script & files
 RUN mkdir -p /home/jupyter/blazingsql-template
 RUN mkdir -p /home/jupyter/recipes
+COPY blazingsql-template /home/jupyter/blazingsql-template/
+COPY recipes /home/jupyter/recipes/
 COPY generate-blazingsql.sh /home/jupyter/
-COPY blazingsql-template /home/jupyter/blazingsql-template
-COPY recipes /home/jupyter/recipes
 
 # Fix user permissions
 USER root

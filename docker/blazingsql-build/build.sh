@@ -539,7 +539,7 @@ if [ $cudf_enable == true ]; then
 
     mkdir -p $libgdf_build_dir
     cd $libgdf_build_dir
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake  \
+    BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
         -DCMAKE_BUILD_TYPE=Release  \
         -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
         ..
@@ -772,7 +772,8 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     #-DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=Release  \
+          -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch_name \
           ..
     make -j$blazingdb_orchestrator_parallel
     

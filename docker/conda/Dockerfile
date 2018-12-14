@@ -68,6 +68,13 @@ ENV LD_LIBRARY_PATH /conda/envs/user/lib/
 USER jupyter
 WORKDIR /home/jupyter
 
+# NOTE Pre-install the conda dependencies for blazingsql package
+RUN source activate user && conda install -c rapidsai/label/cuda9.2 cudf
+RUN source activate user && conda install -c conda-forge flatbuffers 
+
+# NOTE Pre-install the conda dependencies for cudf package
+RUN source activate user && pip install cython
+
 RUN mkdir -p /home/jupyter/input
 RUN mkdir -p /home/jupyter/output
 

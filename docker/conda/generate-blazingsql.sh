@@ -29,9 +29,9 @@ cp -r blazingsql-template/* $blazingsql_dir
 
 # Copy the binaries
 mkdir -p $blazingsql_dir/bin
+mkdir -p $blazingsql_dir/cudf
 mkdir -p $blazingsql_pkg/blazingdb
 mkdir -p $blazingsql_pkg/pyblazing
-mkdir -p $blazingsql_pkg/cudf
 
 blazingdb_ral_artifact_name=testing-libgdf
 blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
@@ -46,7 +46,7 @@ cp -r $blazingsql_files_dir/blazingdb-protocol/python/blazingdb/* $blazingsql_pk
 cp -r $blazingsql_files_dir/pyBlazing/pyblazing/* $blazingsql_pkg/pyblazing
 
 # Copy cudf and change cudf* names to blazingdb_cudf* 
-cp -r $blazingsql_files_dir/cudf/* $blazingsql_pkg/cudf
+cp -r $blazingsql_files_dir/cudf/* $blazingsql_dir/cudf
 
 
 

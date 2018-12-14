@@ -1,25 +1,15 @@
 package:
-    name: blazingsql
-    version: 0.1.5
-
+  name: blazingsql
+  version: 0.1.5
 source:
-    path: ./blazingsql.tar.gz
-    #fn: blazingsql.tar.gz                                       [unix]
-    #url: https://github.com/editaxz/infraestructure-as-code/releases/download/01/blazingsql.tar.gz  [unix]
-
+  path: ./blazingsql.tar.gz
 build:
-    number: 0
-
+  number: 0
 requirements:
-    build:
-
-    run:
-
-#test:
-#  command:
-#    - java -jar /tmp/BlazingCalcite.jar
-
+  run:
+    - python
+    - cudf
+    - flatbuffers
 about:
-    home: https://blazingdb.com/
-    license: GPL-2
-
+  home: https://blazingdb.com/
+  license: Copyright (c) 2018, BlazingDB

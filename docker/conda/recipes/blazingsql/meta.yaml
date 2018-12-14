@@ -1,15 +1,26 @@
+{% set version = environ.get('VERSION', '0.1').lstrip('v') %}
+{% set build = environ.get('BUILD', '0').lstrip('v') %}
+{% set file_tar = environ.get('FILE_TAR', 'blazingsql.tar.gz') %}
+
 package:
   name: blazingsql
-  version: 0.1.5
+  version: {{ version }}
+
 source:
-  path: ./blazingsql.tar.gz
+  path: {{ file_tar }}
+
 build:
-  number: 0
+  number: {{ build }}
+  # vars from cli until build.sh
+  #script_env:
+  #  - CUDF_BUILD_NO_GPU_TEST
+
 requirements:
   run:
     - python
     - cudf
     - flatbuffers
+
 about:
   home: https://blazingdb.com/
   license: Copyright (c) 2018, BlazingDB

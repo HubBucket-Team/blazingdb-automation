@@ -122,3 +122,4 @@ docker/blazingsql/Miniconda3-latest-Linux-x86_64.sh
 docker/conda/blazingsql-files
 docker/conda/blazingsql-files.tar.gz
 docker/conda/blazingsql
+docker/conda/Miniconda3-latest-Linux-x86_64.sh

@@ -3,7 +3,7 @@
 blazingsql_files_tar_gz_path=$1
 output_dir=$2
 
-source activate cudf
+source activate user
 
 blazingsql_dir=$output_dir/blazingsql
 blazingsql_pkg=$blazingsql_dir/blazingsql
@@ -29,9 +29,9 @@ cp -r blazingsql-template/* $blazingsql_dir
 
 # Copy the binaries
 mkdir -p $blazingsql_dir/bin
-mkdir -p $blazingsql_dir/runtime
 mkdir -p $blazingsql_pkg/blazingdb
 mkdir -p $blazingsql_pkg/pyblazing
+mkdir -p $blazingsql_pkg/cudf
 
 blazingdb_ral_artifact_name=testing-libgdf
 blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
@@ -45,7 +45,13 @@ cp $blazingsql_files_dir/$blazingdb_calcite_artifact_name $blazingsql_dir/bin
 cp -r $blazingsql_files_dir/blazingdb-protocol/python/blazingdb/* $blazingsql_pkg/blazingdb
 cp -r $blazingsql_files_dir/pyBlazing/pyblazing/* $blazingsql_pkg/pyblazing
 
-#cd $blazingsql_files_dir/cudf/python
+# Copy cudf and change cudf* names to blazingdb_cudf* 
+cp -r $blazingsql_files_dir/cudf/* $blazingsql_pkg/cudf
+
+
+
+
+#cd $blazingsql_files_dir/user/python
 #python setup.py build_ext --inplace
 #pip install .
 # --prefix $blazingsql_dir/runtime
@@ -53,17 +59,17 @@ cp -r $blazingsql_files_dir/pyBlazing/pyblazing/* $blazingsql_pkg/pyblazing
 
 #TEST the packages installation TODO percy make this using arguments
 
-rm -rf /conda/envs/cudf/lib/python3.5/site-packages/blazing*
-rm -rf /conda/envs/cudf/lib/python3.5/site-packages/pyblazing*
+rm -rf /conda/envs/user/lib/python3.5/site-packages/blazing*
+rm -rf /conda/envs/user/lib/python3.5/site-packages/pyblazing*
 
 cd $blazingsql_dir
 pip install -v .
 
-ls -alh /conda/envs/cudf/lib/python3.5/site-packages/ | grep blazing
+ls -alh /conda/envs/user/lib/python3.5/site-packages/ | grep blazing
 
 echo "DENTRO FUNKAAA"
 
-ls -alh /conda/envs/cudf/lib/python3.5/site-packages/blazingsql 
+ls -alh /conda/envs/user/lib/python3.5/site-packages/blazingsql 
 
 
 

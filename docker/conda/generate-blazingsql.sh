@@ -56,6 +56,9 @@ cp -r $blazingsql_files_dir/cudf/* $blazingsql_dir/cudf
 #pip install .
 # --prefix $blazingsql_dir/runtime
 
+mkdir -p /tmp/cudf
+cp -r $blazingsql_files_dir/cudf/* /tmp/cudf
+
 
 #TEST the packages installation TODO percy make this using arguments
 

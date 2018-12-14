@@ -8,19 +8,37 @@ import os
 class cudf_installer(install):
 
     def run(self):
+        self._install_libgdf()
+        self._install_cudf()
+
+        install.run(self)
+
+    def _install_libgdf(self):
+        print("Installing custom libgdf for BlazingSQL ...")
+        blazingsql_dir = os.path.dirname(os.path.realpath(__file__))
+        a = blazingsql_dir + "/cudf/cpp/python"
+        #patch_libgdf_cmd = "sed -i 's/..\/..\//%s\/cudf\/cpp\//g' cudf/cpp/python/libgdf_cffi/libgdf_build.py" % blazingsql_dir
+        #patch_librmm_cmd = "sed -i 's/..\/..\//%s\/cudf\/cpp\//g' cudf/cpp/python/librmm_cffi/librmm_build.py" % blazingsql_dir
+        #print(patch_libgdf_cmd)
+        #os.system(patch_libgdf_cmd)
+        #print(patch_librmm_cmd)
+        #os.system(patch_libgdf_cmd)
+        libgdf_install_cmd = "pip install cudf/cpp/python/"
+        print(libgdf_install_cmd)
+        os.system(libgdf_install_cmd)
+        print("Custom libgdf for BlazingSQL installed!")
+
+    def _install_cudf(self):
         print("Installing custom cudf for BlazingSQL ...")
         blazingsql_dir = os.path.dirname(os.path.realpath(__file__))
         cudf_include_dir = blazingsql_dir + "/cudf/cpp/include"
         cudf_lib_dir = blazingsql_dir + "/cudf/cpp/build"
         env_vars = 'CFLAGS="-I%s" CXXFLAGS="-I%s" LDFLAGS="-L%s"' % (cudf_include_dir, cudf_include_dir, cudf_lib_dir)
-        change_dir_cmd = "cd cudf/python"
-        cudf_pip_cmd = "pip install ."
-        cudf_install_cmd = "%s && %s %s" % (change_dir_cmd, env_vars, cudf_pip_cmd)
+        cudf_pip_cmd = "pip install cudf/python"
+        cudf_install_cmd = "%s %s" % (env_vars, cudf_pip_cmd)
         print(cudf_install_cmd)
         os.system(cudf_install_cmd)
         print("Custom cudf for BlazingSQL installed!")
-
-        install.run(self)
 
 
 setup(

@@ -1,3 +1,8 @@
+Install dependencies:
+```
+$ pip install -r requirements.txt
+```
+
 Start services:
 ```
 $ ./blazingsqlctl start

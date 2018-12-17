@@ -8,7 +8,7 @@ echo "CURRENT LOCATION ==> " $PWD
 WORKDIR=/tmp/blazingsql
 
 tar -xvf blazingsql.tar.gz -C $WORKDIR/
-python $WOKDIR/setup.py install
+python $WORKDIR/blazingsql/setup.py install
 #cp mypackapage.tar.gz /tmp/
 
 #mkdir -p $WORKDIR

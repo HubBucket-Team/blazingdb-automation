@@ -68,7 +68,12 @@ rm -rf /conda/envs/user/lib/python3.5/site-packages/pyblazing*
 cd $blazingsql_dir
 pip install -v .
 
+echo "BZZZZZ"
 ls -alh /conda/envs/user/lib/python3.5/site-packages/ | grep blazing
+echo "CUDF"
+ls -alh /conda/envs/user/lib/python3.5/site-packages/ | grep cudf
+echo "CCCCCCCC"
+ls -alh /conda/envs/user/lib/python3.5/site-packages/ | grep cffi
 
 echo "DENTRO FUNKAAA"
 

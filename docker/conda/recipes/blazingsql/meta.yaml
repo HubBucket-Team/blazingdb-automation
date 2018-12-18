@@ -18,8 +18,8 @@ build:
 requirements:
   run:
     - python
-    - cudf
-    - flatbuffers
+    #- cudf
+    #- flatbuffers
 
 about:
   home: https://blazingdb.com/

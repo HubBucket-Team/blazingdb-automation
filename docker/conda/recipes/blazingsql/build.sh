@@ -3,10 +3,10 @@
 echo "### Building from build.sh ###"
 
 #DIR=$PWD
-echo $pwd
 echo "CURRENT LOCATION ==> " $PWD
 WORKDIR=/tmp/blazingsql
 
+mkdir -p $WORKDIR/
 tar -xvf blazingsql.tar.gz -C $WORKDIR/
 python $WORKDIR/blazingsql/setup.py install
 #cp mypackapage.tar.gz /tmp/

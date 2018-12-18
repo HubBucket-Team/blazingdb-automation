@@ -68,6 +68,10 @@ ENV LD_LIBRARY_PATH /conda/envs/user/lib/
 USER jupyter
 WORKDIR /home/jupyter
 
+# Install conda-build & anaconda-client
+RUN source activate user && conda install anaconda-client
+RUN source activate user && conda install conda-build
+
 # NOTE Pre-install the conda dependencies for blazingsql package
 RUN source activate user && conda install -c rapidsai/label/cuda9.2 cudf
 RUN source activate user && conda install -c conda-forge flatbuffers 

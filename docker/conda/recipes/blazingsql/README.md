@@ -10,7 +10,7 @@ $ source activate blazingsql_builder
 $ conda install anaconda-client conda-build
 ```
 
-Build:
+Build::
 ```
 $ VERSION=0.1_dev BUILD=2 FILE_TAR=../blazingsql.tar.gz conda build . --output
 ```

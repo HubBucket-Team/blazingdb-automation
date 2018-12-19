@@ -4,37 +4,28 @@ MAINTAINER BlazingDB <percy@blazingdb.com>
 
 LABEL Description="blazingdb/blazingsql:conda is the conda build environment for BlazingSQL over CUDA 9.2 on Ubuntu 16.04." Vendor="BlazingDB" Version="1.0"
 
-RUN apt-get update
-
-# Install Java runtime
-RUN apt-get install -y openjdk-8-jre
-
-# Install supervisord
-RUN apt-get install -y supervisor
-
-# Install tools & utils
-RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
-
-# Install blazingdb-io runtime dependencies
-RUN apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
-
-RUN apt-get clean
-
+# Install Java runtime, supervisord, tools & utils, blazingdb-io runtime dependencies
+RUN apt-get update &&\
+  apt-get install -y openjdk-8-jre supervisor &&\
+  apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools \
+  libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1 &&\
+  apt-get clean &&\
 # Create the container user
-RUN useradd -ms /bin/bash jupyter
-
+  useradd -ms /bin/bash jupyter &&\
 # Create conda dir & download conda from https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-COPY Miniconda3-latest-Linux-x86_64.sh /miniconda.sh
-RUN chown jupyter:jupyter /miniconda.sh
-RUN mkdir -p /conda
-RUN chown -R jupyter:jupyter /conda
+  wget -O /miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh &&\
+  chown jupyter:jupyter /miniconda.sh &&\
+  mkdir -p /conda &&\
+  chown -R jupyter:jupyter /conda &&\
+  sh /miniconda.sh -f -b -p /conda && /conda/bin/conda update -n base conda &&\
+  rm -f /miniconda.sh
 
 # Install conda using the container user
 USER jupyter
 WORKDIR /home/jupyter
 
 # NOTE -f force installation since /conda dir already exists 
-RUN sh /miniconda.sh -f -b -p /conda && /conda/bin/conda update -n base conda
+#RUN sh /miniconda.sh -f -b -p /conda && /conda/bin/conda update -n base conda
 ENV PATH=${PATH}:/conda/bin
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
@@ -68,31 +59,29 @@ ENV LD_LIBRARY_PATH /conda/envs/user/lib/
 USER jupyter
 WORKDIR /home/jupyter
 
-# Install conda tools
-RUN source activate user && conda install anaconda-client
-RUN source activate user && conda install conda-build
-RUN source activate user && conda install conda-verify
-
-# NOTE Pre-install the conda dependencies for blazingsql package
-RUN source activate user && conda install -c rapidsai/label/cuda9.2 cudf
-RUN source activate user && conda install -c conda-forge flatbuffers 
-
+# Install conda tools, blazingsql dependencies
+RUN source activate user && \
+  conda install anaconda-client -y &&\
+  conda install conda-build -y &&\
+  conda install conda-verify -y &&\
+  conda install -c rapidsai/label/cuda9.2 cudf -y &&\
+  conda install -c conda-forge flatbuffers  &&\
 # NOTE Pre-install the conda dependencies for cudf package
-RUN source activate user && pip install cython
-
-RUN mkdir -p /home/jupyter/input
-RUN mkdir -p /home/jupyter/output
-
+  pip install cython &&\
 # Prepare the conda build script & files
-RUN mkdir -p /home/jupyter/blazingsql-template
-RUN mkdir -p /home/jupyter/recipes
+  mkdir -p /home/jupyter/input /home/jupyter/output /home/jupyter/blazingsql-template /home/jupyter/recipes
+
 COPY blazingsql-template /home/jupyter/blazingsql-template/
 COPY recipes /home/jupyter/recipes/
 COPY generate-blazingsql.sh /home/jupyter/
 
 # Fix user permissions
 USER root
-RUN chown -R jupyter:jupyter /home/jupyter/
+RUN chown -R jupyter:jupyter /home/jupyter/generate-blazingsql.sh \
+  /home/jupyter/blazingsql-template \
+  /home/jupyter/recipes \
+  /home/jupyter/input \
+  /home/jupyter/output
 
 # NOTE Always use this container with non-root user
 USER jupyter

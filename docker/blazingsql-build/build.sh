@@ -770,7 +770,8 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     #-DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=Release  \
+          -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch \
           ..
     make -j$blazingdb_orchestrator_parallel
     

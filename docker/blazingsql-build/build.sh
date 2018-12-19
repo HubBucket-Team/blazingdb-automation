@@ -237,6 +237,11 @@ if [ ! -d $nvstrings_install_dir ]; then
     tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
 fi
 
+# Package nvstrings (always do this since this lib is needed by further deployment processes: conda, docker)
+cd $workspace_dir
+mkdir -p $output/nvstrings/
+cp -r $nvstrings_install_dir/* $output/nvstrings/
+
 #END nvstrings
 
 #BEGIN googletest

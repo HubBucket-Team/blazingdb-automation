@@ -3,8 +3,14 @@ pipeline {
       label 'slave-gpu'
   }
 
+  environment {
+    WORKDIR = "docker/conda"
+    INPUT = "$HOME/blazingsql/workspace_output/"
+    OUTPUT = "$HOME/blazingsql/conda_output/"
+  }
+
   parameters {
-    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')   
+    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Anaconda Cloud')   
   }
 
   stages {
@@ -16,8 +22,9 @@ pipeline {
     
     stage("Build") {
       steps {
-        dir("docker/conda") {
-          sh "./build-deploy.sh"
+        dir("${WORKDIR}") {
+          //sh "./docker_build.sh"
+          sh "./conda_build.sh ${INPUT} ${OUTPUT}"
         }
       }
     }
@@ -29,10 +36,8 @@ pipeline {
         }
       }
       steps {
-        build job: "02.PUBLISH_BLAZINGSQL_DOCKERHUB", parameters: [
-          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:$TAG_DEPLOY"],
-          [$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
-        ]
+        echo "upload"
+        //sh "anaconda upload /home/mario21ic/.conda/envs/generator/conda-bld/linux-64/pkg_mario21ic-4.0-py35_feature2_0.tar.bz2 --label python35"
       }
     }
   }

@@ -4,10 +4,7 @@ pipeline {
   }
 
   parameters {
-    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
-    string(name: 'TAG_BUILD', defaultValue: '#latest', description: 'Tag to build the blazingsql')
-    string(name: 'TAG_DEPLOY', defaultValue: '#lates', description: 'Tag to deploy blazingsql')
-    string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
+    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')   
   }
 
   stages {
@@ -19,8 +16,8 @@ pipeline {
     
     stage("Build") {
       steps {
-        dir("docker/") {
-          sh "./build-deploy.sh $TAG_BUILD $TAG_DEPLOY"
+        dir("docker/conda") {
+          sh "./build-deploy.sh"
         }
       }
     }

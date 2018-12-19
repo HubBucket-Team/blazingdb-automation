@@ -24,6 +24,7 @@ requirements:
     - cffi>=1.0.0
   run:
     - python
+    - flatbuffers
 
 about:
   home: https://blazingdb.com/

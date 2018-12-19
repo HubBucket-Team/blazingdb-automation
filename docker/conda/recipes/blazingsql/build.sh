@@ -6,15 +6,12 @@ echo "### Building from build.sh ###"
 echo "CURRENT LOCATION ==> " $PWD
 WORKDIR=/tmp/blazingsql
 
+rm -rf $WORKDIR/
+
 mkdir -p $WORKDIR/
 tar -xvf blazingsql.tar.gz -C $WORKDIR/
-python $WORKDIR/blazingsql/setup.py install
-#cp mypackapage.tar.gz /tmp/
 
-#mkdir -p $WORKDIR
-#cp BlazingCalcite.jar $WORKDIR/
-#cp blazingdb_orchestator_service $WORKDIR/
-#cp testing-libgdf $WORKDIR/
+cd $WORKDIR/blazingsql/
+pip install .
 
-#cd $DIR/blazingdb-protocol/python/ && python setup.py install
-#cd $DIR/pyBlazing/ && python setup.py install
+#python3.5 setup.py install --single-version-externally-managed --record=record.txt

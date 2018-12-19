@@ -1,9 +1,15 @@
+{% set version = environ.get('VERSION', '0.1').lstrip('v') %}
+
 package:
   name: pkg_mario21ic
-  version: "0.1"
+  version: {{ version }}
 
 source:
   path: ../src/dist/pkg_mario21ic-0.0.1.tar.gz
+
+build:
+  features:
+    - feature2
 
 requirements:
   build:
@@ -12,5 +18,7 @@ requirements:
   run:
     - python
 test:
-  imports:
-    - pkg_mario21ic
+  command:
+    - "import pkg_mario21ic"
+  #imports:
+  #  - pkg_mario21ic

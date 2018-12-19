@@ -1,0 +1,39 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+
+  parameters {
+    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')   
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage("Build") {
+      steps {
+        dir("docker/conda") {
+          sh "./build-deploy.sh"
+        }
+      }
+    }
+    
+    stage("Publish") {
+      when {
+        expression {
+          return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        build job: "02.PUBLISH_BLAZINGSQL_DOCKERHUB", parameters: [
+          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:$TAG_DEPLOY"],
+          [$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
+        ]
+      }
+    }
+  }
+}

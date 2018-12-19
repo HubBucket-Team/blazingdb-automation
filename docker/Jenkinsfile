@@ -5,14 +5,14 @@ pipeline {
 
   parameters {
     booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
-    string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
-    string(name: 'CUDF_BRANCH', defaultValue: '#develop', description: '')
-    string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: '#develop', description: '')
-    string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: '#develop', description: '')
-    string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: '#develop', description: '')
-    string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: '#develop', description: '')
-    string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: '#develop', description: '')
-    string(name: 'PYBLAZING_BRANCH', defaultValue: '#develop', description: '')
+    string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
+    string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
   }
 
   stages {
@@ -25,7 +25,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "./build-deploy.sh ${env.BUILD_NUMBER} ${param.CUDF_BRANCH} ${param.BLAZINGDB_PROTOCOL_BRANCH} ${param.BLAZINGDB_IO_BRANCH} ${param.BLAZINGDB_RAL_BRANCH} ${param.BLAZINGDB_ORCHESTRATOR_BRANCH} ${param.BLAZINGDB_CALCITE_BRANCH} ${param.PYBLAZING_BRANCH} "
+          sh "./build-deploy.sh ${env.BUILD_NUMBER} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"
         }
       }
     }

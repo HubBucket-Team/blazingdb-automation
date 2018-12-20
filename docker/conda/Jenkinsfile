@@ -33,11 +33,11 @@ pipeline {
       }
     }
     
-    stage("Publish") {
+    stage("Publish on conda cloud") {
       steps {
         echo "upload"
         sh "source activate builder"
-        sh "anaconda upload --user BlazingDB ${OUTPUT}/blazingsql0.0-py35_0.tar.bz2 --label python35"
+        sh "anaconda upload --user BlazingDB ${OUTPUT}/blazingsql0.0-py35_0.tar.bz2"
       }
     }
   }

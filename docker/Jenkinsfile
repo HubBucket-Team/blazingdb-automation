@@ -6,8 +6,8 @@ pipeline {
   parameters {
     booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
     //string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
-    string(name: 'TAG_BUILD', defaultValue: 'latest', description: '')
-    string(name: 'TAG_DEPLOY', defaultValue: 'latest', description: '')
+    string(name: 'TAG_BUILD', defaultValue: 'latest', description: 'NOTE: Write your build tag')
+    string(name: 'TAG_DEPLOY', defaultValue: 'latest', description: 'NOTE: Write your deploy tag')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: '')

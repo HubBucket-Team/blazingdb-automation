@@ -20,10 +20,17 @@ pipeline {
       }
     }
     
-    stage("Build") {
+    stage("Build conda image") {
       steps {
         dir("${WORKDIR}") {
-          //sh "./docker_build.sh"
+          sh "./docker_build.sh"
+        }
+      }
+    }
+
+    stage("Run conda image") {
+      steps {
+        dir("${WORKDIR}") {
           sh "./conda_build.sh ${INPUT} ${OUTPUT}"
         }
       }

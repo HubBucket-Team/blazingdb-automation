@@ -6,7 +6,7 @@ WORKSPACE=$PWD
 cd $WORKSPACE/blazingsql-build/
 
 workspace=$HOME/blazingsql/workspace/
-output=$HOME/blazingsql/output/
+output=$HOME/blazingsql/output2/
 ssh_key=$HOME/.ssh_jenkins/
 image_build="blazingsql/build:$1"
 image_deploy="blazingdb/blazingsql:$1"

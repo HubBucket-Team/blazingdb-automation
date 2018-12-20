@@ -249,6 +249,7 @@ cp -r $nvstrings_install_dir/* $output/nvstrings/
 googletest_install_dir=$workspace_dir/dependencies/googletest_install_dir
 
 if [ ! -d $googletest_install_dir ]; then
+    echo "### Googletest - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/googletest.git
     cd $workspace_dir/dependencies/googletest
@@ -267,6 +268,7 @@ if [ ! -d $googletest_install_dir ]; then
           ..
     echo "### Googletest - make ###"
     make -j4 install
+    echo "### Googletest - End ###"
 fi
 
 #END googletest
@@ -276,6 +278,7 @@ fi
 flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
 
 if [ ! -d $flatbuffers_install_dir ]; then
+    echo "### Flatbufferts - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/flatbuffers.git
     cd $workspace_dir/dependencies/flatbuffers
@@ -292,7 +295,9 @@ if [ ! -d $flatbuffers_install_dir ]; then
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           ..
+    echo "### Flatbufferts - make ###"
     make -j4 install
+    echo "### Flatbufferts - End ###"
 fi
 
 #END flatbuffers
@@ -302,6 +307,7 @@ fi
 lz4_install_dir=$workspace_dir/dependencies/lz4_install_dir
 
 if [ ! -d $lz4_install_dir ]; then
+    echo "### Lz4 - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/lz4/lz4.git
     cd $workspace_dir/dependencies/lz4
@@ -310,8 +316,11 @@ if [ ! -d $lz4_install_dir ]; then
     lz4_build_dir=$workspace_dir/dependencies/lz4
 
     # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    echo "### Lz4 - make ###"
     cd $lz4_build_dir
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" PREFIX=$lz4_install_dir make -j4 install
+
+    echo "### Lz4 - End ###"
 fi
 
 #END lz4
@@ -321,6 +330,7 @@ fi
 zstd_install_dir=$workspace_dir/dependencies/zstd_install_dir
 
 if [ ! -d $zstd_install_dir ]; then
+    echo "### Zstd - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/facebook/zstd.git
     cd $workspace_dir/dependencies/zstd
@@ -341,6 +351,8 @@ if [ ! -d $zstd_install_dir ]; then
           ..
     echo "### Zstd - make ###"
     make -j4 install
+
+    echo "### Zstd - End ###"
 fi
 
 #END zstd
@@ -350,6 +362,7 @@ fi
 brotli_install_dir=$workspace_dir/dependencies/brotli_install_dir
 
 if [ ! -d $brotli_install_dir ]; then
+    echo "### Brotli - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/brotli.git
     cd $workspace_dir/dependencies/brotli
@@ -370,6 +383,8 @@ if [ ! -d $brotli_install_dir ]; then
           ..
     echo "### Brotli - make ###"
     make -j4 install
+
+    echo "### Brotli - End ###"
 fi
 
 #END brotli
@@ -379,6 +394,7 @@ fi
 snappy_install_dir=$workspace_dir/dependencies/snappy_install_dir
 
 if [ ! -d $snappy_install_dir ]; then
+    echo "### Snappy - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/snappy.git
     cd $workspace_dir/dependencies/snappy
@@ -389,8 +405,14 @@ if [ ! -d $snappy_install_dir ]; then
     # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
     cd $snappy_build_dir
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./autogen.sh
+
+    echo "### Snappy - Configure ###"
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./configure --prefix=$snappy_install_dir
+
+    echo "### Snappy - make ###"
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" make -j4 install
+
+    echo "### Snappy - End ###"
 fi
 
 #END snappy
@@ -400,6 +422,7 @@ fi
 thrift_install_dir=$workspace_dir/dependencies/thrift_install_dir
 
 if [ ! -d $thrift_install_dir ]; then
+    echo "### Thrift - start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/apache/thrift.git
     cd $workspace_dir/dependencies/thrift
@@ -434,6 +457,8 @@ if [ ! -d $thrift_install_dir ]; then
 
     echo "### Thrift - make ###"
     make -j4 install
+
+    echo "### Thrift - end ###"
 fi
 
 #END thrift
@@ -443,6 +468,7 @@ fi
 arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 
 if [ ! -d $arrow_install_dir ]; then
+    echo "### Arrow - start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/apache/arrow.git
     cd $workspace_dir/dependencies/arrow
@@ -492,6 +518,8 @@ if [ ! -d $arrow_install_dir ]; then
         ..
     echo "### Arrow - make ###"
     make -j4 install
+
+    echo "### Arrow - end ###"
 fi
 
 #END arrow
@@ -501,6 +529,7 @@ fi
 aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
 if [ ! -d $aws_sdk_cpp_build_dir ]; then
+    echo "### Arrow - start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/aws/aws-sdk-cpp.git
     cd $workspace_dir/dependencies/aws-sdk-cpp
@@ -524,6 +553,8 @@ if [ ! -d $aws_sdk_cpp_build_dir ]; then
         ..
     echo "### Aws sdk - make ###"
     make -j4
+
+    echo "### Arrow - end ###"
 fi
 
 #END aws-sdk-cpp
@@ -532,6 +563,7 @@ fi
 
 if [ $cudf_enable == true ]; then
     #BEGIN cudf
+    echo "### Cudf - start ###"
     
     cd $workspace_dir
     
@@ -585,9 +617,12 @@ if [ $cudf_enable == true ]; then
     cp -r $libgdf_install_dir/* ${output}/cudf/$libgdf_dir/install
     rm -rf ${output}/cudf/.git/
     rm -rf ${output}/cudf/$libgdf_dir/build/
+
+    echo "### Cudf - end ###"
 fi
 
 if [ $blazingdb_protocol_enable == true ]; then
+    echo "### Protocol - start ###"
     #BEGIN blazingdb-protocol
     
     cd $workspace_dir
@@ -645,10 +680,13 @@ if [ $blazingdb_protocol_enable == true ]; then
     cd $workspace_dir
     mkdir -p $output/blazingdb-protocol/python/
     cp -r $blazingdb_protocol_current_dir/blazingdb-protocol/python/* $output/blazingdb-protocol/python/
+
+    echo "### Protocol - end ###"
 fi
 
 if [ $blazingdb_io_enable == true ]; then
     #BEGIN blazingdb-io
+    echo "### Blazingdb IO - start ###"
     
     cd $workspace_dir
     
@@ -694,11 +732,13 @@ if [ $blazingdb_io_enable == true ]; then
     echo "### Blazingdb IO - make ###"
     make -j$blazingdb_io_parallel install
     
+    echo "### Blazingdb IO - end ###"
     #END blazingdb-io
 fi
 
 if [ $blazingdb_ral_enable == true ]; then
     #BEGIN blazingdb-ral
+    echo "### Ral - start ###"
     
     cd $workspace_dir
     
@@ -762,10 +802,13 @@ if [ $blazingdb_ral_enable == true ]; then
     cd $workspace_dir
     blazingdb_ral_artifact_name=testing-libgdf
     cp $blazingdb_ral_build_dir/$blazingdb_ral_artifact_name $output
+
+    echo "### Ral - end ###"
 fi
 
 if [ $blazingdb_orchestrator_enable == true ]; then
     #BEGIN blazingdb-orchestrator
+    echo "### Orchestrator - start ###"
     
     cd $workspace_dir
     
@@ -816,10 +859,13 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     cd $workspace_dir
     blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
     cp $blazingdb_orchestrator_build_dir/$blazingdb_orchestrator_artifact_name $output
+
+    echo "### Orchestrator - end ###"
 fi
 
 if [ $blazingdb_calcite_enable == true ]; then
     #BEGIN blazingdb-calcite
+    echo "### Calcite - start ###"
     
     cd $workspace_dir
     
@@ -855,10 +901,13 @@ if [ $blazingdb_calcite_enable == true ]; then
     cd $workspace_dir
     blazingdb_calcite_artifact_name=BlazingCalcite.jar
     cp $blazingdb_calcite_build_dir/$blazingdb_calcite_artifact_name ${output}
+
+    echo "### Calcite - end ###"
 fi
 
 if [ $pyblazing_enable == true ]; then
     #BEGIN pyblazing
+    echo "### Pyblazing - start ###"
     
     cd $workspace_dir
     
@@ -891,6 +940,7 @@ if [ $pyblazing_enable == true ]; then
     mkdir -p ${output}/pyBlazing/
     cp -r $pyblazing_current_dir/pyBlazing/* ${output}/pyBlazing/
     rm -rf ${output}/pyBlazing/.git/
+    echo "### Pyblazing - end ###"
 fi
 
 # Final step: compress files and delete temp folder

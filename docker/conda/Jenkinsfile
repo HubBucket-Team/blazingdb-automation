@@ -36,6 +36,7 @@ pipeline {
     stage("Publish on conda cloud") {
       steps {
         echo "upload"
+        sh "conda list"
         sh "source activate builder"
         sh "anaconda upload --user BlazingDB ${OUTPUT}/blazingsql0.0-py35_0.tar.bz2"
       }

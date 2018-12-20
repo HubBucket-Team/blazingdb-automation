@@ -9,10 +9,6 @@ pipeline {
     OUTPUT = "$HOME/blazingsql/conda_output/"
   }
 
-  parameters {
-    //booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Anaconda Cloud')   
-  }
-
   stages {
     stage("Repository") {
       steps {

@@ -34,11 +34,6 @@ pipeline {
     }
     
     stage("Publish") {
-      when {
-        expression {
-          return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
-        }
-      }
       steps {
         echo "upload"
         sh "anaconda upload --user BlazingDB ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 --label python35"

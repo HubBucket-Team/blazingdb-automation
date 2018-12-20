@@ -31,6 +31,7 @@ echo "### Copy tar ###"
 cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
 echo "WORKSPACE WHERE TAR IS ====> " $WORKSPACE/blazingsql/
 
+echo "WORKSPACE ------->> " $workspace/
 
 # BEFORE DEPLOY
 cd $WORKSPACE/blazingsql/

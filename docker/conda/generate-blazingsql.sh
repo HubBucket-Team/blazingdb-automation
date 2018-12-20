@@ -74,7 +74,7 @@ echo "$output_dir/blazingsql.tar.gz python package is ready!"
 # Generate the conda package
 cd $conda_recipes_dir
 FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --no-test --debug blazingsql
-cp $HOME/.conda/envs/user/conda-bld/linux-64/blazingsql-1.0-py35_0.tar.bz2 /home/jupyter/output
+cp /conda/envs/user/conda-bld/linux-64/blazingsql*.tar.bz2 /home/jupyter/output
 
 #conda install --offline /full/path/to/my_package-....tar.bz2
 

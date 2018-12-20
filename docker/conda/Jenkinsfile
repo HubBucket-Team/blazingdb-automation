@@ -18,7 +18,8 @@ pipeline {
     
     stage("Build conda image") {
       steps {
-        dir("${WORKDIR}") {
+        dir("${WORKDIR}") {   
+           sh "./utils.sh"       
           sh "./docker_build.sh"
         }
       }

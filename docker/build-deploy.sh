@@ -28,7 +28,8 @@ echo "### Run de Build ###"
 nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
 
 echo "### Copy tar ###"
-#cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
+cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
+
 echo "WORKSPACE WHERE TAR IS ====> " $WORKSPACE/blazingsql/
 
 echo "WORKSPACE ------->> " $workspace

@@ -6,7 +6,7 @@ WORKSPACE=$PWD
 cd $WORKSPACE/blazingsql-build/
 
 workspace=$HOME/blazingsql/workspace/
-output=$HOME/blazingsql/output1/
+output=$HOME/blazingsql/output3/
 ssh_key=$HOME/.ssh_jenkins/
 image_build="blazingsql/build:$1"
 image_deploy="blazingdb/blazingsql:$2"
@@ -31,8 +31,8 @@ echo "### Copy tar ###"
 #cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
 echo "WORKSPACE WHERE TAR IS ====> " $WORKSPACE/blazingsql/
 
-echo "WORKSPACE ------->> " $workspace/
-
+echo "WORKSPACE ------->> " $workspace
+echo "HOME ------------>> " $HOME
 # BEFORE DEPLOY
 cd $WORKSPACE/blazingsql/
 

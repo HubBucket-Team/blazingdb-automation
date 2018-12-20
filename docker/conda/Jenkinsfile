@@ -41,7 +41,7 @@ pipeline {
       }
       steps {
         echo "upload"
-        //sh "anaconda upload /home/mario21ic/.conda/envs/generator/conda-bld/linux-64/pkg_mario21ic-4.0-py35_feature2_0.tar.bz2 --label python35"
+        sh "anaconda upload --user BlazingDB ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 --label python35"
       }
     }
   }

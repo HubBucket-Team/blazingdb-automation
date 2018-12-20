@@ -10,7 +10,7 @@ pipeline {
   }
 
   parameters {
-    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Anaconda Cloud')   
+    //booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Anaconda Cloud')   
   }
 
   stages {

@@ -7,7 +7,7 @@ pipeline {
     WORKDIR = "docker/conda"
     //INPUT = "$HOME/blazingsql/workspace_output/"
     INPUT = "/home/mario21ic/blazingsql/output"
-    OUTPUT = "$HOME/blazingsql/conda_output"
+    OUTPUT = "/home/mario21ic/blazingsql/conda_output"
   }
 
   stages {

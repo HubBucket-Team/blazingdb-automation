@@ -13,6 +13,10 @@ image_deploy="blazingdb/blazingsql:$2"
 
 mkdir -p $workspace $output
 
+# Create a shared folder into system
+blazingsql=/opt/blazingsql
+mkdir -p $blazingsql
+
 sudo chown 1000:1000 -R $workspace
 sudo chown 1000:1000 -R $output
 sudo chown 1000:1000 -R $ssh_key
@@ -36,6 +40,8 @@ cd $WORKSPACE/blazingsql/
 
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod +x Miniconda3-latest-Linux-x86_64.sh
+
+cp $WORKSPACE/blazingsql/Miniconda3-latest-Linux-x86_64.sh $blazingsql
 
 #DEPLOY
 echo "### Build de Deploy ###"

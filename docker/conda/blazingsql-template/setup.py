@@ -127,5 +127,6 @@ setup(
     include_package_data = True,
     install_requires = [],
     cmdclass = {'install': cudf_installer},
-    zip_safe = False
+    zip_safe = False,
+    scripts = ['blazingsql/runtime/bin/blazingsql']
 )

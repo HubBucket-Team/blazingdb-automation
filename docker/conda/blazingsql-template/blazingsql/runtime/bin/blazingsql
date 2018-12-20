@@ -1,0 +1,19 @@
+#!/bin/bash
+
+blazingsql_dir=$CONDA_PREFIX/lib/python3.5/site-packages/blazingsql
+supervisord_dir=$blazingsql_dir/runtime/supervisord
+supervisord_conf=$supervisord_dir/supervisord.conf
+supervisord_pid=$supervisord_dir/run/supervisord.pid
+
+working_directory=$PWD
+
+cd $supervisord_dir
+
+if [ ! -f $supervisord_pid ]; then
+    supervisord -c $supervisord_conf -d $supervisord_dir -j $supervisord_pid
+fi
+
+supervisorctl -c $supervisord_conf pid
+supervisorctl -c $supervisord_conf status
+
+cd $working_directory

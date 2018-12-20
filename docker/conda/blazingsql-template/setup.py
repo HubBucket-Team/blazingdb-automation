@@ -1,8 +1,25 @@
-# Copyright (c) 2018, BlazingDB
+#=============================================================================
+# Copyright 2018 BlazingDB, Inc.
+#     Copyright 2018 Percy Camilo Triveño Aucahuasi <percy@blazingdb.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
 
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 import os
+
+# TODO percy clean prints
 
 
 # NOTE important always use --single-version-externally-managed to install libgdf_cffi and cudf packages
@@ -84,6 +101,21 @@ def package_files(directory):
 nvstrings_python_lib_dir = os.path.dirname(os.path.realpath(__file__)) + "/blazingsql/runtime/lib/python3.5"
 nvstrings_python_lib_files = package_files(nvstrings_python_lib_dir)
 
+# Add supervisord files
+supervisord_conf_dir = os.path.dirname(os.path.realpath(__file__)) + "/blazingsql/runtime/supervisord"
+supervisord_conf_files = package_files(supervisord_conf_dir)
+
+blazingsql_runtime_bin_lib_files = [
+    'runtime/bin/BlazingCalcite.jar',
+    'runtime/bin/blazingdb_orchestator_service',
+    'runtime/bin/testing-libgdf',
+    'runtime/lib/libcudf.so',
+    'runtime/lib/librmm.so',
+    'runtime/lib/libNVStrings.so'
+]
+
+blazingsql_files = supervisord_conf_files + nvstrings_python_lib_files + blazingsql_runtime_bin_lib_files
+
 setup(
     name = 'blazingsql',
     version = '1.0',
@@ -91,14 +123,7 @@ setup(
     author = 'BlazingDB',
     author_email = 'blazing@blazingdb',
     packages = find_packages(include = ['blazingsql', 'blazingsql.*']),
-    package_data = {'blazingsql': nvstrings_python_lib_files + [
-        'runtime/bin/BlazingCalcite.jar',
-        'runtime/bin/blazingdb_orchestator_service',
-        'runtime/bin/testing-libgdf',
-        'runtime/lib/libcudf.so',
-        'runtime/lib/librmm.so',
-        'runtime/lib/libNVStrings.so'
-    ]},
+    package_data = {'blazingsql': blazingsql_files},
     include_package_data = True,
     install_requires = [],
     cmdclass = {'install': cudf_installer},

@@ -5,8 +5,7 @@ pipeline {
 
   environment {
     WORKDIR = "docker/conda"
-    //INPUT = "$HOME/blazingsql/workspace_output/"
-    INPUT = "/home/mario21ic/blazingsql/output"
+    INPUT = "/home/mario21ic/blazingsql/output3/"
     OUTPUT = "/home/mario21ic/blazingsql/conda_output"
   }
 
@@ -20,7 +19,7 @@ pipeline {
     stage("Build conda image") {
       steps {
         dir("${WORKDIR}") {   
-           sh "./utils.sh"       
+          //sh "./utils.sh"
           sh "./conda_build.sh"
         }
       }

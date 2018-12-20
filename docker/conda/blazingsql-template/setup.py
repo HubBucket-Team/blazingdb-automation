@@ -72,6 +72,18 @@ class cudf_installer(install):
         os.chdir(working_dir)
 
 
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+    return paths
+
+
+# TODO percy when nvstrings can support more python distributions then try to improve this
+nvstrings_python_lib_dir = os.path.dirname(os.path.realpath(__file__)) + "/blazingsql/runtime/lib/python3.5"
+nvstrings_python_lib_files = package_files(nvstrings_python_lib_dir)
+
 setup(
     name = 'blazingsql',
     version = '1.0',
@@ -79,12 +91,13 @@ setup(
     author = 'BlazingDB',
     author_email = 'blazing@blazingdb',
     packages = find_packages(include = ['blazingsql', 'blazingsql.*']),
-    package_data = {'blazingsql': [
+    package_data = {'blazingsql': nvstrings_python_lib_files + [
         'runtime/bin/BlazingCalcite.jar',
         'runtime/bin/blazingdb_orchestator_service',
         'runtime/bin/testing-libgdf',
         'runtime/lib/libcudf.so',
-        'runtime/lib/librmm.so'
+        'runtime/lib/librmm.so',
+        'runtime/lib/libNVStrings.so'
     ]},
     include_package_data = True,
     install_requires = [],

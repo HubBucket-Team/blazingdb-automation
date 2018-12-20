@@ -29,7 +29,7 @@ echo "blazingsql-files.tar.gz was decompressed at $working_space"
 mkdir -p $blazingsql_pkg
 cp -r blazingsql-template/* $blazingsql_dir
 
-# Copy the binaries
+# Copy the BlazingSQL binaries
 mkdir -p $blazingsql_dir/cudf
 mkdir -p $blazingsql_pkg/blazingdb
 mkdir -p $blazingsql_pkg/pyblazing
@@ -56,6 +56,9 @@ cp -r $blazingsql_files_dir/cudf/* $blazingsql_dir/cudf
 # NOTE This is super important: the lines creates the folder to build & install libgdf_cffi & librmm_cffi
 mkdir -p $blazingsql_dir/cudf/cpp/build/python
 cp -r $blazingsql_files_dir/cudf/cpp/python/* $blazingsql_dir/cudf/cpp/build/python
+
+# Copy NVStrings lib into the runtime
+cp -r $blazingsql_files_dir/nvstrings/lib/* $blazingsql_pkg/runtime/lib
 
 # Copy cudf libs into the runtime
 cp -r $blazingsql_files_dir/cudf/cpp/install/lib/* $blazingsql_pkg/runtime/lib

@@ -5,9 +5,8 @@ pipeline {
 
   environment {
     WORKDIR = "docker/conda"
-    //INPUT = "$HOME/blazingsql/workspace_output/"
-    INPUT = "/home/builder/jenkins/workspace/01.BLAZINGSQL_BUILD_DEPLOY/01.BUILD_DEPLOY_BLAZINGSQL/docker/blazingsql/"
-    OUTPUT = "$HOME/blazingsql/conda_output"
+    INPUT = "/home/mario21ic/blazingsql/output3/"
+    OUTPUT = "/home/mario21ic/blazingsql/conda_output"
   }
 
   stages {
@@ -20,7 +19,7 @@ pipeline {
     stage("Build conda image") {
       steps {
         dir("${WORKDIR}") {   
-           sh "./utils.sh"       
+          //sh "./utils.sh"
           sh "./conda_build.sh"
         }
       }
@@ -34,15 +33,11 @@ pipeline {
       }
     }
     
-    stage("Publish") {
-      when {
-        expression {
-          return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
-        }
-      }
+    stage("Publish on conda cloud") {
       steps {
-        echo "upload"
-        //sh "anaconda upload /home/mario21ic/.conda/envs/generator/conda-bld/linux-64/pkg_mario21ic-4.0-py35_feature2_0.tar.bz2 --label python35"
+        dir("${WORKDIR}") {
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql0.0-py35_0.tar.bz2 blazingsql0.0-py35_0.tar.bz2 python35"
+        }
       }
     }
   }

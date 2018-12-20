@@ -29,6 +29,7 @@ RUN chown -R jupyter:jupyter /blazingsql/
 
 # Create conda dir & download conda from https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 COPY Miniconda3-latest-Linux-x86_64.sh /miniconda.sh
+#RUN wget -O /miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 RUN chown jupyter:jupyter /miniconda.sh
 RUN mkdir -p /conda
 RUN chown -R jupyter:jupyter /conda

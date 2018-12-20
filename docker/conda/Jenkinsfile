@@ -34,11 +34,6 @@ pipeline {
     }
     
     stage("Publish") {
-      when {
-        expression {
-          return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
-        }
-      }
       steps {
         echo "upload"
         sh "source activate builder"

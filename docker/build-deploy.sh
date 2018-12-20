@@ -28,6 +28,7 @@ nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -
 
 echo "### Copy tar ###"
 cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
+echo "WORKSPACE WHERE TAR IS ====> " $WORKSPACE/blazingsql/
 
 
 # BEFORE DEPLOY

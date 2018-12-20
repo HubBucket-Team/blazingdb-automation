@@ -21,6 +21,8 @@ sudo chown 1000:1000 -R $workspace
 sudo chown 1000:1000 -R $output
 sudo chown 1000:1000 -R $ssh_key
 
+sudo chown 1000:1000 -R $blazingsql
+
 echo "### Copy properties ###"
 cp blazingsql-build.properties $workspace
 

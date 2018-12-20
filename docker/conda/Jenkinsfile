@@ -9,10 +9,6 @@ pipeline {
     OUTPUT = "$HOME/blazingsql/conda_output/"
   }
 
-  parameters {
-    booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Anaconda Cloud')   
-  }
-
   stages {
     stage("Repository") {
       steps {
@@ -20,10 +16,17 @@ pipeline {
       }
     }
     
-    stage("Build") {
+    stage("Build conda image") {
       steps {
         dir("${WORKDIR}") {
-          //sh "./docker_build.sh"
+          sh "./docker_build.sh"
+        }
+      }
+    }
+
+    stage("Run conda image") {
+      steps {
+        dir("${WORKDIR}") {
           sh "./conda_build.sh ${INPUT} ${OUTPUT}"
         }
       }

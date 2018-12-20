@@ -6,7 +6,7 @@ pipeline {
   environment {
     WORKDIR = "docker/conda"
     //INPUT = "$HOME/blazingsql/workspace_output/"
-    INPUT = "/home/builder/jenkins/workspace/01.BLAZINGSQL_BUILD_DEPLOY/01.BUILD_DEPLOY_BLAZINGSQL/docker/blazingsql/"
+    INPUT = "/home/mario21ic/blazingsql/output"
     OUTPUT = "$HOME/blazingsql/conda_output"
   }
 

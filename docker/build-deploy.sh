@@ -47,7 +47,7 @@ echo "### Run de Build ###"
 nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
 
 echo "### Copy tar ###"
-cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
+#cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
 
 
 # BEFORE DEPLOY
@@ -65,4 +65,4 @@ nvidia-docker rm -f myjupyter
 nvidia-docker run --name myjupyter --rm -d -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 $image_deploy
 
 echo "### Open with browser ###"
-echo "http://35.229.51.253:8884"
+echo "http://35.185.48.245 :8884"

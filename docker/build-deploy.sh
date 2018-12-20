@@ -14,13 +14,13 @@ image_deploy="blazingdb/blazingsql:$2"
 
 
 # Parametrize branchs
-cudf_branch="cudf_branch=$2"
-blazingdb_protocol_branch="blazingdb_protocol_branch=$3"
-blazingdb_io_branch="blazingdb_io_branch=$4"
-blazingdb_ral_branch="blazingdb_ral_branch=$5"
-blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$6"
-blazingdb_calcite_branch="blazingdb_calcite_branch=$7"
-pyblazing_branch="pyblazing_branch=$8"
+cudf_branch="cudf_branch=$3"
+blazingdb_protocol_branch="blazingdb_protocol_branch=$4"
+blazingdb_io_branch="blazingdb_io_branch=$5"
+blazingdb_ral_branch="blazingdb_ral_branch=$6"
+blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$7"
+blazingdb_calcite_branch="blazingdb_calcite_branch=$8"
+pyblazing_branch="pyblazing_branch=$9"
 
 
 mkdir -p $workspace $output

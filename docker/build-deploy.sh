@@ -81,4 +81,4 @@ echo "nvidia-docker run --name myjupyter --rm -d -p 8884:8888 -p 8787:8787 -p 87
 nvidia-docker run --name myjupyter --rm -d -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 $image_deploy
 
 echo "### Open with browser ###"
-echo "http://35.229.51.253:8884"
+echo "http://35.185.48.245:8884"

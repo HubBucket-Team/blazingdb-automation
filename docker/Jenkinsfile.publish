@@ -15,7 +15,7 @@ pipeline {
       }
     }
     
-    stage("Build") {
+    stage("Publish on docker hub") {
       steps {
         script {
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {

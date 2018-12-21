@@ -28,6 +28,7 @@ pipeline {
     stage("Run conda image") {
       steps {
         dir("${WORKDIR}") {
+          sh "./utils.sh "
           sh "./conda_run.sh ${INPUT} ${OUTPUT}"
         }
       }

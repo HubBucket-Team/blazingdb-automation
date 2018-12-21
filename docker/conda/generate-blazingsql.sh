@@ -79,7 +79,7 @@ conda_build_tmp_dir_name=_conda_safe_to_remove_
 conda_build_tmp_dir=/tmp/"$blazingsql_files_dir_name$conda_build_tmp_dir_name"
 mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
-FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --no-test --debug --output-folder $conda_build_tmp_dir blazingsql
+FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output $conda_build_tmp_dir blazingsql
 
 cp $conda_build_tmp_dir/linux-64/blazingsql*.tar.bz2 /home/jupyter/output
 

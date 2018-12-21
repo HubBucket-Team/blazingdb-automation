@@ -7,7 +7,7 @@ pipeline {
     WORKDIR = "docker/conda"
     INPUT = "/home/mario21ic/blazingsql/output3/"
     OUTPUT = "/home/mario21ic/blazingsql/conda_output"
-    FILE_CONDA = "null.tar.gz"
+    //FILE_CONDA = "null.tar.gz"
   }
 
   stages {
@@ -32,7 +32,7 @@ pipeline {
           script {
             sh "./conda_run.sh ${INPUT} ${OUTPUT}"
             def FILE_CONDA = sh(returnStdout: true, script: "./conda_run.sh ${INPUT} ${OUTPUT}").trim()
-            sh "echo file_conda_${FILE_CONDA}"
+            sh "echo ${FILE_CONDA}"
           }
         }
       }

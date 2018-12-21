@@ -24,7 +24,7 @@ pipeline {
       }
     }
     
-    stage("Build") {
+    stage("Build and deploy") {
       steps {
         dir("docker/") {
           sh "./build-deploy.sh ${params.TAG_BUILD} ${params.TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"

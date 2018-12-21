@@ -20,10 +20,10 @@ blazingsql_files_dir=$working_space/$blazingsql_files_dir_name
 
 mkdir -p $working_space
 
-echo "Decompressing blazingsql-files.tar.gz ..."
+#echo "Decompressing blazingsql-files.tar.gz ..."
 # TODO percy uncomment this when finish this script
 tar xf $blazingsql_files_tar_gz_path -C $working_space
-echo "blazingsql-files.tar.gz was decompressed at $working_space"
+#echo "blazingsql-files.tar.gz was decompressed at $working_space"
 
 # Creating the blazingsql python package using the template
 mkdir -p $blazingsql_pkg
@@ -67,9 +67,9 @@ chmod +x $blazingsql_pkg/runtime/lib/*
 
 # Compress the python package
 cd $output_dir
-echo "Compress the python package ..."
+#echo "Compress the python package ..."
 tar zcf blazingsql.tar.gz blazingsql
-echo "$output_dir/blazingsql.tar.gz python package is ready!"
+#echo "$output_dir/blazingsql.tar.gz python package is ready!"
 
 #cd $blazingsql_dir
 #pip install -v .
@@ -79,6 +79,8 @@ conda_build_tmp_dir_name=_conda_safe_to_remove_
 conda_build_tmp_dir=/tmp/"$blazingsql_files_dir_name$conda_build_tmp_dir_name"
 mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
+
+# Va a hacer conda-build e imprimir ruta
 FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output $conda_build_tmp_dir blazingsql
 
 cp $conda_build_tmp_dir/linux-64/blazingsql*.tar.bz2 /home/jupyter/output

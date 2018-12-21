@@ -28,9 +28,11 @@ pipeline {
     stage("Run conda image") {
       steps {
         dir("${WORKDIR}") {
-          sh "./conda_run.sh ${INPUT} ${OUTPUT}"
-          def FILE_CONDA = sh(returnStdout: true, script: "./conda_run.sh ${INPUT} ${OUTPUT}").trim()
-          sh "echo file_conda_${FILE_CONDA}"
+          script {
+            sh "./conda_run.sh ${INPUT} ${OUTPUT}"
+            def FILE_CONDA = sh(returnStdout: true, script: "./conda_run.sh ${INPUT} ${OUTPUT}").trim()
+            sh "echo file_conda_${FILE_CONDA}"
+          }
         }
       }
     }

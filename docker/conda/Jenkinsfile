@@ -19,7 +19,7 @@ pipeline {
     stage("Build conda image") {
       steps {
         dir("${WORKDIR}") {   
-          //sh "./utils.sh"
+          sh "./utils.sh"
           sh "./conda_build.sh"
         }
       }
@@ -28,7 +28,6 @@ pipeline {
     stage("Run conda image") {
       steps {
         dir("${WORKDIR}") {
-          sh "./utils.sh "
           sh "./conda_run.sh ${INPUT} ${OUTPUT}"
         }
       }

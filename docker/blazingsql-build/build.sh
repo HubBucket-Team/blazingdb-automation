@@ -529,7 +529,7 @@ fi
 aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
 if [ ! -d $aws_sdk_cpp_build_dir ]; then
-    echo "### Arrow - start ###"
+    echo "### Aws sdk - start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/aws/aws-sdk-cpp.git
     cd $workspace_dir/dependencies/aws-sdk-cpp

@@ -1,6 +1,7 @@
 #=============================================================================
 # Copyright 2018 BlazingDB, Inc.
 #     Copyright 2018 Cristhian Gonzales <cristhian@blazingdb.com>
+#     Copyright 2018 Percy Camilo Triveño Aucahuasi <percy@blazingdb.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,3 +34,9 @@ ctypes.cdll.LoadLibrary(os.path.join(LIB_DIR, 'libcudf.so'))
 import importlib
 import cudf
 importlib.reload(cudf)
+
+sys.path.insert(0, BLAZINGSQL_DIR)
+
+import blazingdb
+import pyblazing
+

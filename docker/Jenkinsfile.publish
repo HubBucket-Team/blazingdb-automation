@@ -14,7 +14,8 @@ pipeline {
         checkout scm
       }
     }
-    stage("Publish on docker hub") {        
+    stage("Publish on docker hub") { 
+      steps{       
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
           //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
           def app
@@ -23,6 +24,6 @@ pipeline {
           //app.push(latest)
           }   
     }
-
+    }
   }
 }

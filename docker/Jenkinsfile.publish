@@ -20,7 +20,7 @@ pipeline {
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
           //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
           def app = "${params.IMAGE}"
-          app.push(latest)
+          app.push("latest")
           //app.push(latest)
           }   
         }

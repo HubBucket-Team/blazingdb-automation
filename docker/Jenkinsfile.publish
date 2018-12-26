@@ -16,10 +16,11 @@ pipeline {
     }
     stage("Publish on docker hub") {
       steps {
-        def app
+        
         script{         
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
           //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
+          def app
           app = '${params.IMAGE}'
           app.push()
           //app.push(latest)

@@ -1,6 +1,5 @@
 pipeline {
-  agent {
-    def app
+  agent {    
       label 'slave-gpu'
   }
 
@@ -18,6 +17,7 @@ pipeline {
     stage("Publish on docker hub") {
       steps {
         script{
+          def app
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
           //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
           //app.push()

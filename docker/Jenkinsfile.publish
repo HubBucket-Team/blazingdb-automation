@@ -18,7 +18,7 @@ pipeline {
       steps {
         script{
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
-          //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
+          sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
           app.push()
           //app.push("latest")
           }

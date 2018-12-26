@@ -17,10 +17,10 @@ pipeline {
     stage("Publish on docker hub") { 
       steps{
         script {     
-          docker.withRegistry([credentialsId: "${params.CREDENTIALS}", url: 'https://registry.hub.docker.com']) {
+          docker.withRegistry('https://registry.hub.docker.com', '${params.CREDENTIALS}') {
           //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
           def app = "${params.IMAGE}"
-          app.push()
+          app.push(latest)
           //app.push(latest)
           }   
         }

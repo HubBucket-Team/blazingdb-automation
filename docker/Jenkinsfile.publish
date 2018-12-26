@@ -22,7 +22,7 @@ pipeline {
           //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
           def app
           app = "${params.IMAGE}"
-          app.push()
+          app.push(latest)
           //app.push(latest)
           }
 

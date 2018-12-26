@@ -60,7 +60,7 @@ cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
 
 echo "WORKSPACE WHERE TAR IS ====> " $WORKSPACE/blazingsql/
 
-echo "WORKSPACE ------->> " $workspace
+echo "workspace ------->> " $workspace
 echo "OUTPUT ------------>> " $output
 echo "HOME ------------>> " $HOME
 

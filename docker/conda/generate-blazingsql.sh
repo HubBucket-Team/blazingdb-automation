@@ -69,7 +69,7 @@ chmod +x $blazingsql_pkg/runtime/lib/*
 cd $output_dir
 #echo "Compress the python package ..."
 tar zcf blazingsql.tar.gz blazingsql
-#echo "$output_dir/blazingsql.tar.gz python package is ready!"
+echo "$output_dir/blazingsql.tar.gz python package is ready!"
 
 #cd $blazingsql_dir
 #pip install -v .

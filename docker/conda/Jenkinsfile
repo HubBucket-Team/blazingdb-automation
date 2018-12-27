@@ -30,20 +30,20 @@ pipeline {
       steps {
         dir("${WORKDIR}") {
           script {
-            //sh "./conda_run.sh ${INPUT} ${OUTPUT}"
-            def FILE_CONDA = sh(script: "./conda_run.sh ${INPUT} ${OUTPUT}", returnStdout: true).trim()
-            sh "echo ${FILE_CONDA}"
+            sh "./conda_run.sh ${INPUT} ${OUTPUT}"
+            //def FILE_CONDA = sh(script: "./conda_run.sh ${INPUT} ${OUTPUT}", returnStdout: true).trim()
+            //sh "echo ${FILE_CONDA}"
           }
         }
       }
     }
     
-    stage("Publish on conda cloud") {
-      steps {
-        dir("${WORKDIR}") {
-          sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA} python35"
-        }
-      }
+   // stage("Publish on conda cloud") {
+   //   steps {
+   //     dir("${WORKDIR}") {
+   //       sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA} python35"
+   //     }
+   //   }
     }
   }
 }

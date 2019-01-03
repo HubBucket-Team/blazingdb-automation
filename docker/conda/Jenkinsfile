@@ -43,7 +43,7 @@ pipeline {
         dir("${WORKDIR}") {
           
           //sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA_UPLOAD} python35"
-          sh "./conda_run_upload.sh ${OUTPUT}/${blazingsql-1.0-py35_0.tar.bz2} python35"
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 python35"
         }
       }
     }

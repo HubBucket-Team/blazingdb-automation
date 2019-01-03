@@ -41,6 +41,7 @@ pipeline {
     stage("Publish on conda cloud") {
       steps {
         dir("${WORKDIR}") {
+          def FILE_CONDA="blazingsql-1.0-py35_0.tar.bz2"
           sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA} python35"
         }
       }

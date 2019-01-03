@@ -69,7 +69,7 @@ chmod +x $blazingsql_pkg/runtime/lib/*
 cd $output_dir
 #echo "Compress the python package ..."
 tar zcf blazingsql.tar.gz blazingsql
-echo "$output_dir/blazingsql.tar.gz python package is ready!"
+#echo "$output_dir/blazingsql.tar.gz python package is ready!"
 
 #cd $blazingsql_dir
 #pip install -v .
@@ -81,9 +81,9 @@ mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
 
 # Va a hacer conda-build e imprimir ruta
-FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output $conda_build_tmp_dir blazingsql
+FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql
 
-cp $conda_build_tmp_dir/linux-64/blazingsql*.tar.bz2 /home/jupyter/output
+cp $conda_build_tmp_dir/linux-64/blazingsql-*.tar.bz2 /home/jupyter/output/
 
 #conda install --offline /full/path/to/my_package-....tar.bz2
 

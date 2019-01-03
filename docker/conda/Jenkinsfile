@@ -3,6 +3,11 @@ pipeline {
       label 'slave-gpu'
   }
 
+  parameters {
+    string(name: 'LABEL', defaultValue: 'cuda9.2', description: 'Label to blazinsql package')   
+  }
+
+
   environment {
     WORKDIR = "docker/conda"
     INPUT = "/home/mario21ic/blazingsql/output3/"
@@ -43,7 +48,7 @@ pipeline {
         dir("${WORKDIR}") {
           
           //sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA_UPLOAD} python35"
-          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 python35"
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 ${LABEL}"
         }
       }
     }

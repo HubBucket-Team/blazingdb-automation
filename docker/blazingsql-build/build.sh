@@ -4,6 +4,12 @@
 workspace_dir=$1
 output_dir=$2
 
+BUILD_TYPE='Release'
+if [ $# -eq 3 ]; then
+	BUILD_TYPE=$3
+fi
+
+
 # Expand args to absolute/full paths (if the user pass relative paths as args)
 workspace_dir=$(readlink -f $workspace_dir)
 output_dir=$(readlink -f $output_dir)
@@ -599,7 +605,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     blazingdb_protocol_artifact_name=libblazingdb-protocol.a
     rm -rf lib/$blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
@@ -655,7 +661,7 @@ if [ $blazingdb_io_enable == true ]; then
     blazingdb_io_artifact_name=libblazingdb-io.a
     rm -rf $blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
           -DARROW_INSTALL_DIR=${arrow_install_dir} \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
@@ -706,7 +712,7 @@ if [ $blazingdb_ral_enable == true ]; then
     rm -f $blazingdb_ral_artifact_name
     
     # Configure blazingdb-ral with dependencies
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
+    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
           -DBOOST_INSTALL_DIR=$boost_install_dir \
           -DAWS_SDK_CPP_BUILD_DIR=$aws_sdk_cpp_build_dir \
@@ -772,7 +778,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     #-DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-    cmake -DCMAKE_BUILD_TYPE=Release  \
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
           -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch \
           ..
     make -j$blazingdb_orchestrator_parallel

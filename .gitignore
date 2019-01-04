@@ -125,5 +125,8 @@ docker/conda/blazingsql-files
 docker/conda/blazingsql-files.tar.gz
 docker/conda/blazingsql
 docker/conda/blazingsql.tar.gz
+docker/conda/blazingsql-*.tar.bz2
+
 docker/user/blazingsql
 docker/user/blazingsql.tar.gz
+docker/user/blazingsql-*.tar.bz2

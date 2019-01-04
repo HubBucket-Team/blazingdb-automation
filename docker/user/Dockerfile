@@ -63,7 +63,18 @@ WORKDIR /home/theuser
 
 RUN mkdir -p /home/theuser/data
 
-# NOTE Pre-install the conda dependencies for blazingsql package
-RUN source activate user && pip install cython
+# BEGIN Pre-install the conda dependencies for blazingsql package
+
+USER root
+RUN apt-get install -y supervisor
+
+RUN apt-get clean
+
+USER theuser
+WORKDIR /home/theuser
+RUN source activate user && conda install cffi
+RUN source activate user && pip install flatbuffers
+
+# END Pre-install the conda dependencies for blazingsql package
 
 VOLUME /home/theuser/data

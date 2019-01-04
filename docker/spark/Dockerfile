@@ -35,6 +35,10 @@ RUN $SPARK_HOME/sbin/start-master.sh
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/hadoop/lib/native
 
 
+# XGBOOST
+RUN apt-get install python3-pip
+RUN pip3 install xgboost
+
 EXPOSE 8081
 EXPOSE 8080
 

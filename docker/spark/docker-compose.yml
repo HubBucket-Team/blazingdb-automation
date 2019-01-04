@@ -2,42 +2,31 @@ version: '3.1'
 
 services:
 
-  master:
+  spark-master:
     image: blazingdb/spark
     build:
       context: ./
-    container_name: master
-    extra_hosts:
-      - "master:127.0.0.1"
-    networks:
-      backend:
-        ipv4_address: 172.18.1.2
+    hostname: spark-master
     ports:
       - 8080:8080
-    command: "/etc/entrypoint_master.sh 172.18.1.2"
+    #command: "/etc/entrypoint_master.sh spark-master"
+    command: "/usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master -h spark-master"
 
   worker1:
     image: blazingdb/spark
     build:
       context: ./
-    networks:
-      - backend
     depends_on:
-      - master
-    command: "/etc/entrypoint_slave.sh 172.18.1.2"
+      - spark-master
+    #command: "/etc/entrypoint_slave.sh spark-master"
+    command: "/usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
 
   worker2:
     image: blazingdb/spark
     build:
       context: ./
-    networks:
-      - backend
     depends_on:
-      - master
-    command: "/etc/entrypoint_slave.sh 172.18.1.2"
+      - spark-master
+    #command: "/etc/entrypoint_slave.sh spark-master"
+    command: "/usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
 
-networks:
-  backend:
-    ipam:
-      config:
-        - subnet: 172.18.1.0/16

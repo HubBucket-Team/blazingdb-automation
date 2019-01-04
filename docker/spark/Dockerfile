@@ -33,6 +33,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/hadoop/lib/native
 RUN apt-get install -y python3-pip
 RUN pip3 install -U xgboost
 
+EXPOSE 4040
 EXPOSE 8081
 EXPOSE 8080
 

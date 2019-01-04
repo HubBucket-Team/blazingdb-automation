@@ -11,7 +11,7 @@ working_directory=$PWD
 
 cd $supervisord_dir
 
-if [ "$action" != "start" ] && [ "$action" != "stop" ] && [ "$action" != "restart" ] ; then
+if [ "$action" != "start" ] && [ "$action" != "stop" ] && [ "$action" != "restart" ] && [ "$action" != "status" ] ; then
     echo "invalid argument, try start, stop or restart"
     exit 1
 fi
@@ -22,6 +22,11 @@ if [ ! -f $supervisord_pid ]; then
 fi
 
 supervisord_action="$action all"
+
+if [ "$action" == "status" ] ; then
+    supervisord_action="status"
+fi
+
 supervisorctl -c $supervisord_conf $supervisord_action
 
 cd $working_directory

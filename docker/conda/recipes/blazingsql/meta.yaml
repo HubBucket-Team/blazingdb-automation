@@ -21,10 +21,10 @@ requirements:
     - cython
     - setuptools
     - numba
-    - cffi>=1.0.0
+    - cffi
   run:
     - python
-    - flatbuffers
+    - cffi
 
 about:
   home: https://blazingdb.com/

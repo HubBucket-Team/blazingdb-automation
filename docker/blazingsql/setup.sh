@@ -35,6 +35,10 @@ blazingdb_ral_artifact_name=testing-libgdf
 blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
 blazingdb_calcite_artifact_name=BlazingCalcite.jar
 
+# Install jzmq & zeromq
+cp -r $blazingsql_files/jzmq /usr/lib
+cp -r $blazingsql_files/zeromq/* /usr/lib
+
 cp $blazingsql_files/$blazingdb_ral_artifact_name /usr/bin
 cp $blazingsql_files/$blazingdb_orchestrator_artifact_name /usr/bin
 cp $blazingsql_files/$blazingdb_calcite_artifact_name /usr/bin

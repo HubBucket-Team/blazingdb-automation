@@ -1,4 +1,45 @@
-Spark single master with two workers
+Spark single master with two workers with Vagrant:
+```
+$ vagrant up
+
+$ vagrant ssh master
+vagrant@master$ sudo apt-get install -y python
+vagrant@master$ exit
+
+$ vagrant ssh worker1
+vagrant@worker1$ sudo apt-get install -y python
+vagrant@worker1$ exit
+
+$ vagrant ssh worker2
+vagrant@worker2$ sudo apt-get install -y python
+vagrant@worker2$ exit
+
+$ vagrant up --provision
+```
+
+Start the master:
+```
+$ vagrant ssh master
+vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master
+```
+
+Start the workers:
+```
+$ vagrant ssh worker1
+vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://<private_ip_master>:7077/
+
+$ vagrant ssh worker2
+vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://<private_ip_master>:7077/
+```
+
+Test the cluster:
+```
+$ vagrant ssh master
+vagrant@master$ /usr/local/spark/bin/run-example SparkPi
+```
+
+
+Spark single master with two workers with Docker:
 
 Build docker image:
 ```

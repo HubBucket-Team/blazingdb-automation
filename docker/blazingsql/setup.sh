@@ -37,8 +37,8 @@ blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
 blazingdb_calcite_artifact_name=BlazingCalcite.jar
 
 # Install jzmq & zeromq
-cp -r $blazingsql_files/jzmq /usr/lib
-cp -r $blazingsql_files/zeromq/* /usr/lib
+cp -r $blazingsql_files/jzmq /home/jupyter/lib
+cp -r $blazingsql_files/zeromq/* /home/jupyter/lib
 
 cp $blazingsql_files/$blazingdb_ral_artifact_name /home/jupyter
 cp $blazingsql_files/$blazingdb_orchestrator_artifact_name /home/jupyter

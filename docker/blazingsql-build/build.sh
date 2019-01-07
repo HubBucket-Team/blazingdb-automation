@@ -205,6 +205,63 @@ if [ ! -d dependencies ]; then
     mkdir dependencies
 fi
 
+#BEGIN zeromq
+
+zeromq_install_dir=$workspace_dir/dependencies/zeromq_install_dir
+
+if [ ! -d $zeromq_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/zeromq/libzmq.git
+    cd $workspace_dir/dependencies/libzmq
+    git checkout master
+
+    zeromq_build_dir=$workspace_dir/dependencies/libzmq/build/
+
+    mkdir -p $zeromq_build_dir
+    cd $zeromq_build_dir
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=$zeromq_install_dir \
+          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+          -DENABLE_CURVE=OFF \
+          -DZMQ_BUILD_TESTS=OFF \
+          ..  
+    make -j4 install
+
+    # Package zeromq
+    cd $workspace_dir
+    mkdir -p ${output}/zeromq/
+    cp -r $zeromq_install_dir/lib/* ${output}/zeromq/
+fi
+
+#END zeromq
+
+#BEGIN jzmq
+
+jzmq_install_dir=$workspace_dir/dependencies/jzmq_install_dir
+
+if [ ! -d $jzmq_install_dir ]; then
+    rm -rf $jzmq_install_dir
+    cd $workspace_dir/dependencies/
+    git clone https://github.com/zeromq/jzmq.git
+    cd jzmq
+    git checkout master
+
+    cd jzmq-jni
+    LDFLAGS="-L$zeromq_install_dir/lib" CFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./autogen.sh
+    LDFLAGS="-L$zeromq_install_dir/lib" CFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./configure --prefix=$jzmq_install_dir
+    LDFLAGS="-L$zeromq_install_dir/lib" CFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" make -j4 install
+    cd ..
+    mvn clean install -Dgpg.skip=true -DskipTests=true
+
+    # Package jzmq
+    cd $workspace_dir
+    mkdir -p ${output}/jzmq/
+    cp -r $jzmq_install_dir/lib/* ${output}/jzmq/
+fi
+
+#END jzmq
+
 #BEGIN boost
 
 boost_install_dir=$workspace_dir/dependencies/boost_install_dir
@@ -672,6 +729,7 @@ if [ $blazingdb_protocol_enable == true ]; then
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
+	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
     echo "### Protocol - make ###"
     make -j$blazingdb_protocol_parallel install
@@ -797,6 +855,7 @@ if [ $blazingdb_ral_enable == true ]; then
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
+	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
 
     echo "### Ral - make ###"

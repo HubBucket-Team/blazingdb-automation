@@ -10,11 +10,12 @@
     dest: /usr/local/
     remote_src: yes
 
+- name: Create symlink
+  file: src=/usr/local/hadoop-2.7.7/  dest=/usr/local/hadoop state=link
+
 - name: Replace JAVA_HOME inside hadoop-env.sh
   command: sed -i "s/\${JAVA_HOME}/\/usr\/lib\/jvm\/java-8-openjdk-amd64\/jre/g" /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 
-- name: Create symlink
-  file: src=/usr/local/hadoop-2.7.7/  dest=/usr/local/hadoop state=link
 
 - name: Copy hadoop-env.sh
   copy:

@@ -2,9 +2,9 @@
 - name: Install Spark cluster
   hosts: all
   become: true
-  #become_user: ec2-user
   become_method: sudo
+  #become_user: ec2-user
   roles:
     - common
     - hadoop
-    - spark
+    - hdfs

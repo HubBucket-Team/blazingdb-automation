@@ -5,9 +5,16 @@ pipeline {
 
   parameters {
     booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
-    string(name: 'TAG_BUILD', defaultValue: '#latest', description: 'Tag to build the blazingsql')
-    string(name: 'TAG_DEPLOY', defaultValue: '#lates', description: 'Tag to deploy blazingsql')
-    string(name: 'SLACK_CHANNEL', defaultValue: '#deploys', description: '')
+    //string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
+    string(name: 'TAG_BUILD', defaultValue: 'latest', description: 'NOTE: Write your build tag')
+    string(name: 'TAG_DEPLOY', defaultValue: 'latest', description: 'NOTE: Write your deploy tag')
+    string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
   }
 
   stages {
@@ -20,7 +27,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "./build-deploy.sh $TAG_BUILD $TAG_DEPLOY"
+          sh "./build-deploy.sh ${params.TAG_BUILD} ${params.TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"
         }
       }
     }
@@ -33,8 +40,8 @@ pipeline {
       }
       steps {
         build job: "02.PUBLISH_BLAZINGSQL_DOCKERHUB", parameters: [
-          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:$TAG_DEPLOY"],
-          [$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
+          [$class: 'StringParameterValue', name: 'IMAGE', value: "blazingsql/deploy:${env.BUILD_NUMBER}"],
+          //[$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
         ]
       }
     }

@@ -1,0 +1,44 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+
+  environment {
+    WORKDIR = "docker/conda"
+    INPUT = "/home/mario21ic/blazingsql/output3/"
+    OUTPUT = "/home/mario21ic/blazingsql/conda_output"
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage("Build conda image") {
+      steps {
+        dir("${WORKDIR}") {   
+          //sh "./utils.sh"
+          sh "./conda_build.sh"
+        }
+      }
+    }
+
+    stage("Run conda image") {
+      steps {
+        dir("${WORKDIR}") {
+          sh "./conda_run.sh ${INPUT} ${OUTPUT}"
+        }
+      }
+    }
+    
+    stage("Publish on conda cloud") {
+      steps {
+        dir("${WORKDIR}") {
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 blazingsql-1.0-py35_0.tar.bz2 python35"
+        }
+      }
+    }
+  }
+}

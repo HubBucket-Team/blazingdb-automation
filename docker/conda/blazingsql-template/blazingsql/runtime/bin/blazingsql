@@ -1,0 +1,32 @@
+#!/bin/bash
+
+action=$1
+
+blazingsql_dir=$CONDA_PREFIX/lib/python3.5/site-packages/blazingsql
+supervisord_dir=$blazingsql_dir/runtime/supervisord
+supervisord_conf=$supervisord_dir/supervisord.conf
+supervisord_pid=$supervisord_dir/run/supervisord.pid
+
+working_directory=$PWD
+
+cd $supervisord_dir
+
+if [ "$action" != "start" ] && [ "$action" != "stop" ] && [ "$action" != "restart" ] && [ "$action" != "status" ] ; then
+    echo "invalid argument, try start, stop or restart"
+    exit 1
+fi
+
+if [ ! -f $supervisord_pid ]; then
+    echo "starting supervisord"
+    supervisord -c $supervisord_conf -d $supervisord_dir
+fi
+
+supervisord_action="$action all"
+
+if [ "$action" == "status" ] ; then
+    supervisord_action="status"
+fi
+
+supervisorctl -c $supervisord_conf $supervisord_action
+
+cd $working_directory

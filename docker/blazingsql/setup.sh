@@ -3,7 +3,11 @@
 working_directory=$PWD
 blazingsql_files=/tmp/blazing/blazingsql-files
 
-cd /tmp/blazing/ && tar xvf blazingsql-files.tar.gz
+cd /tmp/blazing/
+echo "Decompressing blazingsql-files.tar.gz ..."
+tar xf blazingsql-files.tar.gz
+echo "blazingsql-files.tar.gz was decompressed at /tmp/blazing/"
+
 cd $blazingsql_files
 
 source activate cudf
@@ -14,12 +18,9 @@ libgdf_dir=cpp
 
 cp $cudf_dir/$libgdf_dir/install/lib/libcudf.so /conda/envs/cudf/lib/
 cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /conda/envs/cudf/lib/
-cp $cudf_dir/$libgdf_dir/install/lib/libcudf.so /usr/lib/
-cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /usr/lib/
-cp /conda/envs/cudf/lib/libNVStrings.so /usr/lib/
 
 # Install libgdf
-cp -r $cudf_dir/$libgdf_dir/install/* /usr/
+cp -r $cudf_dir/$libgdf_dir/install/* /conda/envs/cudf/
 
 # Install libgdf_cffi
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/libgdf_cffi/libgdf_build.py
@@ -28,7 +29,7 @@ sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$l
 pip install $cudf_dir/$libgdf_dir/python
 
 # Install cudf
-pip install $cudf_dir/python
+CFLAGS=-I/conda/envs/cudf/include CXXFLAGS=-I/conda/envs/cudf/include pip install $cudf_dir/python
 
 # Install blazingsql
 blazingdb_ral_artifact_name=testing-libgdf
@@ -39,9 +40,9 @@ blazingdb_calcite_artifact_name=BlazingCalcite.jar
 cp -r $blazingsql_files/jzmq /usr/lib
 cp -r $blazingsql_files/zeromq/* /usr/lib
 
-cp $blazingsql_files/$blazingdb_ral_artifact_name /usr/bin
-cp $blazingsql_files/$blazingdb_orchestrator_artifact_name /usr/bin
-cp $blazingsql_files/$blazingdb_calcite_artifact_name /usr/bin
+cp $blazingsql_files/$blazingdb_ral_artifact_name /home/jupyter
+cp $blazingsql_files/$blazingdb_orchestrator_artifact_name /home/jupyter
+cp $blazingsql_files/$blazingdb_calcite_artifact_name /home/jupyter
 
 # Install blazingdb-protocol/python
 pip install $blazingsql_files/blazingdb-protocol/python/

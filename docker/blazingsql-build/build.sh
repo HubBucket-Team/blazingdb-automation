@@ -4,6 +4,12 @@
 workspace_dir=$1
 output_dir=$2
 
+BUILD_TYPE='Release'
+if [ $# -eq 3 ]; then
+	BUILD_TYPE=$3
+fi
+
+
 # Expand args to absolute/full paths (if the user pass relative paths as args)
 workspace_dir=$(readlink -f $workspace_dir)
 output_dir=$(readlink -f $output_dir)
@@ -294,6 +300,11 @@ if [ ! -d $nvstrings_install_dir ]; then
     tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
 fi
 
+# Package nvstrings (always do this since this lib is needed by further deployment processes: conda, docker)
+cd $workspace_dir
+mkdir -p $output/nvstrings/
+cp -r $nvstrings_install_dir/* $output/nvstrings/
+
 #END nvstrings
 
 #BEGIN googletest
@@ -301,6 +312,7 @@ fi
 googletest_install_dir=$workspace_dir/dependencies/googletest_install_dir
 
 if [ ! -d $googletest_install_dir ]; then
+    echo "### Googletest - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/googletest.git
     cd $workspace_dir/dependencies/googletest
@@ -308,6 +320,8 @@ if [ ! -d $googletest_install_dir ]; then
 
     googletest_build_dir=$workspace_dir/dependencies/googletest/build/
     mkdir -p $googletest_build_dir
+
+    echo "### Googletest - cmake ###"
     cd $googletest_build_dir
     cmake -DCMAKE_BUILD_TYPE=Debug \
           -DCMAKE_INSTALL_PREFIX:PATH=$googletest_install_dir \
@@ -315,7 +329,9 @@ if [ ! -d $googletest_install_dir ]; then
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
+    echo "### Googletest - make ###"
     make -j4 install
+    echo "### Googletest - End ###"
 fi
 
 #END googletest
@@ -325,6 +341,7 @@ fi
 flatbuffers_install_dir=$workspace_dir/dependencies/flatbuffers_install_dir
 
 if [ ! -d $flatbuffers_install_dir ]; then
+    echo "### Flatbufferts - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/flatbuffers.git
     cd $workspace_dir/dependencies/flatbuffers
@@ -334,13 +351,16 @@ if [ ! -d $flatbuffers_install_dir ]; then
 
     mkdir -p $flatbuffers_build_dir
     cd $flatbuffers_build_dir
+    echo "### Flatbufferts - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX:PATH=$flatbuffers_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           ..
+    echo "### Flatbufferts - make ###"
     make -j4 install
+    echo "### Flatbufferts - End ###"
 fi
 
 #END flatbuffers
@@ -350,6 +370,7 @@ fi
 lz4_install_dir=$workspace_dir/dependencies/lz4_install_dir
 
 if [ ! -d $lz4_install_dir ]; then
+    echo "### Lz4 - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/lz4/lz4.git
     cd $workspace_dir/dependencies/lz4
@@ -358,8 +379,11 @@ if [ ! -d $lz4_install_dir ]; then
     lz4_build_dir=$workspace_dir/dependencies/lz4
 
     # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
+    echo "### Lz4 - make ###"
     cd $lz4_build_dir
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" PREFIX=$lz4_install_dir make -j4 install
+
+    echo "### Lz4 - End ###"
 fi
 
 #END lz4
@@ -369,6 +393,7 @@ fi
 zstd_install_dir=$workspace_dir/dependencies/zstd_install_dir
 
 if [ ! -d $zstd_install_dir ]; then
+    echo "### Zstd - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/facebook/zstd.git
     cd $workspace_dir/dependencies/zstd
@@ -377,6 +402,8 @@ if [ ! -d $zstd_install_dir ]; then
     zstd_build_dir=$workspace_dir/dependencies/zstd/build/cmake/build
 
     mkdir -p $zstd_build_dir
+
+    echo "### Zstd - cmake ###"
     cd $zstd_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX:PATH=$zstd_install_dir \
@@ -385,7 +412,10 @@ if [ ! -d $zstd_install_dir ]; then
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DZSTD_BUILD_STATIC=ON \
           ..
+    echo "### Zstd - make ###"
     make -j4 install
+
+    echo "### Zstd - End ###"
 fi
 
 #END zstd
@@ -395,6 +425,7 @@ fi
 brotli_install_dir=$workspace_dir/dependencies/brotli_install_dir
 
 if [ ! -d $brotli_install_dir ]; then
+    echo "### Brotli - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/brotli.git
     cd $workspace_dir/dependencies/brotli
@@ -403,6 +434,8 @@ if [ ! -d $brotli_install_dir ]; then
     brotli_build_dir=$workspace_dir/dependencies/brotli/build/
 
     mkdir -p $brotli_build_dir
+
+    echo "### Brotli - cmake ###"
     cd $brotli_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX:PATH=$brotli_install_dir \
@@ -411,7 +444,10 @@ if [ ! -d $brotli_install_dir ]; then
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DBUILD_SHARED_LIBS=OFF \
           ..
+    echo "### Brotli - make ###"
     make -j4 install
+
+    echo "### Brotli - End ###"
 fi
 
 #END brotli
@@ -421,6 +457,7 @@ fi
 snappy_install_dir=$workspace_dir/dependencies/snappy_install_dir
 
 if [ ! -d $snappy_install_dir ]; then
+    echo "### Snappy - Start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/google/snappy.git
     cd $workspace_dir/dependencies/snappy
@@ -431,8 +468,14 @@ if [ ! -d $snappy_install_dir ]; then
     # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
     cd $snappy_build_dir
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./autogen.sh
+
+    echo "### Snappy - Configure ###"
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./configure --prefix=$snappy_install_dir
+
+    echo "### Snappy - make ###"
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" make -j4 install
+
+    echo "### Snappy - End ###"
 fi
 
 #END snappy
@@ -442,6 +485,7 @@ fi
 thrift_install_dir=$workspace_dir/dependencies/thrift_install_dir
 
 if [ ! -d $thrift_install_dir ]; then
+    echo "### Thrift - start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/apache/thrift.git
     cd $workspace_dir/dependencies/thrift
@@ -450,6 +494,8 @@ if [ ! -d $thrift_install_dir ]; then
     thrift_build_dir=$workspace_dir/dependencies/thrift/build/
 
     mkdir -p $thrift_build_dir
+
+    echo "### Thrift - cmake ###"
     cd $thrift_build_dir
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX:PATH=$thrift_install_dir \
@@ -472,7 +518,10 @@ if [ ! -d $thrift_install_dir ]; then
           -DBOOST_ROOT=$boost_install_dir \
           ..
 
+    echo "### Thrift - make ###"
     make -j4 install
+
+    echo "### Thrift - end ###"
 fi
 
 #END thrift
@@ -482,6 +531,7 @@ fi
 arrow_install_dir=$workspace_dir/dependencies/arrow_install_dir
 
 if [ ! -d $arrow_install_dir ]; then
+    echo "### Arrow - start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/apache/arrow.git
     cd $workspace_dir/dependencies/arrow
@@ -490,6 +540,8 @@ if [ ! -d $arrow_install_dir ]; then
     arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
     
     mkdir -p $arrow_build_dir
+
+    echo "### Arrow - cmake ###"
     cd $arrow_build_dir
     
     # NOTE for the arrow cmake arguments:
@@ -527,7 +579,10 @@ if [ ! -d $arrow_install_dir ]; then
         -DARROW_TENSORFLOW=ON \
         -DARROW_PARQUET=ON \
         ..
+    echo "### Arrow - make ###"
     make -j4 install
+
+    echo "### Arrow - end ###"
 fi
 
 #END arrow
@@ -537,12 +592,15 @@ fi
 aws_sdk_cpp_build_dir=$workspace_dir/dependencies/aws-sdk-cpp/build
 
 if [ ! -d $aws_sdk_cpp_build_dir ]; then
+    echo "### Aws sdk - start ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/aws/aws-sdk-cpp.git
     cd $workspace_dir/dependencies/aws-sdk-cpp
     git checkout 864eb0bca8b48427f94850b7a8311ef0ae0f433b
 
     mkdir -p $aws_sdk_cpp_build_dir
+
+    echo "### Aws sdk - cmake ###"
     cd $aws_sdk_cpp_build_dir
     
     # NOTE we only need core, s3 and s3-encryption, also we don't need to install this package
@@ -556,7 +614,10 @@ if [ ! -d $aws_sdk_cpp_build_dir ]; then
         -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         ..
+    echo "### Aws sdk - make ###"
     make -j4
+
+    echo "### Arrow - end ###"
 fi
 
 #END aws-sdk-cpp
@@ -565,6 +626,7 @@ fi
 
 if [ $cudf_enable == true ]; then
     #BEGIN cudf
+    echo "### Cudf - start ###"
     
     cd $workspace_dir
     
@@ -595,11 +657,14 @@ if [ $cudf_enable == true ]; then
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
 
     mkdir -p $libgdf_build_dir
+
+    echo "### CUDF - cmake ###"
     cd $libgdf_build_dir
     BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
         -DCMAKE_BUILD_TYPE=Release  \
         -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
         ..
+    echo "### CUDF - make ###"
     make -j$cudf_parallel install
     
     #TODO remove this patch once cudf can install rmm
@@ -614,12 +679,13 @@ if [ $cudf_enable == true ]; then
     cp -r $cudf_current_dir/cudf/* ${output}/cudf/
     cp -r $libgdf_install_dir/* ${output}/cudf/$libgdf_dir/install
     rm -rf ${output}/cudf/.git/
-    rm -rf ${output}/cudf/$libgdf_dir/build/src
-    rm -rf ${output}/cudf/$libgdf_dir/build/Testing
-    rm -rf ${output}/cudf/$libgdf_dir/build/CMakeFiles
+    rm -rf ${output}/cudf/$libgdf_dir/build/
+
+    echo "### Cudf - end ###"
 fi
 
 if [ $blazingdb_protocol_enable == true ]; then
+    echo "### Protocol - start ###"
     #BEGIN blazingdb-protocol
     
     cd $workspace_dir
@@ -656,7 +722,8 @@ if [ $blazingdb_protocol_enable == true ]; then
     blazingdb_protocol_artifact_name=libblazingdb-protocol.a
     rm -rf lib/$blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    echo "### Protocol - cmake ###"
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
@@ -664,6 +731,7 @@ if [ $blazingdb_protocol_enable == true ]; then
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
 	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
+    echo "### Protocol - make ###"
     make -j$blazingdb_protocol_parallel install
     
     cd $blazingdb_protocol_current_dir/blazingdb-protocol/java
@@ -676,10 +744,13 @@ if [ $blazingdb_protocol_enable == true ]; then
     cd $workspace_dir
     mkdir -p $output/blazingdb-protocol/python/
     cp -r $blazingdb_protocol_current_dir/blazingdb-protocol/python/* $output/blazingdb-protocol/python/
+
+    echo "### Protocol - end ###"
 fi
 
 if [ $blazingdb_io_enable == true ]; then
     #BEGIN blazingdb-io
+    echo "### Blazingdb IO - start ###"
     
     cd $workspace_dir
     
@@ -713,7 +784,8 @@ if [ $blazingdb_io_enable == true ]; then
     blazingdb_io_artifact_name=libblazingdb-io.a
     rm -rf $blazingdb_ral_artifact_name
     
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    echo "### Blazingdb IO - cmake ###"
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
           -DARROW_INSTALL_DIR=${arrow_install_dir} \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
@@ -721,13 +793,16 @@ if [ $blazingdb_io_enable == true ]; then
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
+    echo "### Blazingdb IO - make ###"
     make -j$blazingdb_io_parallel install
     
+    echo "### Blazingdb IO - end ###"
     #END blazingdb-io
 fi
 
 if [ $blazingdb_ral_enable == true ]; then
     #BEGIN blazingdb-ral
+    echo "### Ral - start ###"
     
     cd $workspace_dir
     
@@ -763,8 +838,9 @@ if [ $blazingdb_ral_enable == true ]; then
     blazingdb_ral_artifact_name=testing-libgdf
     rm -f $blazingdb_ral_artifact_name
     
+    echo "### Ral - cmake ###"
     # Configure blazingdb-ral with dependencies
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
+    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
           -DBOOST_INSTALL_DIR=$boost_install_dir \
           -DAWS_SDK_CPP_BUILD_DIR=$aws_sdk_cpp_build_dir \
@@ -782,6 +858,7 @@ if [ $blazingdb_ral_enable == true ]; then
 	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
 
+    echo "### Ral - make ###"
     make -j$blazingdb_ral_parallel
     
     #END blazingdb-ral
@@ -790,10 +867,13 @@ if [ $blazingdb_ral_enable == true ]; then
     cd $workspace_dir
     blazingdb_ral_artifact_name=testing-libgdf
     cp $blazingdb_ral_build_dir/$blazingdb_ral_artifact_name $output
+
+    echo "### Ral - end ###"
 fi
 
 if [ $blazingdb_orchestrator_enable == true ]; then
     #BEGIN blazingdb-orchestrator
+    echo "### Orchestrator - start ###"
     
     cd $workspace_dir
     
@@ -831,9 +911,11 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     #-DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-    cmake -DCMAKE_BUILD_TYPE=Release  \
+    echo "### Orchestrator - cmake ###"
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
           -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch \
           ..
+    echo "### Orchestrator - make ###"
     make -j$blazingdb_orchestrator_parallel
     
     #END blazingdb-orchestrator
@@ -842,10 +924,13 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     cd $workspace_dir
     blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
     cp $blazingdb_orchestrator_build_dir/$blazingdb_orchestrator_artifact_name $output
+
+    echo "### Orchestrator - end ###"
 fi
 
 if [ $blazingdb_calcite_enable == true ]; then
     #BEGIN blazingdb-calcite
+    echo "### Calcite - start ###"
     
     cd $workspace_dir
     
@@ -871,6 +956,7 @@ if [ $blazingdb_calcite_enable == true ]; then
     
     blazingdb_calcite_install_dir=$blazingdb_calcite_current_dir/install
     
+    echo "### Calcite - mvn clean install ###"
     mvn clean install -Dmaven.test.skip=true
     blazingdb_calcite_build_dir=$blazingdb_calcite_current_dir/blazingdb-calcite/blazingdb-calcite-application/target/
     
@@ -880,10 +966,13 @@ if [ $blazingdb_calcite_enable == true ]; then
     cd $workspace_dir
     blazingdb_calcite_artifact_name=BlazingCalcite.jar
     cp $blazingdb_calcite_build_dir/$blazingdb_calcite_artifact_name ${output}
+
+    echo "### Calcite - end ###"
 fi
 
 if [ $pyblazing_enable == true ]; then
     #BEGIN pyblazing
+    echo "### Pyblazing - start ###"
     
     cd $workspace_dir
     
@@ -916,6 +1005,7 @@ if [ $pyblazing_enable == true ]; then
     mkdir -p ${output}/pyBlazing/
     cp -r $pyblazing_current_dir/pyBlazing/* ${output}/pyBlazing/
     rm -rf ${output}/pyBlazing/.git/
+    echo "### Pyblazing - end ###"
 fi
 
 # Final step: compress files and delete temp folder

@@ -1,5 +1,10 @@
 Spark single master with two workers
 
+Build docker image:
+```
+packer build -only=docker template.json
+```
+
 Build the docker image and run
 ```
 $ docker-compose build master
@@ -18,4 +23,10 @@ $ docker-compose exec master bash
 ```
 
 Open in your browser http://localhost:4040
+
+Playing with examples
+```
+$ docker-compose exec master bash
+# /usr/local/spark/bin/run-example SparkPi
+```
 

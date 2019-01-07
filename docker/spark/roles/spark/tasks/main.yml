@@ -1,0 +1,22 @@
+---  
+- name: Download hadoop
+  get_url:
+    url: https://www-eu.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz
+    dest: /tmp/spark.tgz
+
+- name: Extract spark.tar.gz to /usr/local/spark
+  unarchive:
+    src: /tmp/spark.tgz
+    dest: /usr/local/
+    remote_src: yes
+
+- name: Create symlink
+  file: src=/usr/local/spark-2.3.1-bin-hadoop2.7/  dest=/usr/local/spark state=link
+
+- name: Copy spark-env.sh
+  copy:
+    src: spark-env.sh
+    dest: /etc/profile.d/spark-env.sh
+    owner: root
+    group: root
+    mode: 0755

@@ -12,12 +12,13 @@ Vagrant.configure("2") do |config|
             vb.memory = "2048"
             vb.cpus = 2
         end
+        node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
             ansible.playbook = "playbook.spark.yml"
-            ansible.host_vars = {
-              "host1" => {"http_port" => 80, "maxRequestsPerChild" => 808},
-              "host2" => {"http_port" => 303, "maxRequestsPerChild" => 909}
-            }
+            #ansible.host_vars = {
+            #  "host1" => {"http_port" => 80, "maxRequestsPerChild" => 808},
+            #  "host2" => {"http_port" => 303, "maxRequestsPerChild" => 909}
+            #}
         end
     end
 
@@ -29,6 +30,7 @@ Vagrant.configure("2") do |config|
             vb.memory = "2048"
             vb.cpus = 2
         end
+        node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
             ansible.playbook = "playbook.spark.yml"
         end
@@ -42,6 +44,7 @@ Vagrant.configure("2") do |config|
             vb.memory = "2048"
             vb.cpus = 2
         end
+        node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
             ansible.playbook = "playbook.spark.yml"
         end

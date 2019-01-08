@@ -6,4 +6,5 @@
   #become_user: ec2-user
   roles:
     - common
-    - hadoop
+    - hdfs_master
+    - hdfs_worker

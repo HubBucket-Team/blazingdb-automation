@@ -6,16 +6,20 @@ $ vagrant up
 Start the master:
 ```
 $ vagrant ssh master
-vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master -h 192.168.2.10
-```
+vagrant@master$ ssh-keygen # generar sin passphrase
+vagrant@master$ cat $HOME/.ssh/id_rsa.pub # Copiar contenido
+vagrant@master$ exit
 
-Start the workers:
-```
 $ vagrant ssh worker1
-vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://192.168.2.10:7077
+vagrant@master$ nano .ssh/authorized_keys # Pegar el contenido y grabar
+vagrant@master$ exit
 
 $ vagrant ssh worker2
-vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://192.168.2.10:7077
+vagrant@master$ nano .ssh/authorized_keys # Pegar el contenido y grabar
+vagrant@master$ exit
+
+$ vagrant ssh master
+vagrant@master$ /usr/local/spark/sbin/start-all.sh
 ```
 
 Test the cluster:

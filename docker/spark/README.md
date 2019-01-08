@@ -1,4 +1,5 @@
-Spark single master with two workers with Vagrant:
+# Spark single master with two workers with Vagrant:
+
 ```
 $ vagrant up
 ```
@@ -63,7 +64,7 @@ $ docker-compose exec master bash
 # /usr/local/spark/bin/run-example SparkPi
 ```
 
-HDFS cluster single master with a workers:
+# HDFS cluster single master with a workers:
 ```
 $ vagrant up
 ```

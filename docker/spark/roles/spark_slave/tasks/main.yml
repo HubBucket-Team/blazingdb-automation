@@ -1,4 +1,20 @@
 ---  
+- name: Copy slaves
+  copy:
+    src: "slaves"
+    dest: /usr/local/spark/conf/slaves
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy spark-env.sh
+  copy:
+    src: "spark-env.sh"
+    dest: /usr/local/spark/conf/spark-env.sh
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Copy spark_slave.service
   copy:
     src: "spark_slave.service"
@@ -8,4 +24,5 @@
     mode: 0644
 
 - name: Start and enable spark_slave
-  service: name=spark_slave state=restarted enabled=yes
+  service: name=spark_slave state=stopped enabled=yes
+  #service: name=spark_slave state=restarted enabled=yes

@@ -24,23 +24,3 @@
     owner: root
     group: root
     mode: 0755
-
-- name: copying files to master
-  copy:
-    src: "{{ item }}"
-    dest: /usr/local/hadoop-2.7.7/etc/hadoop/
-    mode: 0777
-  become: true
-  with_items:
-    - core-site.xml
-    - hdfs-site.xml
-
-- name: copying files to worker
-  copy:
-    src: "{{ item }}"
-    dest: /usr/local/hadoop-2.7.7/etc/hadoop/
-    mode: 0777
-  become: true
-  with_items:
-    - core-site.xml
-    - hdfs-site.xml

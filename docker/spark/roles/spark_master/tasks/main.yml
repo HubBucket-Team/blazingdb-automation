@@ -1,0 +1,11 @@
+---  
+- name: Copy spark_master.service
+  copy:
+    src: "spark_master.service"
+    dest: /etc/systemd/system/spark_master.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Start and enable spark_master
+  service: name=spark_master state=restarted enabled=yes

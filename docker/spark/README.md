@@ -1,36 +1,32 @@
 Spark single master with two workers with Vagrant:
 ```
 $ vagrant up
-
-$ vagrant ssh master
-vagrant@master$ sudo apt-get install -y python
-vagrant@master$ exit
-
-$ vagrant up --provision
 ```
 
 Start the master:
 ```
 $ vagrant ssh master
-vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master
+vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master -h 192.168.2.10
 ```
 
 Start the workers:
 ```
 $ vagrant ssh worker1
-vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://<private_ip_master>:7077/
+vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://192.168.2.10:7077
 
 $ vagrant ssh worker2
-vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://<private_ip_master>:7077/
+vagrant@master$ /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://192.168.2.10:7077
 ```
 
 Test the cluster:
 ```
 $ vagrant ssh master
-vagrant@master$ /usr/local/spark/bin/run-example SparkPi
+vagrant@master$ MASTER=spark://192.168.2.10:7077 /usr/local/spark/bin/run-example SparkPi
 ```
+Open in your browser: http://192.168.2.10:8080/
 
 
+DEPRECATED
 Spark single master with two workers with Docker:
 
 Build docker image:

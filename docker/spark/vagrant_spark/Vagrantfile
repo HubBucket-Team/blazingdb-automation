@@ -5,14 +5,14 @@ Vagrant.configure("2") do |config|
     config.vm.define "master" do |node|
         node.vm.box = "ubuntu/xenial64"
         node.vm.hostname = "master"
-        node.vm.network "private_network", ip: "192.168.2.15"
+        node.vm.network "private_network", ip: "192.168.2.10"
         node.vm.provider "virtualbox" do |vb|
             vb.memory = "2048"
             vb.cpus = 2
         end
         node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
-            ansible.playbook = "../playbook.spark.yml"
+            ansible.playbook = "../playbook.spark_master.yml"
             #ansible.host_vars = {
             #  "host1" => {"http_port" => 80, "maxRequestsPerChild" => 808},
             #  "host2" => {"http_port" => 303, "maxRequestsPerChild" => 909}
@@ -23,28 +23,28 @@ Vagrant.configure("2") do |config|
     config.vm.define "worker1" do |node|
         node.vm.box = "ubuntu/xenial64"
         node.vm.hostname = "worker1"
-        node.vm.network "private_network", ip: "192.168.2.16"
+        node.vm.network "private_network", ip: "192.168.2.11"
         node.vm.provider "virtualbox" do |vb|
             vb.memory = "2048"
             vb.cpus = 2
         end
         node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
-            ansible.playbook = "../playbook.spark.yml"
+            ansible.playbook = "../playbook.spark_slave.yml"
         end
     end
 
     config.vm.define "worker2" do |node|
         node.vm.box = "ubuntu/xenial64"
         node.vm.hostname = "worker2"
-        node.vm.network "private_network", ip: "192.168.2.17"
+        node.vm.network "private_network", ip: "192.168.2.12"
         node.vm.provider "virtualbox" do |vb|
             vb.memory = "2048"
             vb.cpus = 2
         end
         node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
-            ansible.playbook = "../playbook.spark.yml"
+            ansible.playbook = "../playbook.spark_slave.yml"
         end
     end
 

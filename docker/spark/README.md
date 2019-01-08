@@ -80,48 +80,32 @@ ssh-keygen
 ssh-copy-id vagrant@192.168.100.102
 ```
 
+Hadoop ( hdfs ) single master with a worker with Vagrant:
+
 ```
-
-# Before: (1)
-En /etc/hosts
-127.0.0.1 localhost
-10.138.0.2 hadoop-master
-
-#slaves (2): Añadir ips de workers en slaves file in master
-sudo nano /usr/local/hadoop/etc/hadoop/slaves
-10.138.0.3
-10.138.0.4
-
-#port: open 54310 port ingress
-sudo ufw allow 54310/tcp
-# test
-sudo netstat -tulpn
-
-
-# Start namenode manual (3)
-# cd /usr/local/hadoop/sbin
-#./hadoop-daemon.sh --script hdfs start namenode
-#jps
- 
-#TEST
-# cd /usr/local/hadoop/bin
-# ./hdfs dfs -ls /.
-#./hdfs dfs -mkdir /edith
-#./hdfs dfs -ls /.
+$ vagrant up
 ```
+Manual configuration:
 
-----------------------------------------------------------------
-
-
-#STEP-00
+STEP-00
+```
 #sudo su hadoop
+#sudo nano /etc/sudoers
+#add: hadoop ALL=(ALL) ALL: ALL
+```
 
-#STEP-01
+STEP-01
+```
 #Master
 #ssh-keygen
 #ssh-copy-id hadoop@hadoop-slave1
+#ssh-copy-id hadoop@hadoop-master
+#TEST Conectivity:
+#ssh hadoop@hadoop-slave1
+```
 
-#STEP-02
+STEP-02
+```
 #Master y slaves
 #sudo nano /etc/hosts
 #127.0.0.1	masterhdfs
@@ -130,26 +114,50 @@ sudo netstat -tulpn
 #192.168.100.101 hadoop-master
 #192.168.100.102 hadoop-slave1
 
-#STEP-03: Añadir ips de workers into slaves file
+#if there is:  127.0.0.1 hadoo-master in /etc/hosts in slave, drop it.
+```
+
+STEP-03:
+```
+#Añadir ips de workers into slaves file
 #Master y slaves
 #sudo nano /usr/local/hadoop/etc/hadoop/slaves
 #hadoop-slave1
+```
 
-#STEP-04: In cloud this step is necesary
+STEP-04
+```
+#In cloud this step is necesary
 #port: open 54310 port ingress
+```
 
-
-#STEP-05:
+STEP-05
+```
 #MASTER
-# into: /usr/local/hadoop/etc/hadoop copy 
+# into: /usr/local/hadoop/etc/hadoop copy  two files hdfs-site.xml and core-site.xml (go directory hdfs_master/files to found them)
+#SLAVE
+# into: /usr/local/hadoop/etc/hadoop copy two files hdfs-site.xml and core-site.xml (go directory hdfs_slave/files to found them)
+```
 
+STEP-06
+```
+#./start-all.sh
+#./stop-all.sh\(optiona)
+```
 
-# Start namenode manual (3)
-# cd /usr/local/hadoop/sbin
-#./hadoop-daemon.sh --script hdfs start namenode
+STEP-07
+```
+( Optional if ther is bugs)
+#MASTER and SLAVE
+#if permission denied: change the permissions:
+#change permissions: sudo chown hadoop.hadoop -R /usr/local/hadoop/logs
+#cambiar permisos a data directory : chow
+```
 
-
+OUTPUT
+```
 #jps
+#MASTER
 #Result
 #jps
 #27082 SecondaryNameNode
@@ -157,8 +165,15 @@ sudo netstat -tulpn
 #26859 NameNode
 #27503 Jps
 
+#WORKER
+#23968 DataNode
+#24306 Jps
+```
 
+STEP-08
+```
 #TEST
+#MASTER
 # cd /usr/local/hadoop/bin
 # ./hdfs dfs -ls /.
 #./hdfs dfs -mkdir /edith
@@ -168,35 +183,9 @@ sudo netstat -tulpn
 #./hdfs dfs -ls /edith
 #./hdfs dfs -cat /edith/hola.txt
 
-
-
-OJOO
-
-cambiar permisos a log
-ssh hadoop@hadoop-slave1
-
-
-#ssh-keygen -t rsa
-#ssh-copy-id hadoop@localhost
-**no debe perir contrasña
-ssh-copy-id hadoop@hadoop-master
-ssh-copy-id hadoop@hadoop-masalve
-
-start-all.sh
-
-# master inciia a slave
-copiarllaves
-registrar slaves ( en master)
-registrar 
-etc/hosts ( en master)
-
-#nano hdfs-site.xml ( cambiar a 1 replication)
-
-borrar hadoo-master de /etc/hosts de slaves
-
-stop all y satar-all
-
-
-# sudo su hadoop, enter with user hadoop
-
-
+#WORKER
+#cd data/
+#ls current
+#ls -R current/BP-384415771-127.0.0.1-1546981994598/current/
+#cat current/BP-384415771-127.0.0.1-1546981994598/current/finalized/subdir0/subdir0/blk_1073741825
+```

@@ -6,14 +6,6 @@ $ vagrant ssh master
 vagrant@master$ sudo apt-get install -y python
 vagrant@master$ exit
 
-$ vagrant ssh worker1
-vagrant@worker1$ sudo apt-get install -y python
-vagrant@worker1$ exit
-
-$ vagrant ssh worker2
-vagrant@worker2$ sudo apt-get install -y python
-vagrant@worker2$ exit
-
 $ vagrant up --provision
 ```
 

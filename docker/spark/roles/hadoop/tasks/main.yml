@@ -1,7 +1,12 @@
 ---  
-- name: Download hadoop
-  get_url:
-    url: https://www-eu.apache.org/dist/hadoop/common/hadoop-2.7.7/hadoop-2.7.7.tar.gz
+#- name: Download hadoop
+#  get_url:
+#    url: https://www-eu.apache.org/dist/hadoop/common/hadoop-2.7.7/hadoop-2.7.7.tar.gz
+#    dest: /tmp/hadoop.tar.gz
+
+- name: Copy hadoop-2.7.7.tar.gz
+  copy:
+    src: hadoop-2.7.7.tar.gz
     dest: /tmp/hadoop.tar.gz
 
 - name: Extract hadoop.tar.gz to /usr/local/hadoop

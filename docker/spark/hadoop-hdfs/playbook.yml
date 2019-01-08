@@ -1,7 +1,0 @@
----
-- name: Installing Hadoop
-  hosts: server
-  
-  roles:
-    - worker
-    - master

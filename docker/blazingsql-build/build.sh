@@ -227,12 +227,12 @@ if [ ! -d $zeromq_install_dir ]; then
           -DZMQ_BUILD_TESTS=OFF \
           ..  
     make -j4 install
-
-    # Package zeromq
-    cd $workspace_dir
-    mkdir -p ${output}/zeromq/
-    cp -r $zeromq_install_dir/lib/* ${output}/zeromq/
 fi
+
+# Package zeromq
+cd $workspace_dir
+mkdir -p ${output}/zeromq/
+cp -r $zeromq_install_dir/lib/* ${output}/zeromq/
 
 #END zeromq
 
@@ -253,12 +253,12 @@ if [ ! -d $jzmq_install_dir ]; then
     LDFLAGS="-L$zeromq_install_dir/lib" CFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" make -j4 install
     cd ..
     mvn clean install -Dgpg.skip=true -DskipTests=true
-
-    # Package jzmq
-    cd $workspace_dir
-    mkdir -p ${output}/jzmq/
-    cp -r $jzmq_install_dir/lib/* ${output}/jzmq/
 fi
+
+# Package jzmq
+cd $workspace_dir
+mkdir -p ${output}/jzmq/
+cp -r $jzmq_install_dir/lib/* ${output}/jzmq/
 
 #END jzmq
 

@@ -19,11 +19,11 @@
 <configuration>
         <property>
                 <name>dfs.replication</name>
-                <value>3</value>
+                <value>1</value>
         </property>
         <property>
                 <name>dfs.data.dir</name>
-                <value>/mnt/disks/disk00,/mnt/disks/disk01,/mnt/disks/disk02,/mnt/disks/disk03,/mnt/disks/disk04,/mnt/disks/disk05,/mnt/disks/disk06,/mnt/disks/disk07,/mnt/disks/disk08,/mnt/disks/disk09,/mnt/disks/disk10,/mnt/disks/disk11,/mnt/disks/disk12,/mnt/disks/disk13,/mnt/disks/disk14</value>
+                <value>/home/hadoop/data</value>
                 <final>true</final>
         </property>
         <property>

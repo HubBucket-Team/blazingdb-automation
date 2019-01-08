@@ -63,3 +63,49 @@ $ docker-compose exec master bash
 # /usr/local/spark/bin/run-example SparkPi
 ```
 
+HDFS cluster single master with a workers:
+```
+$ vagrant up
+```
+
+SSH Conecction
+```
+$ ssh -o PubkeyAuthentication=no vagrant@192.168.100.101
+$ ssh -o PubkeyAuthentication=no vagrant@192.168.100.102
+```
+
+En master
+```
+ssh-keygen
+ssh-copy-id vagrant@192.168.100.102
+```
+
+```
+
+# Before: (1)
+En /etc/hosts
+127.0.0.1 localhost
+10.138.0.2 hadoop-master
+
+#slaves (2): Añadir ips de workers en slaves file in master
+sudo nano /usr/local/hadoop/etc/hadoop/slaves
+10.138.0.3
+10.138.0.4
+
+#port: open 54310 port ingress
+sudo ufw allow 54310/tcp
+# test
+sudo netstat -tulpn
+
+
+# Start namenode manual (3)
+# cd /usr/local/hadoop/sbin
+#./hadoop-daemon.sh --script hdfs start namenode
+#jps
+ 
+#TEST
+# cd /usr/local/hadoop/bin
+# ./hdfs dfs -ls /.
+#./hdfs dfs -mkdir /edith
+#./hdfs dfs -ls /.
+```

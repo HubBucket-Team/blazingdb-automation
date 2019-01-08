@@ -115,35 +115,84 @@
   become: true
 
 
-#OTROS
-#ssh-keygen -t rsa
-#ssh-copy-id hadoop@localhost
 
-#Before: (1)
-#/etc/hosts
-#127.0.0.1 localhost
-#10.138.0.2 hadoop-master
+#STEP-00
+#
 
-#slaves (2): Añadir ips de workers into slaves file in master
-#/usr/local/hadoop/etc/hadoop
-#10.138.0.3
-#10.138.0.4
+#STEP-01
+#Master
+#ssh-keygen
+#ssh-copy-id hadoop@hadoop-slave1
 
+#STEP-02
+#Master y slaves
+#sudo nano /etc/hosts
+#127.0.0.1	masterhdfs
+#127.0.0.1       localhost
+#192.168.100.101	masterhdfs
+#192.168.100.101 hadoop-master
+#192.168.100.102 hadoop-slave1
+
+#STEP-03: Añadir ips de workers into slaves file
+#Master y slaves
+#sudo nano /usr/local/hadoop/etc/hadoop/slaves
+#hadoop-slave1
+
+#STEP-04: In cloud this step is necesary
 #port: open 54310 port ingress
 
 # Start namenode manual (3)
 # cd /usr/local/hadoop/sbin
 #./hadoop-daemon.sh --script hdfs start namenode
+
 #jps
- 
+#Result
+#jps
+#27082 SecondaryNameNode
+#27242 ResourceManager
+#26859 NameNode
+#27503 Jps
+
+
 #TEST
 # cd /usr/local/hadoop/bin
 # ./hdfs dfs -ls /.
 #./hdfs dfs -mkdir /edith
 #./hdfs dfs -ls /.
+#./hdfs dfs -copyFromLocal hola.txt /edith
+#./hdfs dfs -mkdir /edith
+#./hdfs dfs -ls /edith
+#./hdfs dfs -cat /edith/hola.txt
 
 
 
+OJOO
 
+cambiar permisos a log
+ssh hadoop@hadoop-slave1
+
+
+#ssh-keygen -t rsa
+#ssh-copy-id hadoop@localhost
+**no debe perir contrasña
+ssh-copy-id hadoop@hadoop-master
+ssh-copy-id hadoop@hadoop-masalve
+
+start-all.sh
+
+# master inciia a slave
+copiarllaves
+registrar slaves ( en master)
+registrar 
+etc/hosts ( en master)
+
+#nano hdfs-site.xml ( cambiar a 1 replication)
+
+borrar hadoo-master de /etc/hosts de slaves
+
+stop all y satar-all
+
+
+# sudo su hadoop, enter with user hadoop
 
 

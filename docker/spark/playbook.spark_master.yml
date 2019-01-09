@@ -8,7 +8,7 @@
   #become_user: ec2-user
   roles:
     - common
-    #- hadoop
+    - hadoop
     - spark
     - spark_master
     - xgboost

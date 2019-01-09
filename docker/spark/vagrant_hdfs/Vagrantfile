@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
         end
         node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
-            ansible.playbook = "../playbook.hdfs.yml"          
+            ansible.playbook = "../playbook.hdfs_master.yml"          
         end
     end
 
@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
         end
         node.vm.provision "shell", inline: "sudo apt-get install -y python"
         node.vm.provision :ansible do |ansible|
-            ansible.playbook = "../playbook.hdfs.yml"
+            ansible.playbook = "../playbook.hdfs_worker.yml"
         end
     end   
 

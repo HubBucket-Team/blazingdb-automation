@@ -65,23 +65,6 @@ $ docker-compose exec master bash
 ```
 
 # HDFS cluster single master with a workers:
-```
-$ vagrant up
-```
-
-SSH Conecction
-```
-$ ssh -o PubkeyAuthentication=no vagrant@192.168.100.101
-$ ssh -o PubkeyAuthentication=no vagrant@192.168.100.102
-```
-
-En master
-```
-ssh-keygen
-ssh-copy-id vagrant@192.168.100.102
-```
-
-Hadoop ( hdfs ) single master with a worker with Vagrant:
 
 ```
 $ vagrant up
@@ -90,12 +73,33 @@ Manual configuration:
 
 STEP-00
 ```
-#sudo su hadoop
 #sudo nano /etc/sudoers
-#add: hadoop ALL=(ALL) ALL: ALL
+#add: hadoop  ALL=(ALL:ALL) ALL
+#sudo su hadoop
+#password: hadoop
 ```
 
 STEP-01
+```
+#Master y slaves
+#sudo nano /etc/hosts
+MASTER
+127.0.0.1	masterhdfs
+127.0.0.1       localhost
+192.168.100.101 hadoop-master
+192.168.100.102 worker1hdfs
+192.168.100.102 hadoop-slave1
+SLAVE
+127.0.0.1       localhost
+192.168.100.102 worker1hdfs
+192.168.100.101 hadoop-master
+192.168.100.102 hadoop-slave1
+
+
+#if there is:  127.0.0.1 hadoo-master in /etc/hosts in slave, drop it.
+```
+
+STEP-02
 ```
 #Master
 #ssh-keygen
@@ -105,18 +109,7 @@ STEP-01
 #ssh hadoop@hadoop-slave1
 ```
 
-STEP-02
-```
-#Master y slaves
-#sudo nano /etc/hosts
-#127.0.0.1	masterhdfs
-#127.0.0.1       localhost
-#192.168.100.101	masterhdfs
-#192.168.100.101 hadoop-master
-#192.168.100.102 hadoop-slave1
 
-#if there is:  127.0.0.1 hadoo-master in /etc/hosts in slave, drop it.
-```
 
 STEP-03:
 ```
@@ -142,6 +135,7 @@ STEP-05
 
 STEP-06
 ```
+#in /usr/local/hadoop/sbin
 #./start-all.sh
 #./stop-all.sh\(optiona)
 ```
@@ -152,7 +146,7 @@ STEP-07
 #MASTER and SLAVE
 #if permission denied: change the permissions:
 #change permissions: sudo chown hadoop.hadoop -R /usr/local/hadoop/logs
-#cambiar permisos a data directory : chow
+#cambiar permisos a data directory : chown
 ```
 
 OUTPUT
@@ -177,12 +171,11 @@ STEP-08
 #MASTER
 # cd /usr/local/hadoop/bin
 # ./hdfs dfs -ls /.
-#./hdfs dfs -mkdir /edith
+#./hdfs dfs -mkdir /dirtest
 #./hdfs dfs -ls /.
-#./hdfs dfs -copyFromLocal hola.txt /edith
-#./hdfs dfs -mkdir /edith
-#./hdfs dfs -ls /edith
-#./hdfs dfs -cat /edith/hola.txt
+#./hdfs dfs -copyFromLocal hola.txt /dirtest
+#./hdfs dfs -ls /dirtest
+#./hdfs dfs -cat /dirtest/hola.txt
 
 #WORKER
 #cd data/

@@ -27,6 +27,11 @@ if [ "$action" == "status" ] ; then
     supervisord_action="status"
 fi
 
+if [ "$action" == "stop" ] ; then
+    echo "kill supv"
+    kill -s SIGTERM $(cat $supervisord_pid)
+fi
+
 supervisorctl -c $supervisord_conf $supervisord_action
 
 cd $working_directory

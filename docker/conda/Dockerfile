@@ -39,6 +39,7 @@ ENV PATH=${PATH}:/conda/bin
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
 
+# Create the conda env called 'user' this env simulate the user env
 # Build 'user' conda env
 ARG PYTHON_VERSION=3.5
 RUN conda create -n user python=${PYTHON_VERSION}
@@ -49,12 +50,11 @@ ARG NUMPY_VERSION=1.14.3
 ARG PANDAS_VERSION=0.20.3
 ARG PYARROW_VERSION=0.10.0
 
-# Create the conda env called 'user' this env simulate the user env
-RUN conda install -n user -y -c numba -c conda-forge -c defaults \
-      numba=${NUMBA_VERSION} \
-      numpy=${NUMPY_VERSION} \
-      pandas=${PANDAS_VERSION} \
-      pyarrow=${PYARROW_VERSION}
+# Install default packages for the user env
+RUN conda install -n user -y -c numba -c conda-forge -c defaults numba=${NUMBA_VERSION}
+RUN conda install -n user -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
+RUN conda install -n user -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
+RUN conda install -n user -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
 
 USER root
 

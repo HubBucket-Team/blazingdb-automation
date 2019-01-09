@@ -43,7 +43,8 @@ ENV PATH=${PATH}:/conda/bin
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
 
-# Build cudf conda env
+# Create the conda env called 'cudf'
+# Build 'cudf' conda env
 ARG PYTHON_VERSION=3.5
 RUN conda create -n cudf python=${PYTHON_VERSION}
 
@@ -52,14 +53,15 @@ ARG NUMPY_VERSION=1.14.3
 # Locked to Pandas 0.20.3 by https://github.com/rapidsai/cudf/issues/118
 ARG PANDAS_VERSION=0.20.3
 ARG PYARROW_VERSION=0.10.0
-RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c rapidsai -c defaults \
-      numba=${NUMBA_VERSION} \
-      numpy=${NUMPY_VERSION} \
-      pandas=${PANDAS_VERSION} \
-      pyarrow=${PYARROW_VERSION} \
-      nvstrings \
-      cmake=3.12 \
-      gtest=1.8.0
+
+# Install default packages for the user env
+RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numba=${NUMBA_VERSION}
+RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
+RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
+RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
+RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c defaults nvstrings
+RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.12
+RUN conda install -n cudf -y -c numba -c conda-forge -c defaults gtest=1.8.0
 
 # libgdf dependencies
 RUN source activate cudf && pip install --upgrade pip

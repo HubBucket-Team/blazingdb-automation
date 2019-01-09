@@ -1,13 +1,16 @@
 ---  
-#- name: Download spark
-#  get_url:
-#    url: https://www-eu.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz
-#    dest: /tmp/spark.tgz
+- name: Install sbt
+  apt: name=sbt state=present
 
-- name: Copy spark-2.3.1-bin-hadoop2.7.tgz
-  copy:
-    src: spark-2.3.1-bin-hadoop2.7.tgz
+- name: Download spark
+  get_url:
+    url: https://www-eu.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz
     dest: /tmp/spark.tgz
+
+#- name: Copy spark-2.3.1-bin-hadoop2.7.tgz
+#  copy:
+#    src: spark-2.3.1-bin-hadoop2.7.tgz
+#    dest: /tmp/spark.tgz
 
 - name: Extract spark.tar.gz to /usr/local/spark
   unarchive:
@@ -25,3 +28,4 @@
     owner: root
     group: root
     mode: 0755
+

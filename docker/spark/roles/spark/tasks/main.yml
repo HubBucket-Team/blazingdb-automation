@@ -11,7 +11,7 @@
   apt_key: keyserver=keyserver.ubuntu.com id=642AC823
 
 - name: Install sbt
-  apt: name=sbt state=present
+  apt: name=sbt state=present update_cache=yes
 
 - name: Download spark
   get_url:

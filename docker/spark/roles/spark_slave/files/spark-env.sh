@@ -2,9 +2,9 @@
 
 export SPARK_MASTER_HOST=192.168.2.11
 export SPARK_LOCAL_IP=192.168.2.11
-export SPARK_DRIVER_MEMROY=1000m
-export SPARK_EXECUTOR_MEMORY=1000m
-export SPARK_EXECUTOR_CORES=2
+#export SPARK_DRIVER_MEMORY=1000m
+#export SPARK_EXECUTOR_MEMORY=1000m
+#export SPARK_EXECUTOR_CORES=2
 
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more

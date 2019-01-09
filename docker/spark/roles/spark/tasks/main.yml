@@ -1,4 +1,17 @@
 ---  
+- name: Copy spark-env.sh
+  copy:
+    src: sbt.list
+    dest: /etc/apt/sources.list.d/sbt.list
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 36A1D7869245C8950F966E92D8576A8BA88D21E9
+
 - name: Install sbt
   apt: name=sbt state=present
 

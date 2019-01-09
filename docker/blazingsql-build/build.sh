@@ -720,7 +720,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     cd $blazingdb_protocol_cpp_build_dir
     
     blazingdb_protocol_artifact_name=libblazingdb-protocol.a
-    rm -rf lib/$blazingdb_ral_artifact_name
+    rm -rf lib/$blazingdb_protocol_artifact_name
     
     echo "### Protocol - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
@@ -782,7 +782,7 @@ if [ $blazingdb_io_enable == true ]; then
     cd $blazingdb_io_cpp_build_dir
     
     blazingdb_io_artifact_name=libblazingdb-io.a
-    rm -rf $blazingdb_ral_artifact_name
+    rm -rf $blazingdb_io_artifact_name
     
     echo "### Blazingdb IO - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
@@ -836,11 +836,17 @@ if [ $blazingdb_ral_enable == true ]; then
     
     #TODO fix the artifacts name
     blazingdb_ral_artifact_name=testing-libgdf
-    rm -f $blazingdb_ral_artifact_name
+    rm -rf $blazingdb_ral_artifact_name
+    
+    build_testing_ral="OFF"
+    if [ $blazingdb_ral_tests == true ]; then
+        build_testing_ral="ON"
+    fi
     
     echo "### Ral - cmake ###"
     # Configure blazingdb-ral with dependencies
     CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+          -DBUILD_TESTING=$build_testing_ral \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
           -DBOOST_INSTALL_DIR=$boost_install_dir \
           -DAWS_SDK_CPP_BUILD_DIR=$aws_sdk_cpp_build_dir \

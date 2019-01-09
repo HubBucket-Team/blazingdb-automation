@@ -126,6 +126,11 @@ VOLUME /blazingsql
 # If the user wants to communicate by unix socket need to mount his /tmp folder
 VOLUME /tmp
 
+# 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
+EXPOSE 8890
+EXPOSE 8891
+EXPOSE 8892
+
 # Supervisord HTTP port
 EXPOSE 9001
 

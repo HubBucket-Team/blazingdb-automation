@@ -1,11 +1,14 @@
 ---
-- name: Install Spark cluster
-  hosts: all
+- name: Install Spark cluster as Master
+  #hosts: all
+  hosts: 127.0.0.1
+  connection: local
   become: true
   become_method: sudo
   #become_user: ec2-user
   roles:
     - common
-    - hadoop
+    #- hadoop
     - spark
     - spark_master
+    - xgboost

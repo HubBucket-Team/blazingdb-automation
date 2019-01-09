@@ -149,6 +149,11 @@ STEP-07
 #cambiar permisos a data directory : chown
 ```
 
+STEP-08
+```
+sudo chown hadoop:hadoop -R current
+```
+
 OUTPUT
 ```
 #jps

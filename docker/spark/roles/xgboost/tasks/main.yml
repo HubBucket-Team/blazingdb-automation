@@ -39,4 +39,5 @@
 
 - name: Mvn clean install
   command: chdir=/tmp/xgboost/jvm-packages mvn clean install -Dmaven.test.skip=true
+  become_user: ubuntu
 

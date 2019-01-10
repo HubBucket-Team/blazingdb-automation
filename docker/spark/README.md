@@ -27,6 +27,7 @@ Test the cluster:
 ```
 $ vagrant ssh master
 vagrant@master$ MASTER=spark://192.168.2.10:7077 /usr/local/spark/bin/run-example SparkPi
+vagrant@master$ /usr/local/spark/bin/spark-submit --class DemoApp /tmp/demoapp/target/scala-2.11/demoproject_2.11-1.0.jar
 ```
 Open in your browser: http://192.168.2.10:8080/
 

@@ -176,11 +176,13 @@ STEP-08
 #MASTER
 # cd /usr/local/hadoop/bin
 # ./hdfs dfs -ls /.
-#./hdfs dfs -mkdir /dirtest
+#./hdfs dfs -mkdir /mortgage_2000
 #./hdfs dfs -ls /.
 #./hdfs dfs -copyFromLocal hola.txt /dirtest
 #./hdfs dfs -ls /dirtest
 #./hdfs dfs -cat /dirtest/hola.txt
+#./hdfs dfs -copyFromLocal /home/hadoop/workspace/mortgage_2000/* /mortgage_2000
+
 
 #WORKER
 #cd data/

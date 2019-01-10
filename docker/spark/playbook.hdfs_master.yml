@@ -4,7 +4,7 @@
   hosts: 127.0.0.1
   connection: local
   become: true
-  become_method: sudo
+  #become_method: sudo
   roles:
     - common
     - hdfs_master

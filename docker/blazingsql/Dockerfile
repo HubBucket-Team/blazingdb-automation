@@ -112,6 +112,7 @@ RUN chown -R jupyter:jupyter /tmp/blazing/
 USER jupyter
 WORKDIR /home/jupyter
 
+USER root
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
 

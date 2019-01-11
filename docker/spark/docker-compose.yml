@@ -1,0 +1,33 @@
+version: '2.0'
+
+services:
+
+  spark-master:
+    image: blazingdb/spark
+    build:
+      context: ./
+    hostname: spark-master
+    ports:
+      - 8080:8080
+      - 4040:4040
+    #command: "/etc/entrypoint_master.sh spark-master"
+    command: "/usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master -h spark-master"
+
+  worker1:
+    image: blazingdb/spark
+    build:
+      context: ./
+    depends_on:
+      - spark-master
+    #command: "/etc/entrypoint_slave.sh spark-master"
+    command: "/usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
+
+  worker2:
+    image: blazingdb/spark
+    build:
+      context: ./
+    depends_on:
+      - spark-master
+    #command: "/etc/entrypoint_slave.sh spark-master"
+    command: "/usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
+

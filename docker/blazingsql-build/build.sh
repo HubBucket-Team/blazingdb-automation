@@ -307,6 +307,25 @@ cp -r $nvstrings_install_dir/* $output/nvstrings/
 
 #END nvstrings
 
+#BEGIN libstd libhdfs3 
+
+libhdfs3_package=libhdfs3
+libhdfs3_install_dir=$workspace_dir/dependencies/$libhdfs3_package
+
+if [ ! -d $libhdfs3_install_dir ]; then
+    cd $workspace_dir/dependencies/
+    libhdfs3_url=https://s3-us-west-2.amazonaws.com/blazing-public-downloads/_libs_/libhdfs3/libhdfs3.tar.gz
+    wget $libhdfs3_url
+    mkdir $libhdfs3_package
+    tar xvf "$libhdfs3_package".tar.gz -C $libhdfs3_package
+fi
+
+cd $workspace_dir
+mkdir -p $output/$libhdfs3_package/
+cp -r $libhdfs3_install_dir/* $output/$libhdfs3_package/
+
+#END libhdfs3
+
 #BEGIN googletest
 
 googletest_install_dir=$workspace_dir/dependencies/googletest_install_dir

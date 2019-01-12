@@ -118,6 +118,9 @@ RUN rm -rf /tmp/blazing
 
 USER root
 
+# Install hdfs stuff
+RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
+
 # NOTE Expose CUDF runtime
 ENV LD_LIBRARY_PATH /conda/envs/cudf/lib/
 

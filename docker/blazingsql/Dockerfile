@@ -138,4 +138,7 @@ EXPOSE 8892
 # Supervisord HTTP port
 EXPOSE 9001
 
+# haddop
+EXPOSE 54310
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

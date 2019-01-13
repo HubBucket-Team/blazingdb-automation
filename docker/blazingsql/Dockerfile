@@ -121,6 +121,13 @@ USER root
 # Install hdfs stuff
 RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 
+USER jupyter
+WORKDIR /home/jupyter
+RUN pip install xgboost
+RUN pip install sklearn
+
+USER root
+
 # NOTE Expose CUDF runtime
 ENV LD_LIBRARY_PATH /conda/envs/cudf/lib/
 

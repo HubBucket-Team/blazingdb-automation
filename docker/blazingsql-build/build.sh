@@ -167,6 +167,14 @@ fi
 
 #END set default optional arguments for tests
 
+#BEGIN set default optional arguments for build options (precompiler definitions, etc.)
+
+if [ -z "$blazingdb_ral_definitions" ]; then
+    blazingdb_ral_definitions="-DLOG_PERFORMANCE"
+fi
+
+#END set default optional arguments for build options (precompiler definitions, etc.)
+
 #BEGIN functions
 
 #usage: replace_str "hi jack :)" "jack" "mike" ... result "hi mike :)" 
@@ -881,6 +889,8 @@ if [ $blazingdb_ral_enable == true ]; then
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
 	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
+          -DCUDA_DEFINES=$blazingdb_ral_definitions \
+          -DCXX_DEFINES=$blazingdb_ral_definitions \
           ..
 
     echo "### Ral - make ###"

@@ -123,8 +123,8 @@ RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 
 USER jupyter
 WORKDIR /home/jupyter
-RUN pip install xgboost
-RUN pip install sklearn
+RUN source activate cudf && pip install xgboost
+RUN source activate cudf && pip install sklearn
 
 USER root
 

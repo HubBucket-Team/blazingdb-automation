@@ -25,12 +25,6 @@ requirements:
   run:
     - python
     - cffi
-    - numba>=0.40.0dev
-    - numpy=1.14.3
-    - pandas 0.20.*
-    - pyarrow 0.10.*
-    - pycparser=2.19
-    - cython=0.28.*
 
 about:
   home: https://blazingdb.com/

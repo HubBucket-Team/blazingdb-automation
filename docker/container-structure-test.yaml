@@ -10,16 +10,16 @@ globalEnvVars:
 fileExistenceTests:
 
   - name: 'orchestrator'
-    path: '/usr/bin/blazingdb_orchestator_service'
+    path: '/home/jupyter/blazingdb_orchestator_service'
     shouldExist: true
     permissions: '-rwxr-xr-x'
 
   - name: 'ral'
-    path: '/usr/bin/testing-libgdf'
+    path: '/home/jupyter/testing-libgdf'
     shouldExist: true
     permissions: '-rwxr-xr-x'
 
   - name: 'calcite'
-    path: '/usr/bin/BlazingCalcite.jar'
+    path: '/home/jupyter/BlazingCalcite.jar'
     shouldExist: true
     permissions: '-rw-r--r--'

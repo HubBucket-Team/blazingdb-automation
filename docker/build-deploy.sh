@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: version_build version_deploy
+# Usage: tag_build tag_deploy cudf_branch protocol_branch io_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch
 
 #BUILD
 WORKSPACE=$PWD
@@ -46,6 +46,8 @@ cat $workspace/blazingsql-build.properties
 
 
 echo "### Build de Build ###"
+echo "nvidia-docker rmi -f $image_build"
+nvidia-docker rmi -f $image_build
 echo "nvidia-docker build -t $image_build ."
 nvidia-docker build -t $image_build .
 
@@ -72,6 +74,8 @@ chmod +x Miniconda3-latest-Linux-x86_64.sh
 
 #DEPLOY
 echo "### Build de Deploy ###"
+echo "nvidia-docker rm -f $image_deploy"
+nvidia-docker rmi -f $image_deploy
 echo "nvidia-docker build -t $image_deploy ."
 nvidia-docker build -t $image_deploy .
 

@@ -1,11 +1,11 @@
 pipeline {
-  agent {
+  agent {    
       label 'slave-gpu'
   }
 
   parameters {
-    string(name: 'IMAGE', defaultValue: 'blazingsql/deploy:5', description: 'The docker image to publish')
-    string(name: 'CREDENTIALS', defaultValue: 'dockerhub-mario21ic', description: 'The docker image to publish')
+    string(name: 'IMAGE', defaultValue: 'blazingsql/deploy:5', description: 'change the default value to: blazingdb/blazingsql:tag')
+    string(name: 'CREDENTIALS', defaultValue: 'dockerhub-editaxz', description: 'Your credentials on blazingdb docker hub organization')
   }
 
   stages {
@@ -14,17 +14,15 @@ pipeline {
         checkout scm
       }
     }
-    
-    stage("Build") {
-      steps {
-        script {
+    stage("Publish on docker hub") { 
+      steps{
+        script {     
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
-            //sh "./docker/publish-dockerhub.sh ${params.IMAGE}"
-            app.push()
-            //app.push("latest")
-          }
+          app = docker.image("${params.IMAGE}")
+          app.push()
+          }   
         }
-      }
+    }
     }
   }
 }

@@ -12,5 +12,5 @@ requirements:
   run:
     - python
 test:
-  imports:
-    - pkg_mario21ic
+  command:
+    - "import balzingsql"

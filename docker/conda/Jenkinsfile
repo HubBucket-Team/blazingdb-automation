@@ -3,10 +3,16 @@ pipeline {
       label 'slave-gpu'
   }
 
+  parameters {
+    string(name: 'LABELS', defaultValue: 'cuda9.2', description: 'Label to blazinsql package')   
+  }
+
+
   environment {
     WORKDIR = "docker/conda"
     INPUT = "/home/mario21ic/blazingsql/output3/"
     OUTPUT = "/home/mario21ic/blazingsql/conda_output"
+    //FILE_CONDA = "null.tar.gz"
   }
 
   stages {
@@ -28,7 +34,11 @@ pipeline {
     stage("Run conda image") {
       steps {
         dir("${WORKDIR}") {
-          sh "./conda_run.sh ${INPUT} ${OUTPUT}"
+          script {
+            sh "./conda_run.sh ${INPUT} ${OUTPUT}"
+            def FILE_CONDA = sh(returnStdout: true, script: "./conda_run.sh ${INPUT} ${OUTPUT}").trim()
+            sh "echo ${FILE_CONDA}"
+          }
         }
       }
     }
@@ -36,7 +46,9 @@ pipeline {
     stage("Publish on conda cloud") {
       steps {
         dir("${WORKDIR}") {
-          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 blazingsql-1.0-py35_0.tar.bz2 python35"
+          
+          //sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA_UPLOAD} python35"
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 ${params.LABELS}"
         }
       }
     }

@@ -1,0 +1,25 @@
+schemaVersion: "2.0.0"
+
+globalEnvVars:
+  - key: "VIRTUAL_ENV"
+    value: "/env"
+  - key: "PATH"
+    value: "/env/bin:$PATH"
+
+
+fileExistenceTests:
+
+  - name: 'orchestrator'
+    path: '/home/jupyter/blazingdb_orchestator_service'
+    shouldExist: true
+    permissions: '-rwxr-xr-x'
+
+  - name: 'ral'
+    path: '/home/jupyter/testing-libgdf'
+    shouldExist: true
+    permissions: '-rwxr-xr-x'
+
+  - name: 'calcite'
+    path: '/home/jupyter/BlazingCalcite.jar'
+    shouldExist: true
+    permissions: '-rwxr-xr-x'

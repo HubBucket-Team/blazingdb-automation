@@ -1,0 +1,31 @@
+---  
+- name: Download hadoop
+  get_url:
+    url: https://www-eu.apache.org/dist/hadoop/common/hadoop-2.7.7/hadoop-2.7.7.tar.gz
+    dest: /tmp/hadoop.tar.gz
+
+#- name: Copy hadoop-2.7.7.tar.gz
+#  copy:
+#    src: hadoop-2.7.7.tar.gz
+#    dest: /tmp/hadoop.tar.gz
+
+- name: Extract hadoop.tar.gz to /usr/local/hadoop
+  unarchive:
+    src: /tmp/hadoop.tar.gz
+    dest: /usr/local/
+    remote_src: yes
+
+- name: Create symlink
+  file: src=/usr/local/hadoop-2.7.7/  dest=/usr/local/hadoop state=link
+
+- name: Replace JAVA_HOME inside hadoop-env.sh
+  command: sed -i "s/\${JAVA_HOME}/\/usr\/lib\/jvm\/java-8-openjdk-amd64\/jre/g" /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+
+
+- name: Copy hadoop-env.sh
+  copy:
+    src: hadoop-env.sh
+    dest: /etc/profile.d/hadoop-env.sh
+    owner: root
+    group: root
+    mode: 0755

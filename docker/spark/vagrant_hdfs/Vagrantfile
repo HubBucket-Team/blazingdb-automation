@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+
+    config.vm.define "masterhdfs" do |node|
+        node.vm.box = "ubuntu/xenial64"
+        node.vm.hostname = "masterhdfs"
+        node.vm.network "private_network", ip: "192.168.100.101"   
+        node.vm.provider "virtualbox" do |vb|
+            vb.memory = "2048"
+            vb.cpus = 2
+        end
+        node.vm.provision "shell", inline: "sudo apt-get install -y python"
+        node.vm.provision :ansible do |ansible|
+            ansible.playbook = "../playbook.hdfs_master.yml"          
+        end
+    end
+
+    config.vm.define "worker1hdfs" do |node|
+        node.vm.box = "ubuntu/xenial64"
+        node.vm.hostname = "worker1hdfs"
+        node.vm.network "private_network", ip: "192.168.100.102"
+        node.vm.provider "virtualbox" do |vb|
+            vb.memory = "2048"
+            vb.cpus = 2
+        end
+        node.vm.provision "shell", inline: "sudo apt-get install -y python"
+        node.vm.provision :ansible do |ansible|
+            ansible.playbook = "../playbook.hdfs_worker.yml"
+        end
+    end   
+
+end

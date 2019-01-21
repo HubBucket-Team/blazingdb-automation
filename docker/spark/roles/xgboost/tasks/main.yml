@@ -1,0 +1,43 @@
+---  
+- name: Install dependencies of xgboost
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - build-essential
+    - automake
+    - autoconf
+    - libtool
+    - maven
+    - cmake
+    - make
+
+#- name: Copy tmp private key
+#  copy:
+#    src: "id_rsa"
+#    dest: $HOME/.ssh/id_rsa
+    #owner: root
+    #group: root
+#    mode: 0600
+
+#- name: Copy tmp public key
+#  copy:
+#    src: "id_rsa.pub"
+#    dest: $HOME/.ssh/id_rsa.pub
+    #owner: root
+    #group: root
+#    mode: 0644
+
+- name: Git clone xgboost from rapidsai
+  git:
+    repo: 'https://github.com/rapidsai/xgboost.git'
+    dest: /tmp/xgboost
+    recursive: true
+
+- name: Compile with build.sh
+  command: chdir=/tmp/xgboost ./build.sh
+
+- name: Mvn clean install
+  command: chdir=/tmp/xgboost/jvm-packages mvn clean install -Dmaven.test.skip=true
+  become_user: ubuntu
+

@@ -1,5 +1,5 @@
 ---
-- name: Install Spark cluster
+- name: Install Spark cluster as Master
   #hosts: all
   hosts: 127.0.0.1
   connection: local
@@ -10,4 +10,5 @@
     - common
     - hadoop
     - spark
+    - spark_master
     - xgboost

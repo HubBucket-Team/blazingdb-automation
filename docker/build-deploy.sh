@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: tag_build tag_deploy cudf_branch protocol_branch io_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch
+# Usage: tag_deploy cudf_branch protocol_branch io_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch
 
 #BUILD
 WORKSPACE=$PWD
@@ -10,17 +10,17 @@ workspace=$HOME/blazingsql/workspace/
 output=$HOME/blazingsql/output3/
 ssh_key=$HOME/.ssh_jenkins/
 image_build="blazingsql/build:latest"
-image_deploy="blazingdb/blazingsql:$2"
+image_deploy="blazingdb/blazingsql:$1"
 
 
 # Parametrize branchs
-cudf_branch="cudf_branch=$3"
-blazingdb_protocol_branch="blazingdb_protocol_branch=$4"
-blazingdb_io_branch="blazingdb_io_branch=$5"
-blazingdb_ral_branch="blazingdb_ral_branch=$6"
-blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$7"
-blazingdb_calcite_branch="blazingdb_calcite_branch=$8"
-pyblazing_branch="pyblazing_branch=$9"
+cudf_branch="cudf_branch=$2"
+blazingdb_protocol_branch="blazingdb_protocol_branch=$3"
+blazingdb_io_branch="blazingdb_io_branch=$4"
+blazingdb_ral_branch="blazingdb_ral_branch=$5"
+blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$6"
+blazingdb_calcite_branch="blazingdb_calcite_branch=$7"
+pyblazing_branch="pyblazing_branch=$8"
 
 
 mkdir -p $workspace $output

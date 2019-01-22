@@ -9,7 +9,7 @@ cd $WORKSPACE/blazingsql-build/
 workspace=$HOME/blazingsql/workspace/
 output=$HOME/blazingsql/output3/
 ssh_key=$HOME/.ssh_jenkins/
-image_build="blazingsql/build:$1"
+image_build="blazingsql/build:latest"
 image_deploy="blazingdb/blazingsql:$2"
 
 

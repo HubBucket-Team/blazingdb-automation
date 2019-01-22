@@ -18,8 +18,10 @@ pipeline {
 
     stage("Publish on docker hub") { 
       steps {
-        docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
-          sh "docker push ${params.IMAGE}"
+        script {
+          docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
+            sh "docker push ${params.IMAGE}"
+          }
         }
       }
     }
@@ -31,9 +33,11 @@ pipeline {
         }
       }
       steps {
-        docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
-          sh "docker tag ${params.IMAGE} blazingdb/blazingsql:latest"
-          sh "docker push blazingdb/blazingsql:latest"
+        script {
+          docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
+            sh "docker tag ${params.IMAGE} blazingdb/blazingsql:latest"
+            sh "docker push blazingdb/blazingsql:latest"
+          }
         }
       }
     }

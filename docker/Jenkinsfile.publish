@@ -40,7 +40,7 @@ pipeline {
             //sh "docker tag ${params.IMAGE} blazingdb/blazingsql:latest"
             //sh "docker push blazingdb/blazingsql:latest"
             app = docker.image("${params.IMAGE}")
-            app.push(latest)
+            app.push("latest")
           }
         }
       }

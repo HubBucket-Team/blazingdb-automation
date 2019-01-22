@@ -21,17 +21,16 @@ pipeline {
         checkout scm
       }
     }
-    
+
     stage("Build conda image") {
       steps {
         dir("${WORKDIR}") {   
-          //sh "./utils.sh"
           sh "./conda_build.sh"
         }
       }
     }
 
-    stage("Run conda image") {
+    stage("Run conda image") { // 1ro
       steps {
         dir("${WORKDIR}") {
           script {

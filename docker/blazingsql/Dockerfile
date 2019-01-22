@@ -145,6 +145,9 @@ EXPOSE 8892
 # Supervisord HTTP port
 EXPOSE 9001
 
+# Jupyter
+EXPOSE 8884
+
 # haddop
 EXPOSE 54310
 

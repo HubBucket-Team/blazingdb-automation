@@ -37,7 +37,7 @@ pipeline {
       steps {
         dir("${WORKDIR}") {
           script {
-            sh "./conda_run.sh ${INPUT} ${OUTPUT}"
+            //sh "./conda_run.sh ${INPUT} ${OUTPUT}"
             def FILE_CONDA = sh(returnStdout: true, script: "./conda_run.sh ${INPUT} ${OUTPUT}").trim()
             sh "echo ${FILE_CONDA}"
           }

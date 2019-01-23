@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: version_build version_deploy
+# Usage: tag_deploy cudf_branch protocol_branch io_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch
 
 #BUILD
 WORKSPACE=$PWD
@@ -9,18 +9,18 @@ cd $WORKSPACE/blazingsql-build/
 workspace=$HOME/blazingsql/workspace/
 output=$HOME/blazingsql/output3/
 ssh_key=$HOME/.ssh_jenkins/
-image_build="blazingsql/build:$1"
-image_deploy="blazingdb/blazingsql:$2"
+image_build="blazingsql/build:latest"
+image_deploy="blazingdb/blazingsql:$1"
 
 
 # Parametrize branchs
-cudf_branch="cudf_branch=$3"
-blazingdb_protocol_branch="blazingdb_protocol_branch=$4"
-blazingdb_io_branch="blazingdb_io_branch=$5"
-blazingdb_ral_branch="blazingdb_ral_branch=$6"
-blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$7"
-blazingdb_calcite_branch="blazingdb_calcite_branch=$8"
-pyblazing_branch="pyblazing_branch=$9"
+cudf_branch="cudf_branch=$2"
+blazingdb_protocol_branch="blazingdb_protocol_branch=$3"
+blazingdb_io_branch="blazingdb_io_branch=$4"
+blazingdb_ral_branch="blazingdb_ral_branch=$5"
+blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$6"
+blazingdb_calcite_branch="blazingdb_calcite_branch=$7"
+pyblazing_branch="pyblazing_branch=$8"
 
 
 mkdir -p $workspace $output
@@ -46,6 +46,8 @@ cat $workspace/blazingsql-build.properties
 
 
 echo "### Build de Build ###"
+echo "nvidia-docker rmi -f $image_build"
+nvidia-docker rmi -f $image_build
 echo "nvidia-docker build -t $image_build ."
 nvidia-docker build -t $image_build .
 
@@ -71,14 +73,9 @@ wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod +x Miniconda3-latest-Linux-x86_64.sh
 
 #DEPLOY
-echo "### Build de Deploy ###"
+echo "### Build de Image Deploy ###"
+echo "nvidia-docker rm -f $image_deploy"
+nvidia-docker rmi -f $image_deploy
 echo "nvidia-docker build -t $image_deploy ."
 nvidia-docker build -t $image_deploy .
 
-echo "### Run de Deploy ###"
-nvidia-docker rm -f myjupyter
-echo "nvidia-docker run --name myjupyter --rm -d -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 $image_deploy"
-nvidia-docker run --name myjupyter --rm -d -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 $image_deploy
-
-echo "### Open with browser ###"
-echo "http://35.185.48.245:8884"

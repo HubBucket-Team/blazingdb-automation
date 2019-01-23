@@ -2,12 +2,18 @@ pipeline {
   agent {
       label 'slave-gpu'
   }
+  
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
 
   parameters {
     booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
-    //string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
-    string(name: 'TAG_BUILD', defaultValue: 'latest', description: 'NOTE: Write your build tag')
+    booleanParam(name: 'LATEST', defaultValue: false, description: 'Publish image as latest')
     string(name: 'TAG_DEPLOY', defaultValue: 'latest', description: 'NOTE: Write your deploy tag')
+    //string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: '')
@@ -16,20 +22,56 @@ pipeline {
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
   }
+  
+  environment {
+    IMAGE = "blazingdb/blazingsql:${params.TAG_DEPLOY}"
+  }
 
   stages {
+
     stage("Repository") {
       steps {
         checkout scm
       }
     }
     
-    stage("Build and deploy") {
+    stage("Build") {
       steps {
         dir("docker/") {
-          sh "./build-deploy.sh ${params.TAG_BUILD} ${params.TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"
+          sh "./build-deploy.sh ${params.TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"
         }
       }
-    }   
+    }
+
+    stage("Test") {
+      steps {
+        dir("docker/") {
+          sh "./test-image.sh ${env.IMAGE}"
+        }
+      }
+    }
+
+    stage("Run") {
+      steps {
+        dir("docker/") {
+          sh "./run-deploy.sh ${params.TAG_DEPLOY}"
+        }
+      }
+    }
+    
+    stage("Publish") {
+      when {
+        expression {
+          return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        build job: "02.PUBLISH_BLAZINGSQL_DOCKERHUB", parameters: [
+          [$class: 'StringParameterValue', name: 'IMAGE', value: "${env.IMAGE}"],
+          [$class: 'StringParameterValue', name: 'LATEST', value: "${params.LATEST}"],
+          //[$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
+        ]
+      }
+    }
   }
 }

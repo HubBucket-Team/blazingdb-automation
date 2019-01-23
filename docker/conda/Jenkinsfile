@@ -51,7 +51,7 @@ pipeline {
           
           //sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA_UPLOAD} python35"
           //sh "./utils.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 ${VERSION} ${PYTHON_VERSION} ${BUILD_NUMBER}"
-          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-${VERSION}-${PYTHON_VERSION}_${BUILD_NUMBER}.tar.bz2 ${params.LABELS}"
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 ${params.LABELS}"
         }
       }
     }

@@ -102,4 +102,4 @@ WORKDIR /home/jupyter
 VOLUME /home/jupyter/input
 VOLUME /home/jupyter/output
 
-CMD ["/bin/bash", "/home/jupyter/generate-blazingsql.sh", "/home/jupyter/input/blazingsql-files.tar.gz", "/home/jupyter/output"]
+#CMD ["/bin/bash", "/home/jupyter/generate-blazingsql.sh", "/home/jupyter/input/blazingsql-files.tar.gz", "/home/jupyter/output"]

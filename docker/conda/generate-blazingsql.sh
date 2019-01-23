@@ -81,10 +81,16 @@ mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
 
 # Va a hacer conda-build e imprimir ruta
-PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz  conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
-echo "package: $PKG"
+#PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz  conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
+#echo "package: $PKG"
+#cp $PKG /home/jupyter/output/
 
-cp $PKG /home/jupyter/output/
+
+FILE_TAR=/home/jupyter/output/blazingsql.tar.gz  conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql
+echo "FILE_TAR: $FILE_TAR"
+
+cp $conda_build_tmp_dir/linux-64/blazingsql*.tar.bz2 /home/jupyter/output
+
 
 #conda install --offline /full/path/to/my_package-....tar.bz2
 

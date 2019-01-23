@@ -44,7 +44,7 @@ pipeline {
         dir("${WORKDIR}") {
           script {
             sh "sudo rm -rf ${OUTPUT}/blazingsql-*"
-            sh "./conda_run.sh ${INPUT} ${OUTPUT}"
+            sh "./conda_run.sh ${INPUT} ${OUTPUT} ${VERSION} ${PYTHON_VERSION} ${BUILD_NUMBER}"
           }
         }
       }

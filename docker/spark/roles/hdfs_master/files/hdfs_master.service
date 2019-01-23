@@ -1,0 +1,14 @@
+[Unit]
+Description="Hdfs Cluster"
+Documentation=https://spark.apache.org/docs/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=hadoop
+Group=hadoop
+ExecStart=/usr/local/hadoop/sbin/start-all.sh
+;ExecReload=/usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master -h 192.168.2.10
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536

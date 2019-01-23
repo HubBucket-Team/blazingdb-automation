@@ -20,7 +20,7 @@ blazingsql_files_dir=$working_space/$blazingsql_files_dir_name
 
 mkdir -p $working_space
 
-#echo "Decompressing blazingsql-files.tar.gz ..."
+echo "Decompressing blazingsql-files.tar.gz ..."
 # TODO percy uncomment this when finish this script
 tar xf $blazingsql_files_tar_gz_path -C $working_space
 #echo "blazingsql-files.tar.gz was decompressed at $working_space"

@@ -84,9 +84,11 @@ echo "Inciiando conda build"
 # Va a hacer conda-build e imprimir ruta
 #PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
 
-FILE_TAR=/home/jupyter/output/blazingsql.tar.gz VERSION=1.1 BUILD=1 conda build --no-test --output-folder $conda_build_tmp_dir blazingsql
+FILE_TAR=/home/jupyter/output/blazingsql.tar.gz VERSION=$3 BUILD=$4 conda build --no-test --output-folder $conda_build_tmp_dir blazingsql
 
 echo "package: $PKG"
+echo "VERSIONN: $3"
+echo "BUILD_NUMBERR: $4"
 #cp $PKG /home/jupyter/output/
 
 echo "COPYY"

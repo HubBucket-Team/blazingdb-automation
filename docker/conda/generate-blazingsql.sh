@@ -93,7 +93,7 @@ echo "BUILD_NUMBERR: $4"
 
 echo "COPYY"
 
-cp /tmp/blazingsql-files_conda_safe_to_remove_/linux-64/blazingsql-*.tar.bz2  /home/jupyter/output/
+cp /tmp/blazingsql-files_conda_safe_to_remove_/linux-64/blazingsql-$3-$5_$4.tar.bz2  /home/jupyter/output/
 
 
 

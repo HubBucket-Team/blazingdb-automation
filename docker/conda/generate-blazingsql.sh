@@ -87,7 +87,13 @@ echo "Inciiando conda build"
 FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --no-test --output-folder $conda_build_tmp_dir blazingsql
 
 echo "package: $PKG"
-cp $PKG /home/jupyter/output/
+#cp $PKG /home/jupyter/output/
+
+echo "COPYY"
+
+cp /tmp/blazingsql-files_conda_safe_to_remove_/linux-64/blazingsql-1.0-py35_0.tar.bz2  /home/jupyter/output/
+
+
 
 
 #FILE_TAR=/home/jupyter/output/blazingsql.tar.gz  conda build --no-test --debug --output-folder $conda_build_tmp_dir blazingsql

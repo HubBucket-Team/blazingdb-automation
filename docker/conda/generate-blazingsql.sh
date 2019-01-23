@@ -81,8 +81,8 @@ mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
 
 # Va a hacer conda-build e imprimir ruta
-PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz  conda build --no-test --output-folder $conda_build_tmp_dir blazingsql)
-echo "package TESS: $PKG"
+PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz  conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
+echo "package: $PKG"
 cp $PKG /home/jupyter/output/
 
 

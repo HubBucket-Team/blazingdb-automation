@@ -6,8 +6,7 @@ version=$2
 python_version=$3 
 build_number=$4
 
-mv $file_name blazingsql-${version}-${python_version}_${build_number}
-ls $file_name 
+sudo mv $file_name blazingsql-${version}-${python_version}_${build_number}
 
 #1.0
 #py35

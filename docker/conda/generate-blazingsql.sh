@@ -85,8 +85,6 @@ echo "Inciiando conda build"
 #PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
 
 # Clean all packages to conda, and then generate a new package
-rm -rf /home/jupyter/output/blazingsql-.*
-
 FILE_TAR=/home/jupyter/output/blazingsql.tar.gz VERSION=$3 BUILD=$4 conda build --no-test --output-folder $conda_build_tmp_dir blazingsql
 
 echo "package: $PKG"
@@ -94,8 +92,8 @@ echo "VERSIONN: $3"
 echo "BUILD_NUMBERR: $4"
 #cp $PKG /home/jupyter/output/
 
-echo "COPYY"
-
+echo "Clean workspace /home/jupyter/output/blazingsql-.* "
+rm -rf /home/jupyter/output/blazingsql-.*
 cp /tmp/blazingsql-files_conda_safe_to_remove_/linux-64/blazingsql-$3-$5_$4.tar.bz2  /home/jupyter/output/
 
 

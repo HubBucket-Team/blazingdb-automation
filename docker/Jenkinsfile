@@ -87,7 +87,7 @@ pipeline {
       }      
       steps {
         build job: "03.PUBLISH_BLAZINGSQL_ANACONDACLOUD", parameters: [
-          [$class: 'StringParameterValue', name: 'ANACONDA_BLAZINGSQL_VERSION', value: "${params.ANACONDA_VERSION}"],
+          [$class: 'StringParameterValue', name: 'ANACONDA_BLAZINGSQL_VERSION', value: "${params.ANACONDA_BLAZINGSQL_VERSION}"],
           [$class: 'StringParameterValue', name: 'ANACONDA_PYTHON_VERSION', value: "${params.ANACONDA_PYTHON_VERSION}"],
           [$class: 'StringParameterValue', name: 'ANACONDA_BUILD_NUMBER', value: "${env.BUILD_NUMBER}"],
           [$class: 'StringParameterValue', name: 'ANACONDA_LABEL', value: "${params.ANACONDA_LABEL}"],

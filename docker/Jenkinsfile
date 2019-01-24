@@ -64,7 +64,6 @@ pipeline {
       when {
         expression {
           return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
-          return params.PUBLISH_ANACONDA_CLOUD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
         }
       }
       steps {
@@ -73,7 +72,15 @@ pipeline {
           [$class: 'StringParameterValue', name: 'LATEST', value: "${params.LATEST}"],
           //[$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
         ]
-      }
+      }     
+    }
+
+    stage("Publish Anaconda Cloud") {
+      when {
+        expression {
+          return params.PUBLISH_ANACONDA_CLOUD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }      
       steps {
         build job: "03.PUBLISH_BLAZINGSQL_ANACONDACLOUD", parameters: [
           [$class: 'StringParameterValue', name: 'VERSION', value: "${env.IMAGE}"],

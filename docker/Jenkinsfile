@@ -14,10 +14,10 @@ pipeline {
     booleanParam(name: 'LATEST', defaultValue: false, description: 'Publish image as latest')
     string(name: 'TAG_DEPLOY', defaultValue: 'latest', description: 'NOTE: Write your deploy tag')
     booleanParam(name: 'ANACONDA_PUBLISH_CLOUD', defaultValue: false, description: 'Publish to Conda Cloud')
-    string(name: 'ANACONDA_VERSION', defaultValue: '1.0', description: 'Blazingsql version')   
+    string(name: 'ANACONDA_BLAZINGSQL_VERSION', defaultValue: '1.0', description: 'Blazingsql version')   
     string(name: 'ANACONDA_PYTHON_VERSION', defaultValue: 'py35', description: 'Python version')   
     string(name: 'ANACONDA_BUILD_NUMBER', defaultValue: '1', description: 'Build number')   
-    string(name: 'ANACONDA_LABEL', defaultValue: 'cuda9.2', description: 'Label to blazinsql package')   
+    string(name: 'ANACONDA_LABEL', defaultValue: 'main', description: 'Label to blazinsql package')   
     //string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: '')
@@ -87,9 +87,9 @@ pipeline {
       }      
       steps {
         build job: "03.PUBLISH_BLAZINGSQL_ANACONDACLOUD", parameters: [
-          [$class: 'StringParameterValue', name: 'ANACONDA_VERSION', value: "${params.ANACONDA_VERSION}"],
+          [$class: 'StringParameterValue', name: 'ANACONDA_BLAZINGSQL_VERSION', value: "${params.ANACONDA_VERSION}"],
           [$class: 'StringParameterValue', name: 'ANACONDA_PYTHON_VERSION', value: "${params.ANACONDA_PYTHON_VERSION}"],
-          [$class: 'StringParameterValue', name: 'ANACONDA_BUILD_NUMBER', value: "${params.ANACONDA_BUILD_NUMBER}"],
+          [$class: 'StringParameterValue', name: 'ANACONDA_BUILD_NUMBER', value: "${env.BUILD_NUMBER}"],
           [$class: 'StringParameterValue', name: 'ANACONDA_LABEL', value: "${params.ANACONDA_LABEL}"],
            [$class: 'StringParameterValue', name: 'ANACONDA_PUBLISH_CLOUD', value: "${params.ANACONDA_PUBLISH_CLOUD}"],
         ]

@@ -44,7 +44,7 @@ pipeline {
         dir("${WORKDIR}") {
           script {
             sh "sudo rm -rf ${OUTPUT}/blazingsql-*"
-            sh "./conda_run.sh ${INPUT} ${OUTPUT} ${VERSION} ${PYTHON_VERSION} ${BUILD_NUMBER}"
+            sh "./conda_run.sh ${INPUT} ${OUTPUT} ${params.VERSION} ${params.PYTHON_VERSION} ${params.BUILD_NUMBER}"
           }
         }
       }
@@ -53,7 +53,7 @@ pipeline {
     stage("Publish on conda cloud") {
       steps {
         dir("${WORKDIR}") {          
-          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-${VERSION}-${PYTHON_VERSION}_${BUILD_NUMBER}.tar.bz2 ${params.LABELS}"
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-${params.VERSION}-${params.PYTHON_VERSION}_${params.BUILD_NUMBER}.tar.bz2 ${params.LABELS}"
         }
       }
     }

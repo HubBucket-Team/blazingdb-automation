@@ -6,6 +6,7 @@ pipeline {
   parameters {
     booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
     booleanParam(name: 'LATEST', defaultValue: false, description: 'Publish image as latest')
+    booleanParam(name: 'PUBLISH_ANACONDA_CLOUD', defaultValue: false, description: 'Publish to Conda Cloud')
     string(name: 'TAG_DEPLOY', defaultValue: 'latest', description: 'NOTE: Write your deploy tag')
     //string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
@@ -57,6 +58,7 @@ pipeline {
       when {
         expression {
           return params.PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+          return params.PUBLISH_ANACONDA_CLOUD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
         }
       }
       steps {
@@ -64,6 +66,14 @@ pipeline {
           [$class: 'StringParameterValue', name: 'IMAGE', value: "${env.IMAGE}"],
           [$class: 'StringParameterValue', name: 'LATEST', value: "${params.LATEST}"],
           //[$class: 'StringParameterValue', name: 'SLACK_CHANNEL', value: "#devops"]
+        ]
+      }
+      steps {
+        build job: "03.PUBLISH_BLAZINGSQL_ANACONDACLOUD", parameters: [
+          [$class: 'StringParameterValue', name: 'VERSION', value: "${env.IMAGE}"],
+          [$class: 'StringParameterValue', name: 'PYTHON_VERSION', value: "${params.LATEST}"],
+          [$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: "${env.IMAGE}"],
+          [$class: 'StringParameterValue', name: 'LABELS', value: "${params.LATEST}"],
         ]
       }
     }

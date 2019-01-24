@@ -12,7 +12,7 @@ pipeline {
   parameters {
     string(name: 'CREDENTIALS', defaultValue: 'dockerhub-editaxz', description: 'Your credentials on blazingdb docker hub organization')
     string(name: 'IMAGE', defaultValue: 'blazingsql/deploy:5', description: 'change the default value to: blazingdb/blazingsql:tag')
-    booleanParam(name: 'LATEST', defaultValue: false, description: 'Publish image as latest')
+    booleanParam(name: 'DOCKERHUB_LATEST', defaultValue: false, description: 'Publish image as latest')
   }
 
   stages {
@@ -37,7 +37,7 @@ pipeline {
     stage("Publish as latest") {
       when {
         expression {
-          return params.LATEST ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+          return params.DOCKERHUB_LATEST ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
         }
       }
       steps {

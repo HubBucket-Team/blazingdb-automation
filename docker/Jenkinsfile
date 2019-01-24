@@ -91,6 +91,7 @@ pipeline {
           [$class: 'StringParameterValue', name: 'ANACONDA_PYTHON_VERSION', value: "${params.ANACONDA_PYTHON_VERSION}"],
           [$class: 'StringParameterValue', name: 'ANACONDA_BUILD_NUMBER', value: "${params.ANACONDA_BUILD_NUMBER}"],
           [$class: 'StringParameterValue', name: 'ANACONDA_LABEL', value: "${params.ANACONDA_LABEL}"],
+           [$class: 'StringParameterValue', name: 'ANACONDA_PUBLISH_CLOUD', value: "${params.ANACONDA_PUBLISH_CLOUD}"],
         ]
       }
     }

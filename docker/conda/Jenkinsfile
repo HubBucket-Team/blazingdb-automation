@@ -52,7 +52,6 @@ pipeline {
     }
     
     stage("Publish on conda cloud") {
-
        when {
         expression {
           return params.ANACONDA_PUBLISH_CLOUD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/

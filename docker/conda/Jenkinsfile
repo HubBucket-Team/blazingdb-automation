@@ -14,6 +14,7 @@ pipeline {
     string(name: 'PYTHON_VERSION', defaultValue: 'py35', description: 'Python version')   
     string(name: 'BUILD_NUMBER', defaultValue: '1', description: 'Build number')   
     string(name: 'LABELS', defaultValue: 'cuda9.2', description: 'Label to blazinsql package')   
+    booleanParam(name: 'ANACONDA_PUBLISH_CLOUD', defaultValue: false, description: 'Publish image in anaconda cloud')
   }
 
 
@@ -51,6 +52,12 @@ pipeline {
     }
     
     stage("Publish on conda cloud") {
+
+       when {
+        expression {
+          return params.ANACONDA_PUBLISH_CLOUD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }      
       steps {
         dir("${WORKDIR}") {          
           sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-${params.VERSION}-${params.PYTHON_VERSION}_${params.BUILD_NUMBER}.tar.bz2 ${params.LABELS}"

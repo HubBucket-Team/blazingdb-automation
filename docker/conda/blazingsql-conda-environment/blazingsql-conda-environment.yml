@@ -1,4 +1,4 @@
-name: blazingsql_dev_py35
+name: blazingsql
 channels:
   - numba
   - rapidsai

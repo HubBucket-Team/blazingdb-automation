@@ -13,8 +13,6 @@ dependencies:
   - numpy=1.14.3
   - pandas=0.20.3
   - pyarrow=0.10.0
-  - cmake=3.12
-  - gtest=1.8.0
   - cython=0.28.*
   - python=3.5.*
   - jupyterlab
@@ -33,3 +31,4 @@ dependencies:
     - xgboost
     - sklearn
     - sphinx-markdown-tables
+    

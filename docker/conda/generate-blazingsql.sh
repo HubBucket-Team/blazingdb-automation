@@ -20,7 +20,7 @@ blazingsql_files_dir=$working_space/$blazingsql_files_dir_name
 
 mkdir -p $working_space
 
-#echo "Decompressing blazingsql-files.tar.gz ..."
+echo "Decompressing blazingsql-files.tar.gz ..."
 # TODO percy uncomment this when finish this script
 tar xf $blazingsql_files_tar_gz_path -C $working_space
 #echo "blazingsql-files.tar.gz was decompressed at $working_space"
@@ -80,11 +80,29 @@ conda_build_tmp_dir=/tmp/"$blazingsql_files_dir_name$conda_build_tmp_dir_name"
 mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
 
+echo "Inciiando conda build"
 # Va a hacer conda-build e imprimir ruta
-PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
-#echo "package: $PKG"
+#PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
 
-cp $PKG /home/jupyter/output/
+# Clean all packages to conda, and then generate a new package
+FILE_TAR=/home/jupyter/output/blazingsql.tar.gz VERSION=$3 BUILD=$5 conda build --no-test --output-folder $conda_build_tmp_dir blazingsql
+
+echo "package: $PKG"
+echo "VERSIONN: $3"
+echo "BUILD_NUMBERR: $4"
+echo "PYTHON_VERSION: $5"
+#cp $PKG /home/jupyter/output/
+
+echo "Copying package to output conda"
+cp /tmp/blazingsql-files_conda_safe_to_remove_/linux-64/blazingsql-$3-$4_$5.tar.bz2  /home/jupyter/output/
+
+
+
+
+#FILE_TAR=/home/jupyter/output/blazingsql.tar.gz  conda build --no-test --debug --output-folder $conda_build_tmp_dir blazingsql
+
+#cp $conda_build_tmp_dir/linux-64/blazingsql*.tar.bz2 /home/jupyter/output
+
 
 #conda install --offline /full/path/to/my_package-....tar.bz2
 

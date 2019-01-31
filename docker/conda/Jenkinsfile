@@ -3,8 +3,19 @@ pipeline {
       label 'slave-gpu'
   }
 
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
   parameters {
-    string(name: 'LABELS', defaultValue: 'cuda9.2', description: 'Label to blazinsql package')   
+    string(name: 'ANACONDA_BLAZINGSQL_VERSION', defaultValue: '0.2.0', description: 'Blazingsql version')   
+    string(name: 'ANACONDA_PYTHON_VERSION', defaultValue: 'py35', description: 'Python version') 
+    //TODO: Este job no se puede ejecutar solo, necesita ser enviado desde el job de build  
+    string(name: 'ANACONDA_BUILD_NUMBER', defaultValue: '1', description: 'Build number')   
+    string(name: 'ANACONDA_LABEL', defaultValue: 'main', description: 'Label to blazinsql package')
+    booleanParam(name: 'ANACONDA_PUBLISH_CLOUD', defaultValue: false, description: 'Publish image in anaconda cloud')
   }
 
 
@@ -21,34 +32,35 @@ pipeline {
         checkout scm
       }
     }
-    
+
     stage("Build conda image") {
       steps {
         dir("${WORKDIR}") {   
-          //sh "./utils.sh"
           sh "./conda_build.sh"
         }
       }
     }
 
-    stage("Run conda image") {
+    stage("Run conda image") { // 1ro
       steps {
         dir("${WORKDIR}") {
           script {
-            sh "./conda_run.sh ${INPUT} ${OUTPUT}"
-            def FILE_CONDA = sh(returnStdout: true, script: "./conda_run.sh ${INPUT} ${OUTPUT}").trim()
-            sh "echo ${FILE_CONDA}"
+            sh "sudo rm -rf ${OUTPUT}/blazingsql-*"
+            sh "./conda_run.sh ${INPUT} ${OUTPUT} ${params.ANACONDA_BLAZINGSQL_VERSION} ${params.ANACONDA_PYTHON_VERSION} ${env.BUILD_NUMBER}"
           }
         }
       }
     }
     
     stage("Publish on conda cloud") {
+       when {
+        expression {
+          return params.ANACONDA_PUBLISH_CLOUD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }      
       steps {
-        dir("${WORKDIR}") {
-          
-          //sh "./conda_run_upload.sh ${OUTPUT}/${FILE_CONDA_UPLOAD} python35"
-          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-1.0-py35_0.tar.bz2 ${params.LABELS}"
+        dir("${WORKDIR}") {          
+          sh "./conda_run_upload.sh ${OUTPUT}/blazingsql-${params.ANACONDA_BLAZINGSQL_VERSION}-${params.ANACONDA_PYTHON_VERSION}_${env.BUILD_NUMBER}.tar.bz2 ${params.ANACONDA_LABEL}"
         }
       }
     }

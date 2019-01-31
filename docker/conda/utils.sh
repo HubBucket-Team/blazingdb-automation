@@ -1,20 +1,13 @@
-
 #!/bin/bash
+# Usage: file_to_upload label
 
-#BUILD
-WORKSPACE=$PWD
+file_name=$1
+version=$2
+python_version=$3 
+build_number=$4
 
+sudo mv $file_name blazingsql-${version}-${python_version}_${build_number}
 
-# BEFORE DEPLOY
-#cd $WORKSPACE/
-
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-chmod +x Miniconda3-latest-Linux-x86_64.sh
-
-
-#output=$HOME/blazingsql/conda_output/
-#sudo chown 1000:1000 -R $output
-
-#echo "HOME/blazingsql/conda_output/ ====>>>> " $HOME/blazingsql/conda_output/
-
-
+#1.0
+#py35
+#0

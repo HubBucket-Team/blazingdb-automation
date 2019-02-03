@@ -1,4 +1,4 @@
-FROM blazingdb/blazingsql:latest
+FROM demo:latest
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
@@ -8,22 +8,35 @@ RUN apt-get update
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get clean
 
+#RUN wget http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
+#RUN tar -xvzf apache-drill-1.12.0.tar.gz
+
+
 RUN source activate cudf && pip install pydrill
 RUN source activate cudf && pip install openpyxl
 
 # Create the user 'tester'
-RUN useradd -ms /bin/bash kharoly
+RUN useradd -ms /bin/bash edith
 
 RUN touch /blazingsql/hi.txt
-RUN chown -R kharoly:kharoly /blazingsql/
+RUN chown -R edith:edith /blazingsql/
 
-USER kharoly
-WORKDIR /home/kharoly/
+USER edith
+WORKDIR /home/edith/
 
-RUN mkdir -p /home/kharoly/blazing
+RUN mkdir -p /home/edith/blazingdb
+RUN mkdir -p /home/edith/blazingdb/config-files
+
+#RUN cp configurationFile.json /home/edith/blazingdb/config-files
+
 
 # For the tester user
-VOLUME /home/kharoly/blazing
+VOLUME /home/edith/blazingdb
+
+
+#CMD ["/bin/bash", "/home/edith/run-e2e-test.sh", "/home/builder/workspace", "/home/builder/output/"]
+
+
 
 # nvidia-docker build -t blazingsqltest
 # nvidia-docker run --name bzsqlcontainer --rm -p 8884:8888 -p 8787:8787 -p 8786:8786 -p 9001:9001 -v /home/kharoly/blazing:/home/kharoly/blazing -ti blazingsqltest bash

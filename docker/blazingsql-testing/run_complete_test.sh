@@ -59,7 +59,7 @@ nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:878
 echo "Changing permission"
 nvidia-docker exec -u root bzsqlcontainer chown -R edith:edith /blazingsql/
 nvidia-docker exec -u root bzsqlcontainer chown -R edith:edith /home/edith/blazingdb/
-nvidia-docker exec -u root bzsqlcontainer chown -R edith:edith /home/edith/blazingdb/apache-drill-1.12.0
+nvidia-docker exec -u root bzsqlcontainer chown -R edith:edith /home/edith/blazingdb/apache-drill-1.12.0/
 
 
 # Init services
@@ -75,9 +75,12 @@ echo "Init apache Drill"
 cd $workdir_scriptdrill
 ./run_drill.sh
 
+sleep 10
+
 # Init e2e test
-#echo "Init e2e test"
-#nvidia-docker exec -ti bzsqlcontainer /bin/bash
-#cd /home/edith/blazingdb/blazingdb-testing/BlazingSQLTest/
-#source activate cudf
-#python allE2ETest.py /home/edith/blazingdb/configurationFile.json
+echo "Init e2e test"
+#nvidia-docker exec -ti bzsqlcontainer  /bin/bash
+#./run_e2e.sh
+
+nvidia-docker  run  -it  bzsqlcontainer  /home/edith/blazingdb/run_e2e.sh
+

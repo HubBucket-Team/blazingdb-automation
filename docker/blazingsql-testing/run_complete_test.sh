@@ -8,6 +8,7 @@ docker rm $(docker ps -a -q)
 workdir=/home/edith/blazingdb/workspace-testing
 workdir_testing=$workdir/blazingdb-testing
 workdir_scriptdrill=/home/edith/blazingdb/repositories/blazingsql/blazingdb-automation/docker/blazingsql-testing
+workdir_drill=/home/edith/blazingdb/apache-drill-1.12.0/bin/drill-embedded
 
 # chown -R  edith:edith  $workdir
 
@@ -52,7 +53,7 @@ fi
 # Executing container e2e
 echo "Run e2e test image"
 #./e2e_run.sh
-nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v /home/edith/blazingdb/workspace-testing/:/home/edith/blazingdb  -ti blazingsqltest  bash
+nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $workdir_scriptdrill/run_e2e.sh:/tmp/run_e2e.sh -v /home/edith/blazingdb/workspace-testing/:/home/edith/blazingdb  -ti blazingsqltest  bash
 
 
 # Change permissions
@@ -73,14 +74,11 @@ echo "Init apache Drill"
 #nvidia-docker exec -d bzsqlcontainer   /home/edith/blazingdb/apache-drill-1.12.0/bin/drill-embedded
 #!quit
 cd $workdir_scriptdrill
-./run_drill.sh
+./run_drill.sh  $workdir_drill
 
 sleep 10
 
 # Init e2e test
 echo "Init e2e test"
-#nvidia-docker exec -ti bzsqlcontainer  /bin/bash
-#./run_e2e.sh
-
-nvidia-docker  run  -it  bzsqlcontainer  /home/edith/blazingdb/run_e2e.sh
+nvidia-docker  exec -ti  bzsqlcontainer   /tmp/run_e2e.sh
 

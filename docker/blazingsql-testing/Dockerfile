@@ -28,7 +28,6 @@ WORKDIR /home/edith/
 
 RUN mkdir -p /home/edith/blazingdb
 RUN chown -R edith:edith  /home/edith/blazingdb
-COPY  run_e2e.sh /home/edith/blazingdb
 # For the tester user
 VOLUME /home/edith/blazingdb
 

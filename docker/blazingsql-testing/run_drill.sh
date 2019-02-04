@@ -8,4 +8,4 @@
 
 
 #NEW
-nvidia-docker exec -it -d bzsqlcontainer  /home/edith/blazingdb/apache-drill-1.12.0/bin/drill-embedded
+nvidia-docker exec -it -d bzsqlcontainer $1

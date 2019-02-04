@@ -1,8 +1,15 @@
 #!/bin/bash
+
+#Clean 
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+
 #Build image e2etest
 workdir=/home/edith/blazingdb/workspace-testing
 workdir_testing=$workdir/blazingdb-testing
 workdir_scriptdrill=/home/edith/blazingdb/repositories/blazingsql/blazingdb-automation/docker/blazingsql-testing
+
+# chown -R  edith:edith  $workdir
 
 # Build e2e image
 echo "Building e2e test image"
@@ -39,7 +46,7 @@ fi
 logTest_name=logtest
 
 if [ ! -d $logTest_name ]; then
-    mkdir logtest
+    mkdir $logTest_name
 fi   
 
 # Executing container e2e
@@ -52,6 +59,8 @@ nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:878
 echo "Changing permission"
 nvidia-docker exec -u root bzsqlcontainer chown -R edith:edith /blazingsql/
 nvidia-docker exec -u root bzsqlcontainer chown -R edith:edith /home/edith/blazingdb/
+nvidia-docker exec -u root bzsqlcontainer chown -R edith:edith /home/edith/blazingdb/apache-drill-1.12.0
+
 
 # Init services
 echo "Init services"
@@ -64,7 +73,7 @@ echo "Init apache Drill"
 #nvidia-docker exec -d bzsqlcontainer   /home/edith/blazingdb/apache-drill-1.12.0/bin/drill-embedded
 #!quit
 cd $workdir_scriptdrill
-./run_drill.sh &
+./run_drill.sh
 
 # Init e2e test
 #echo "Init e2e test"

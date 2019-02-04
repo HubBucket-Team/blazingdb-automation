@@ -2,6 +2,7 @@
 #Build image e2etest
 workdir=/home/edith/blazingdb/workspace-testing
 workdir_testing=$workdir/blazingdb-testing
+workdir_scriptdrill=/home/edith/blazingdb/repositories/blazingsql/blazingdb-automation/docker/blazingsql-testing
 
 # Build e2e image
 echo "Building e2e test image"
@@ -60,11 +61,14 @@ nvidia-docker exec -d bzsqlcontainer java -jar  /home/jupyter/BlazingCalcite.jar
 
 # Init apache Drill
 echo "Init apache Drill"
-nvidia-docker exec -d bzsqlcontainer   /home/edith/blazingdb/apache-drill-1.12.0/bin/drill-embedded
+#nvidia-docker exec -d bzsqlcontainer   /home/edith/blazingdb/apache-drill-1.12.0/bin/drill-embedded
+#!quit
+cd $workdir_scriptdrill
+./run_drill.sh &
 
 # Init e2e test
-echo "Init e2e test"
-nvidia-docker exec -ti bzsqlcontainer /bin/bash
-cd /home/edith/blazingdb/blazingdb-testing/BlazingSQLTest/
-source activate cudf
-python allE2ETest.py /home/edith/blazingdb/configurationFile.json
+#echo "Init e2e test"
+#nvidia-docker exec -ti bzsqlcontainer /bin/bash
+#cd /home/edith/blazingdb/blazingdb-testing/BlazingSQLTest/
+#source activate cudf
+#python allE2ETest.py /home/edith/blazingdb/configurationFile.json

@@ -1,10 +1,9 @@
 
-## PRE REQUIREMENTS
+## Run BlazingSQL End to End test
 
+## Developer mode
 
-## Developer Mode
-
-### Pre Requirements
+## Pre Requirements
 - You need the imagen demo and the demobuid are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
 -  You need a workspace for end to end test Example: workspace-testing
 - Into workspace yo need this components: DataSet1Mb, configurationFile.json.
@@ -28,7 +27,7 @@ git checkout feature/sprint16-e2e-automation
 cd blazingdb-automation/docker/blazingsql-testing
 ```
 
-2.  Chang the follow parameters:
+2.  Change the follow parameters:
 ```shell-script
 # Your local machine user
 user=edith
@@ -44,6 +43,10 @@ cd $local_workdir
 ```
 
 ## Jenkins Mode
+
+## IN PROGRESS
+
+## Pre Requirements
 
 1.  Apache Drill
 ```shell-script

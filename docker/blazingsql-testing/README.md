@@ -4,10 +4,10 @@
 ## Developer mode
 
 ## Pre Requirements
-- You need the imagen demo and the demobuid are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
--  You need a workspace for end to end test Example: workspace-testing
-- Into workspace yo need this components: DataSet1Mb, configurationFile.json.
-- The configuration file silimar like this:
+-  You need the imagen **demo** and the **demobuid** are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
+-  You need a workspace  for end to end tes in your local machinet Example: **workspace-testing**
+-  Into workspace-testing you need this  two components: **DataSet1Mb, configurationFile.json**
+-  The configuration file silimar like thiss, where  **"edith"**, is your local machine user. (change it!)
 ```shell-script
 {
     "TestSettings": {
@@ -16,27 +16,29 @@
     }
 }
 ```
-- Where "edith", is your local machine user. (change it!)
 
 ## Execute the script to run end to end test
 
-1. Clone the repository:
+**1. Clone the repository:**
 ```shell-script
 git clone https://github.com/BlazingDB/blazingdb-automation.git
 git checkout feature/sprint16-e2e-automation
 cd blazingdb-automation/docker/blazingsql-testing
 ```
 
-2.  Change the follow parameters:
+**2.  Change the follow parameters:**
+In the file: **run_complete_test.sh** change the parameters like this:
 ```shell-script
 # Your local machine user
 user=edith
+
 # The volumen do you want to mount (DataSet1MB, configurationFile.json)
 workdir=$your_home/workspace-testing
+
 # Where the blazingdb-automation/docker/blazingsql-testing is
 local_workdir=$home_user/repositories/blazingsql/blazingdb-automation/docker/blazingsql-testing
 ```
-3. Launch the script
+**3. Launch the script**
 ```shell-script
 cd $local_workdir
 ./run_complete_test.sh

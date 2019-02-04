@@ -1,0 +1,6 @@
+{
+    "TestSettings": {
+     "dataDirectory": "worspace-testing/DataSet1Mb",
+     "logDirectory": "worspace-testing/logtest"
+    }
+}

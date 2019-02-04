@@ -8,10 +8,11 @@ docker rm $(docker ps -a -q)
 # Set directories workspace
 user=edith
 home_user=/home/$user/blazingdb
-# The volumen do you want to mount (DataSet1MB, logtest, configurationFile.json)
-workdir=$home_user/workspace-testing
 workdir_drill=$home_user/apache-drill-1.12.0
+# The directory where blazingsql-testing is: LOCAL
 local_workdir=$home_user/repositories/blazingsql/blazingdb-automation/docker/blazingsql-testing
+# The volumen do you want to mount (DataSet1MB, logtest, configurationFile.json) : LOCAL
+workdir=$home_user/workspace-testing
 
 
 # Build end to end test image
@@ -41,7 +42,7 @@ apache_drill_directory=apache-drill-1.12.0
 if [ ! -d $apache_drill_directory ]; then
     wget http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
     tar -xvzf apache-drill-1.12.0.tar.gz
-    # Set time zone apacje drill:  In the folder : /apache-drill-1.12.0/conf/ edit the file drill-env.sh and add the line: export DRILL_JAVA_OPTS="-Duser.timezone=UTC"
+    # Set time zone apache drill:  In the folder : /apache-drill-1.12.0/conf/ edit the file drill-env.sh and add the line: export DRILL_JAVA_OPTS="-Duser.timezone=UTC"
     DRILL_JAVA_OPTS_VAR='export DRILL_JAVA_OPTS="-Duser.timezone=UTC" '
     echo $DRILL_JAVA_OPTS_VAR >> apache-drill-1.12.0/conf/drill-env.sh
 
@@ -84,5 +85,5 @@ sleep 10
 
 # Init e2e test
 echo "Init e2e test"
-nvidia-docker  exec -ti  bzsqlcontainer   /tmp/run_e2e.sh
+nvidia-docker  exec -ti  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 

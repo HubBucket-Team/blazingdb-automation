@@ -1,6 +1,6 @@
 {
     "TestSettings": {
-     "dataDirectory": "worspace-testing/DataSet1Mb",
-     "logDirectory": "worspace-testing/logtest"
+     "dataDirectory": "/home/edith/blazingdb/DataSet1Mb",
+     "logDirectory": "/home/edith/blazingdb/logtest"
     }
 }

@@ -29,17 +29,6 @@ WORKDIR /home/edith/
 RUN mkdir -p /home/edith/blazingdb
 RUN chown -R edith:edith  /home/edith/blazingdb
 
-COPY run-e2etest.sh /home/edith/blazingdb/
-COPY configurationFile.json /home/edith/blazingdb/
-
-#RUN  chmod +x   /home/edith/blazingdb/run-e2etest.sh
-
-
-# Prepare the build script
-
-#RUN  chmod +x /home/edith/blazingdb/run-e2etest.sh 
-#RUN  chown edith:edith  /home/edith/blazingdb/run-e2etest.sh 
-
 # For the tester user
 VOLUME /home/edith/blazingdb
 

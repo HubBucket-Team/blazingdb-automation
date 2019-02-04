@@ -3,6 +3,11 @@
 workdir=/home/edith/blazingdb/workspace-testing
 workdir_testing=$workdir/blazingdb-testing
 
+# Build e2e image
+echo "Building e2e test image"
+#./e2e_build.sh
+nvidia-docker build -t blazingsqltest .
+
 # Repository  blazingdb-testing
 cd $workdir
 blazingdb_testing_name=blazingdb-testing
@@ -30,16 +35,11 @@ fi
 # Copy Data MB
 
 # Create LogData
-logTest_name=logTest
+logTest_name=logtest
 
 if [ ! -d $logTest_name ]; then
-    mkdir logTest
+    mkdir logtest
 fi   
-
-# Build e2e image
-echo "Building e2e test image"
-#./e2e_build.sh
-nvidia-docker build -t blazingsqltest .
 
 # Executing container e2e
 echo "Run e2e test image"

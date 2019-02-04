@@ -1,7 +1,51 @@
 
 ## PRE REQUIREMENTS
 
-1. Apache Drill
+
+## Developer Mode
+
+### Pre Requirements
+- You need the imagen demo and the demobuid are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
+-  You need a workspace for end to end test Example: workspace-testing
+- Into workspace yo need this components: DataSet1Mb, configurationFile.json.
+- The configuration file silimar like this:
+```shell-script
+{
+    "TestSettings": {
+     "dataDirectory": "/home/edith/blazingdb/DataSet1Mb",
+     "logDirectory": "/home/edith/blazingdb/logtest"
+    }
+}
+```
+- Where "edith", is your local machine user. (change it!)
+
+## Execute the script to run end to end test
+
+1. Clone the repository:
+```shell-script
+git clone https://github.com/BlazingDB/blazingdb-automation.git
+git checkout feature/sprint16-e2e-automation
+cd blazingdb-automation/docker/blazingsql-testing
+```
+
+2.  Chang the follow parameters:
+```shell-script
+# Your local machine user
+user=edith
+# The volumen do you want to mount (DataSet1MB, configurationFile.json)
+workdir=$your_home/workspace-testing
+# Where the blazingdb-automation/docker/blazingsql-testing is
+local_workdir=$home_user/repositories/blazingsql/blazingdb-automation/docker/blazingsql-testing
+```
+3. Launch the script
+```shell-script
+cd $local_workdir
+./run_complete_test.sh
+```
+
+## Jenkins Mode
+
+1.  Apache Drill
 ```shell-script
 wget http://apache.mirrors.hoobly.com/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
 tar -xvzf apache-drill-1.12.0.tar.gz

@@ -1,4 +1,4 @@
-FROM hola/image:popo
+FROM demo:latest
 
 ARG USER=default_value
 ENV USER=$USER

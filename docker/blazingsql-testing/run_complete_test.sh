@@ -85,4 +85,7 @@ cd $local_workdir
 sleep 10
 
 echo "Init e2e test"
-nvidia-docker  exec -ti  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+#DEVELOPER MODE ( -it showing the process)
+nvidia-docker  exec  -it bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+# JENKINS MODE
+nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

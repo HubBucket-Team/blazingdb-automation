@@ -15,6 +15,8 @@ home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0
 local_workdir=$PWD
 echo "PWD===" $PWD
+ssh_key=$HOME/.ssh_jenkins/
+
 
 echo "Using Blazingsql deploy image"
 image_tag=`echo "$image_tag"| sed "s/\//\\\\\\\\\//g"`
@@ -60,7 +62,11 @@ if [ ! -d $logTest_name ]; then
 fi   
 
 echo "Run end to end  test container"
-nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $HOME/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
+#DEVELOP MODE
+#nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $HOME/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
+#JENKINS MODE
+nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
+
 
 echo "Changing permission"
 nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user /blazingsql/

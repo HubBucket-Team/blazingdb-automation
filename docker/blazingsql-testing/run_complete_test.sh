@@ -17,6 +17,7 @@ local_workdir=$PWD
 echo "PWD===" $PWD
 
 echo "Using Blazingsql deploy image"
+image_tag=`echo "$image_tag"| sed "s/\//\\\\\\\\\//g"`
 sed -ie "s/FROM.*/FROM $image_tag/g" $local_workdir/Dockerfile
 
 echo "Building e2e test image"

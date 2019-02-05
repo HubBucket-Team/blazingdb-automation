@@ -1,4 +1,4 @@
-FROM deploy:new
+FROM hola/image:popo
 
 ARG USER=default_value
 ENV USER=$USER

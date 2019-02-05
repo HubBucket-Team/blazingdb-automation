@@ -3,20 +3,12 @@
 
 ## Developer mode
 
-## Pre Requirements
-
-**1. Clone the repository:**
-```shell-script
-git clone https://github.com/BlazingDB/blazingdb-automation.git
-cd blazingdb-automation/
-git checkout feature/sprint16-e2e-automation
-cd docker/blazingsql-testing
-```
-
+**1. Requirements**
 -  You need the imagen **demo** and the **demobuid** are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
--  Change the HEAD in Dockerfile to FROM {your_image_deploy_blazingsql}:latest on: blazingdb-automation/docker/blazingsql-testing/Dockerfile
 -  You need a workspace  for end to end tes in your local machinet Example: **workspace-testing**
--  Into workspace-testing you need this  two components: **DataSet1Mb, configurationFile.json**
+-  Into **workspace-testing** you need this  two components: 
+        - DataSet1Mb
+        - configurationFile.json
 -  The configuration file similar like this, where  **"edith"**, is your local machine user. (change it!)
 ```shell-script
 {
@@ -26,29 +18,19 @@ cd docker/blazingsql-testing
     }
 }
 ```
+- Clone this repo and use: feature/sprint16-e2e-automation  branch
 
-**2.  Change the follow parameters:**
-In the file: **run_complete_test.sh** change the parameters like this:
+**2. Launch the script to run end to end test, before complete the parameters**
 ```shell-script
-cd  ...blazingdb-automation/docker/blazingsql-testing
-# Your local machine user
-user=edith
 
-# The volumen do you want to mount (DataSet1MB, configurationFile.json)
-workdir=$whereis_workspace-testing
+cd blazingdb-automation/docker/blazingsql-testing
 
-# Where the blazingdb-automation/docker/blazingsql-testing is
-local_workdir=$whereis_blazingsql-testing 
+# Run the script to end to end test
+./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG
 
-# Asign the values to blazingsql image deploy and its tag
-image=demo
-tag=latest
+# Example:
+./run_complete_test.sh  edith  /home/edith/blazingdb/workspace-testing  demo:latest
 
-```
-**3. Launch the script to run end to end test**
-```shell-script
-cd $local_workdir
-./run_complete_test.sh
 ```
 
 ## Jenkins Mode

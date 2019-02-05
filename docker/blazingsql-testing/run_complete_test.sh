@@ -6,28 +6,22 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
 # Set directories workspace
-user=edith
+# Parameters
+user=$1
+workdir=$2
+image_tag=$3
+# Variables
 home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0
-# The directory where blazingsql-testing is: LOCAL
-local_workdir=$home_user/repositories/blazingsql/blazingdb-automation/docker/blazingsql-testing
-# The volumen do you want to mount (DataSet1MB, logtest, configurationFile.json) : LOCAL
-workdir=$home_user/workspace-testing
-
-
-# Use image blazingSQL deploy
-image=demo
-tag=latest
+local_workdir=$PWD
+echo "PWD===" $PWD
 
 echo "Using Blazingsql deploy image"
-sed -ie "s/FROM.*/FROM $image:$tag/g" $local_workdir/Dockerfile
+sed -ie "s/FROM.*/FROM $image_tag/g" $local_workdir/Dockerfile
 
-# Build end to end test image
 echo "Building e2e test image"
-#nvidia-docker build -t blazingsqltest .
 nvidia-docker build --build-arg USER=$user -t blazingsqltest .
 
-# Repository  blazingdb-testing
 echo "Updading blazingdb-testing repository"
 cd $workdir
 blazingdb_testing_name=blazingdb-testing
@@ -42,7 +36,6 @@ cd $workdir/blazingdb-testing
 git checkout develop
 git pull
 
-# Install apache drill
 echo " Installig apache drill"
 cd $workdir
 apache_drill_directory=apache-drill-1.12.0
@@ -58,7 +51,6 @@ fi
 
 # TODO: Download DataSet1Mb
 
-# Create logtest
 echo "Updating creation logtest directory "
 logTest_name=logtest
 
@@ -66,32 +58,24 @@ if [ ! -d $logTest_name ]; then
     mkdir $logTest_name
 fi   
 
-# Executing container e2e
 echo "Run end to end  test container"
 nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $HOME/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
 
-
-# Change permissions
 echo "Changing permission"
 nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user /blazingsql/
 nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user $home_user
 nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user $workdir_drill
 
-
-# Init services
 echo "Init services"
 nvidia-docker exec -d bzsqlcontainer /home/jupyter/testing-libgdf
 nvidia-docker exec -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
 nvidia-docker exec -d bzsqlcontainer java -jar  /home/jupyter/BlazingCalcite.jar
 
-# Init apache Drill
 echo "Init apache Drill"
 #!quit
 cd $local_workdir
 ./run_drill.sh  $workdir_drill/bin/drill-embedded
 sleep 10
 
-# Init e2e test
 echo "Init e2e test"
 nvidia-docker  exec -ti  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
-

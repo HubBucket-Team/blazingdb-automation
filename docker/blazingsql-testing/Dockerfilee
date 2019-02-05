@@ -1,4 +1,4 @@
-FROM deploy:new
+FROM demo:latest
 
 ARG USER=default_value
 ENV USER=$USER

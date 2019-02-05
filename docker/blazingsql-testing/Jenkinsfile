@@ -16,6 +16,11 @@ pipeline {
     string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'E2E_IMAGE', defaultValue: 'deploy', description: '')
+    string(name: 'E2E_TAG_IMAGE', defaultValue: 'latest', description: '')
+    string(name: 'E2E_USUARIO', defaultValue: 'ubuntu', description: '')
+    string(name: 'E2E_WORKDIR', defaultValue: '/home/ubuntu/workspace/workspace-testing', description: '')
+    string(name: 'E2E_LOCALWORK_DIR', defaultValue: '/home/ubuntu/jenkins/workspace/04.ENDTOEND_TEST_BLAZINGSQL/docker/blazingsql-testing', description: '')
   }
   
   stages {

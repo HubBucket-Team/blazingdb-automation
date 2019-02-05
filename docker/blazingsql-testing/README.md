@@ -4,22 +4,6 @@
 ## Developer mode
 
 ## Pre Requirements
--  You need the imagen **demo** and the **demobuid** are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
--  Change the HEAD in Dockerfile to FROM demo:latest on: blazingdb-automation/docker/blazingsql-testing/Dockerfile
--  Cahnge the user **edith** into dockerfile, for your locla user.
--  You need a workspace  for end to end tes in your local machinet Example: **workspace-testing**
--  Into workspace-testing you need this  two components: **DataSet1Mb, configurationFile.json**
--  The configuration file silimar like thiss, where  **"edith"**, is your local machine user. (change it!)
-```shell-script
-{
-    "TestSettings": {
-     "dataDirectory": "/home/edith/blazingdb/DataSet1Mb",
-     "logDirectory": "/home/edith/blazingdb/logtest"
-    }
-}
-```
-
-## Execute the script to run end to end test
 
 **1. Clone the repository:**
 ```shell-script
@@ -29,9 +13,25 @@ git checkout feature/sprint16-e2e-automation
 cd docker/blazingsql-testing
 ```
 
+-  You need the imagen **demo** and the **demobuid** are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
+-  Change the HEAD in Dockerfile to FROM {your_image_deploy_blazingsql}:latest on: blazingdb-automation/docker/blazingsql-testing/Dockerfile
+-  Change the user **edith** into dockerfile, for your local user.
+-  You need a workspace  for end to end tes in your local machinet Example: **workspace-testing**
+-  Into workspace-testing you need this  two components: **DataSet1Mb, configurationFile.json**
+-  The configuration file similar like this, where  **"edith"**, is your local machine user. (change it!)
+```shell-script
+{
+    "TestSettings": {
+     "dataDirectory": "/home/edith/blazingdb/DataSet1Mb",
+     "logDirectory": "/home/edith/blazingdb/logtest"
+    }
+}
+```
+
 **2.  Change the follow parameters:**
 In the file: **run_complete_test.sh** change the parameters like this:
 ```shell-script
+cd  ...blazingdb-automation/docker/blazingsql-testing
 # Your local machine user
 user=edith
 
@@ -41,7 +41,7 @@ workdir=$whereis_workspace-testing
 # Where the blazingdb-automation/docker/blazingsql-testing is
 local_workdir=$whereis_blazingsql-testing 
 ```
-**3. Launch the script**
+**3. Launch the script to run end to end test**
 ```shell-script
 cd $local_workdir
 ./run_complete_test.sh

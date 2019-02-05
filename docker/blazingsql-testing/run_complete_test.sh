@@ -15,9 +15,17 @@ local_workdir=$home_user/repositories/blazingsql/blazingdb-automation/docker/bla
 workdir=$home_user/workspace-testing
 
 
+# Use image blazingSQL deploy
+image=demo
+tag=latest
+
+echo "Using Blazingsql deploy image"
+sed -ie "s/FROM.*/FROM $image:$tag/g" $local_workdir/Dockerfile
+
 # Build end to end test image
 echo "Building e2e test image"
-nvidia-docker build -t blazingsqltest .
+#nvidia-docker build -t blazingsqltest .
+nvidia-docker build --build-arg USER=$user -t blazingsqltest .
 
 # Repository  blazingdb-testing
 echo "Updading blazingdb-testing repository"

@@ -15,7 +15,6 @@ cd docker/blazingsql-testing
 
 -  You need the imagen **demo** and the **demobuid** are created, follow this README.md : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
 -  Change the HEAD in Dockerfile to FROM {your_image_deploy_blazingsql}:latest on: blazingdb-automation/docker/blazingsql-testing/Dockerfile
--  Change the user **edith** into dockerfile, for your local user.
 -  You need a workspace  for end to end tes in your local machinet Example: **workspace-testing**
 -  Into workspace-testing you need this  two components: **DataSet1Mb, configurationFile.json**
 -  The configuration file similar like this, where  **"edith"**, is your local machine user. (change it!)
@@ -40,6 +39,11 @@ workdir=$whereis_workspace-testing
 
 # Where the blazingdb-automation/docker/blazingsql-testing is
 local_workdir=$whereis_blazingsql-testing 
+
+# Asign the values to blazingsql image deploy and its tag
+image=demo
+tag=latest
+
 ```
 **3. Launch the script to run end to end test**
 ```shell-script

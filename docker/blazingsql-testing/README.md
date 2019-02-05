@@ -22,7 +22,6 @@
 
 **2. Launch the script to run end to end test, before complete the parameters**
 ```shell-script
-
 cd blazingdb-automation/docker/blazingsql-testing
 
 # Run the script to end to end test
@@ -30,7 +29,6 @@ cd blazingdb-automation/docker/blazingsql-testing
 
 # Example:
 ./run_complete_test.sh  edith  /home/edith/blazingdb/workspace-testing  demo:latest
-
 ```
 
 ## Jenkins Mode

@@ -18,6 +18,8 @@ pipeline {
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
     string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/workspace/workspace-testing', description: '')
+    string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
+    file(name: 'E2E_CONFIG_FILE', fileLocation: '...', description: '')
     string(name: 'E2E_IMAGE_TAG', defaultValue: 'blazingdb/blazingsql:latest', description: '')
   }
   
@@ -44,7 +46,7 @@ pipeline {
     stage("Run end to end test") {
       steps {
         dir("docker/blazingsql-testing") {
-          sh "./run_complete_test.sh  ${params.E2E_USER}  ${params.E2E_WORKDIR} ${params.E2E_IMAGE_TAG} "
+          sh "./run_complete_test.sh  ${params.E2E_USER}  ${params.E2E_WORKDIR} ${params.E2E_IMAGE_TAG} ${params.E2E_DATA_SET} "
         }
       }
     }

@@ -10,6 +10,7 @@ docker rm $(docker ps -a -q)
 user=$1
 workdir=$2
 image_tag=$3
+data_set=$4
 # Variables
 home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0
@@ -54,7 +55,12 @@ fi
 
 #We use DataSet1Mb from  blazigndb google storage
 cd  $workdir
-gsutil cp -R gs://blazingdbstorage/DataSet1Mb .
+gsutil cp -R gs://blazingdbstorage/$data_set .
+
+#TO DO: Replace file configurationfile
+#cp  $local_workdir/configurationFile.json  $workdir
+
+
 
 echo "Updating creation logtest directory "
 logTest_name=logtest
@@ -88,6 +94,6 @@ sleep 10
 
 echo "Init e2e test"
 #DEVELOPER MODE ( -it showing the process)
-nvidia-docker  exec  -it bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+#nvidia-docker  exec  -it bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 # JENKINS MODE
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

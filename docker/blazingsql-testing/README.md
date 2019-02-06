@@ -24,14 +24,14 @@
 ```shell-script
 cd blazingdb-automation/docker/blazingsql-testing
 
-#  Comment JENKINS MODE and descoment DEVELOP MODE
+#  Comment JENKINS MODE and descoment DEVELOP MODE, line 68 and 70 in run_complete_test.sh
 nvidia-docker run --name bzsqlcontainer -d -p ....
 
 # Run the script to end to end test
-./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG
+./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG $DATA_SET
 
 # Example:
-./run_complete_test.sh  edith  /home/edith/blazingdb/workspace-testing  demo:latest
+./run_complete_test.sh  edith  /home/edith/blazingdb/workspace-testing  demo:latest  DataSet1Mb
 ```
 
 ## Jenkins Mode

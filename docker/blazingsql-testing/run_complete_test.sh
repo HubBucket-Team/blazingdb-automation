@@ -2,8 +2,8 @@
 
 # Remove old containers
 echo "Removing old containers"
-#docker stop $(docker ps -a -q)
-#docker rm $(docker ps -a -q)
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
 
 # Set directories workspace
 # Parameters
@@ -34,10 +34,10 @@ if [ ! -d $blazingdb_testing_name ]; then
 echo " Clonning blazingdb-testing"
     git clone git@github.com:BlazingDB/blazingdb-testing.git
     cd $workdir/blazingdb-testing
-    git checkout develop
+    git checkout fix/read_tpch_files_for_strings
 fi 
 cd $workdir/blazingdb-testing
-git checkout develop
+git checkout fix/read_tpch_files_for_strings
 git pull
 
 echo " Installig apache drill"

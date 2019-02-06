@@ -695,8 +695,8 @@ if [ $cudf_enable == true ]; then
     make -j$cudf_parallel install
     
     #TODO remove this patch once cudf can install rmm
-    #cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
-    #cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include
+    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
+    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include
     
     #END cudf
     

@@ -2,8 +2,8 @@
 
 # Remove old containers
 echo "Removing old containers"
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
+#docker stop $(docker ps -a -q)
+#docker rm $(docker ps -a -q)
 
 # Set directories workspace
 # Parameters

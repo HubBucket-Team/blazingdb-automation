@@ -19,7 +19,6 @@ pipeline {
     string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
     string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/workspace/workspace-testing', description: '')
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
-    file(name: 'E2E_CONFIG_FILE', fileLocation: '...', description: '')
     string(name: 'E2E_IMAGE_TAG', defaultValue: 'blazingdb/blazingsql:latest', description: '')
   }
   

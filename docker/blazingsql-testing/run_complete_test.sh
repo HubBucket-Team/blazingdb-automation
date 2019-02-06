@@ -52,7 +52,9 @@ if [ ! -d $apache_drill_directory ]; then
 
 fi 
 
-# TODO: Download DataSet1Mb
+#We use DataSet1Mb from  blazigndb google storage
+cd  $workdir
+gsutil cp -R gs://blazingdbstorage/DataSet1Mb .
 
 echo "Updating creation logtest directory "
 logTest_name=logtest

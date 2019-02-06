@@ -30,9 +30,10 @@ cp -r $blazingsql_files/libhdfs3/* /usr/lib
 
 # Install libgdf_cffi
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/libgdf_cffi/libgdf_build.py
-sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/librmm_cffi/librmm_build.py
+#sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/librmm_cffi/librmm_build.py
 
 pip install $cudf_dir/$libgdf_dir/python
+pip install $cudf_dir/thirdparty/rmm/python
 
 # Install cudf
 CFLAGS=-I/conda/envs/cudf/include CXXFLAGS=-I/conda/envs/cudf/include pip install $cudf_dir/python

@@ -28,5 +28,6 @@ WORKDIR /home/$USER/
 
 RUN mkdir -p /home/$USER/blazingdb
 RUN chown -R $USER:$USER  /home/$USER/blazingdb
+
 # For the tester user
 VOLUME /home/$USER/blazingdb

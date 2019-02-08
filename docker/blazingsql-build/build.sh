@@ -672,7 +672,7 @@ if [ $cudf_enable == true ]; then
     fi
     
     cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
-    
+
     cd $cudf_current_dir/cudf
     git checkout $cudf_branch
     git pull
@@ -1049,4 +1049,39 @@ rm -rf ${output}
 
 cd $working_directory
 
+echo "************************************"
+echo "CUDF: "
+cudf_dir=$cudf_current_dir/cudf
+cd $cudf_dir
+cudf_commit=$(git log | head -n 1)
+echo '      '$cudf_commit
+echo '      '"branch "$cudf_branch_name
+#echo "RAL: "
+#ral_dir=$ral_current_dir/blazingdb-ral
+#cd $ral_dir
+#ral_commit=$(git log | head -n 1)
+#echo '      '$ral_commit
+#echo '      '"branch "$blazingdb_ral_branch_name
+echo "ORCHESTRATOR: "
+orch_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator
+cd $orch_dir
+orch_commit=$(git log | head -n 1)
+echo '      '$orch_commit
+echo '      '"branch "$blazingdb_orchestrator_branch_name
+echo "PROTOCOL: "
+protocol_dir=$blazingdb_protocol_current_dir/blazingdb-protocol
+cd $protocol_dir
+protocol_commit=$(git log | head -n 1)
+echo '      '$protocol_commit
+echo '      '"branch "$blazingdb_protocol_branch_name
+echo "PYBLAZING: "
+pyblazing_dir=$pyblazing_current_dir/pyBlazing
+cd $pyblazing_dir
+pyblazing_commit=$(git log | head -n 1)
+echo '      '$pyblazing_commit
+echo '      '"branch "$pyblazing_branch_name
+echo "************************************"
+
 #END main
+
+

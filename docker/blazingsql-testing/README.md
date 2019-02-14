@@ -13,8 +13,8 @@
 ```shell-script
 {
     "TestSettings": {
-     "dataDirectory": "/home/edith/blazingdb/DataSet1Mb",
-     "logDirectory": "/home/edith/blazingdb/logtest"
+     "dataDirectory": "/home/edith/blazingdb/DataSet1Mb/",
+     "logDirectory": "/home/edith/blazingdb/logtest/"
     }
 }
 ```

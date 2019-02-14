@@ -1049,22 +1049,28 @@ cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
 
 if [ -d $output ]; then
     echo "###################### BUILT STATUS #####################"
-    if [ -f $output/testing-libgdf ] && [ $blazingdb_ral_enable == true ]; then
-        echo "RAL - built OK."
-    else
-        echo "RAL - compiled with errors."
+    if [ $blazingdb_ral_enable == true ]; then
+        if [ -f $output/testing-libgdf ]; then
+            echo "RAL - built OK."
+        else
+            echo "RAL - compiled with errors."
+        fi
     fi
 
-    if [ -f $output/blazingdb_orchestator_service ] && [ $blazingdb_orchestrator_enable == true ]; then
-        echo "ORCHESTRATOR - built OK."
-    else
-        echo "ORCHESTRATOR - compiled with errors."
+    if [ $blazingdb_orchestrator_enable == true ]; then
+        if [ -f $output/blazingdb_orchestator_service ]; then
+            echo "ORCHESTRATOR - built OK."
+        else
+            echo "ORCHESTRATOR - compiled with errors."
+        fi
     fi
 
-    if [ -f $output/BlazingCalcite.jar ] && [ $blazingdb_calcite_enable == true ]; then
-        echo "CALCITE - built OK."
-    else
-        echo "CALCITE - compiled with errors."
+    if [ $blazingdb_calcite_enable == true ]; then
+        if [ -f $output/BlazingCalcite.jar ]; then
+            echo "CALCITE - built OK."
+        else
+            echo "CALCITE - compiled with errors."
+        fi
     fi
 fi
 

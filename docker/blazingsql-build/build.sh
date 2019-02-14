@@ -1,8 +1,14 @@
 #!/bin/bash
 
 # NOTE you need to have the blazingsql-build.properties file inside the workspace_dir
-workspace_dir=$1
-output_dir=$2
+workspace_dir=/home/builder/workspace/
+output_dir=/home/builder/output/
+if [ ! -z $1 ]; then
+  workspace_dir=$1
+fi
+if [ ! -z $2 ]; then
+  output_dir=$2
+fi
 
 BUILD_TYPE='Release'
 if [ $# -eq 3 ]; then
@@ -16,6 +22,7 @@ output_dir=$(readlink -f $output_dir)
 
 output=$output_dir/blazingsql-files
 
+#echo "mkdir -p $output"
 mkdir -p $output 
 
 working_directory=$PWD

@@ -25,9 +25,9 @@ pyblazing_branch="pyblazing_branch=$8"
 
 mkdir -p $workspace $output
 
-sudo chown 1000:1000 -R $workspace
-sudo chown 1000:1000 -R $output
-sudo chown 1000:1000 -R $ssh_key
+#sudo chown 1000:1000 -R $workspace
+#sudo chown 1000:1000 -R $output
+#sudo chown 1000:1000 -R $ssh_key
 
 
 echo "### Copy properties ###"
@@ -53,8 +53,10 @@ nvidia-docker build -t $image_build .
 
 # User builder uid=1000, but user jenkins uid=123
 echo "### Run de Build ###"
-echo "nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
-nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
+#echo "nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
+#nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
+echo "nvidia-docker run --rm -e NEW_UID=$(id -u) -e NEW_GID=$(id -g) --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
+nvidia-docker run --rm -e NEW_UID=$(id -u) -e NEW_GID=$(id -g) --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
 
 echo "### Copy tar ###"
 echo "cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/"

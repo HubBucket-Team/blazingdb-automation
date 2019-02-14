@@ -49,7 +49,12 @@ RUN echo "</localRepository> </settings>" >> /etc/maven/settings.xml
 #END Fix Maven
 
 # Create the user 'builder'
-RUN useradd -ms /bin/bash builder
+#RUN useradd -ms /bin/bash builder
+ENV TMP_USER=builder
+ENV TMP_UID=1000
+ENV TMP_GID=1000
+RUN groupadd -g $TMP_GID $TMP_USER
+RUN useradd -ms /bin/bash $TMP_USER -u $TMP_UID -g $TMP_GID
 
 # Create blazingsql directory
 RUN  mkdir /blazingsql
@@ -60,7 +65,7 @@ COPY build.sh /home/builder/
 RUN  chmod +x /home/builder/build.sh
 RUN  chown builder:builder /home/builder/build.sh
 
-USER builder
+#USER builder
 WORKDIR /home/builder
 RUN mkdir workspace && mkdir output && mkdir .ssh
 
@@ -68,4 +73,7 @@ VOLUME /home/builder/workspace
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
 
-CMD ["/bin/bash", "/home/builder/build.sh", "/home/builder/workspace", "/home/builder/output/"]
+COPY entrypoint.sh /etc/entrypoint.sh
+ENTRYPOINT ["/etc/entrypoint.sh"]
+
+CMD ["/home/builder/build.sh"]

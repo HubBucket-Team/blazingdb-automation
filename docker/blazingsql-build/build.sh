@@ -1049,19 +1049,19 @@ cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
 
 if [ -d $output ]; then
     echo "###################### BUILT STATUS #####################"
-    if [ -f $output/testing-libgdf ]; then
+    if [ -f $output/testing-libgdf ] && [ $blazingdb_ral_enable == true ]; then
         echo "RAL - built OK."
     else
         echo "RAL - compiled with errors."
     fi
 
-    if [ -f $output/blazingdb_orchestator_service ]; then
+    if [ -f $output/blazingdb_orchestator_service ] && [ $blazingdb_orchestrator_enable == true ]; then
         echo "ORCHESTRATOR - built OK."
     else
         echo "ORCHESTRATOR - compiled with errors."
     fi
 
-    if [ -f $output/BlazingCalcite.jar ]; then
+    if [ -f $output/BlazingCalcite.jar ] && [ $blazingdb_calcite_enable == true ]; then
         echo "CALCITE - built OK."
     else
         echo "CALCITE - compiled with errors."
@@ -1074,54 +1074,68 @@ cd $working_directory
 
 echo "######################## SUMMARY ########################"
 
-echo "CUDF: "
-cudf_dir=$workspace_dir/cudf_project/$cudf_branch_name/cudf
-cd $cudf_dir
-cudf_commit=$(git log | head -n 1)
-echo '      '$cudf_commit
-echo '      '"branch "$cudf_branch_name
+if [ $cudf_enable == true ]; then
+    echo "CUDF: "
+    cudf_dir=$workspace_dir/cudf_project/$cudf_branch_name/cudf
+    cd $cudf_dir
+    cudf_commit=$(git log | head -n 1)
+    echo '      '$cudf_commit
+    echo '      '"branch "$cudf_branch_name
+fi
 
-echo "PROTOCOL: "
-protocol_dir=$workspace_dir/blazingdb-protocol_project/$blazingdb_protocol_branch_name/blazingdb-protocol
-cd $protocol_dir
-protocol_commit=$(git log | head -n 1)
-echo '      '$protocol_commit
-echo '      '"branch "$blazingdb_protocol_branch_name
+if [ $blazingdb_protocol_enable == true ]; then
+    echo "PROTOCOL: "
+    protocol_dir=$workspace_dir/blazingdb-protocol_project/$blazingdb_protocol_branch_name/blazingdb-protocol
+    cd $protocol_dir
+    protocol_commit=$(git log | head -n 1)
+    echo '      '$protocol_commit
+    echo '      '"branch "$blazingdb_protocol_branch_name
+fi
 
-echo "BLAZING-IO: "
-io_dir=$workspace_dir/blazingdb-io_project/$blazingdb_io_branch_name/blazingdb-io
-cd $io_dir
-io_commit=$(git log | head -n 1)
-echo '      '$io_commit
-echo '      '"branch "$blazingdb_io_branch_name
+if [ $blazingdb_protocol_enable == true ]; then
+    echo "BLAZING-IO: "
+    io_dir=$workspace_dir/blazingdb-io_project/$blazingdb_io_branch_name/blazingdb-io
+    cd $io_dir
+    io_commit=$(git log | head -n 1)
+    echo '      '$io_commit
+    echo '      '"branch "$blazingdb_io_branch_name
+fi
 
-echo "RAL: "
-ral_dir=$workspace_dir/blazingdb-ral_project/$blazingdb_ral_branch_name/blazingdb-ral
-cd $ral_dir
-ral_commit=$(git log | head -n 1)
-echo '      '$ral_commit
-echo '      '"branch "$blazingdb_ral_branch_name
+if [ $blazingdb_ral_enable == true ]; then
+    echo "RAL: "
+    ral_dir=$workspace_dir/blazingdb-ral_project/$blazingdb_ral_branch_name/blazingdb-ral
+    cd $ral_dir
+    ral_commit=$(git log | head -n 1)
+    echo '      '$ral_commit
+    echo '      '"branch "$blazingdb_ral_branch_name
+fi
 
-echo "ORCHESTRATOR: "
-orch_dir=$workspace_dir/blazingdb-orchestrator_project/$blazingdb_orchestrator_branch_name/blazingdb-orchestrator
-cd $orch_dir
-orch_commit=$(git log | head -n 1)
-echo '      '$orch_commit
-echo '      '"branch "$blazingdb_orchestrator_branch_name
+if [ $blazingdb_orchestrator_enable == true ]; then
+    echo "ORCHESTRATOR: "
+    orch_dir=$workspace_dir/blazingdb-orchestrator_project/$blazingdb_orchestrator_branch_name/blazingdb-orchestrator
+    cd $orch_dir
+    orch_commit=$(git log | head -n 1)
+    echo '      '$orch_commit
+    echo '      '"branch "$blazingdb_orchestrator_branch_name
+fi
 
-echo "CALCITE: "
-calcite_dir=$workspace_dir/blazingdb-calcite_project/$blazingdb_calcite_branch_name/blazingdb-calcite
-cd $calcite_dir
-calcite_commit=$(git log | head -n 1)
-echo '      '$calcite_commit
-echo '      '"branch "$blazingdb_calcite_branch_name
+if [ $blazingdb_calcite_enable == true ]; then
+    echo "CALCITE: "
+    calcite_dir=$workspace_dir/blazingdb-calcite_project/$blazingdb_calcite_branch_name/blazingdb-calcite
+    cd $calcite_dir
+    calcite_commit=$(git log | head -n 1)
+    echo '      '$calcite_commit
+    echo '      '"branch "$blazingdb_calcite_branch_name
+fi
 
-echo "PYBLAZING: "
-pyblazing_dir=$workspace_dir/pyblazing_project/$pyblazing_branch_name/pyBlazing
-cd $pyblazing_dir
-pyblazing_commit=$(git log | head -n 1)
-echo '      '$pyblazing_commit
-echo '      '"branch "$pyblazing_branch_name
+if [ $pyblazing_enable == true ]; then
+    echo "PYBLAZING: "
+    pyblazing_dir=$workspace_dir/pyblazing_project/$pyblazing_branch_name/pyBlazing
+    cd $pyblazing_dir
+    pyblazing_commit=$(git log | head -n 1)
+    echo '      '$pyblazing_commit
+    echo '      '"branch "$pyblazing_branch_name
+fi
 
 echo "##########################################################"
 

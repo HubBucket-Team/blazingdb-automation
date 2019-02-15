@@ -698,7 +698,13 @@ if [ $cudf_enable == true ]; then
         ..
     echo "### CUDF - make ###"
     make -j$cudf_parallel install
-    
+
+    #run ctest     
+    echo "### BEGIN: CUDF -  ctest  ###"
+    cd $libgdf_build_dir
+    ctest > $cudf_current_dir/cudf_ctest.log
+    echo "### END: CUDF -  ctest  ###"
+
     #TODO remove this patch once cudf can install rmm
     # cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
     # cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include

@@ -52,7 +52,7 @@ echo "nvidia-docker build -t $image_build ."
 nvidia-docker build -t $image_build .
 
 echo "### Remove previous tar ###"
-echo "rm -f $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/blazingsql-files.tar.gz"
+echo "rm -f $output/blazingsql-files.tar.gz"
 
 # User builder uid=1000, but user jenkins uid=123
 echo "### Run de Build ###"

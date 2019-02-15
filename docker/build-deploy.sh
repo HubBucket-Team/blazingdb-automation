@@ -58,6 +58,7 @@ echo "rm -f $output/blazingsql-files.tar.gz"
 echo "### Run de Build ###"
 echo "nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
 nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
+echo "Resultado: $?"
 
 echo "### Copy tar ###"
 echo "cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/"

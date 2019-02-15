@@ -702,7 +702,8 @@ if [ $cudf_enable == true ]; then
     #run ctest     
     echo "### BEGIN: CUDF -  ctest  ###"
     cd $libgdf_build_dir
-    ctest > $cudf_current_dir/cudf_ctest.log
+    /usr/local/cuda/bin/cuda-memcheck  --leak-check full ctest > $cudf_current_dir/cudf_ctest.log
+    cat $cudf_current_dir/cudf_ctest.log
     echo "### END: CUDF -  ctest  ###"
 
     #TODO remove this patch once cudf can install rmm
@@ -712,12 +713,12 @@ if [ $cudf_enable == true ]; then
     #END cudf
     
     # Package cudf
-    cd $workspace_dir
-    mkdir -p ${output}/cudf/$libgdf_dir/install
-    cp -r $cudf_current_dir/cudf/* ${output}/cudf/
-    cp -r $libgdf_install_dir/* ${output}/cudf/$libgdf_dir/install
-    # rm -rf ${output}/cudf/.git/
-    # rm -rf ${output}/cudf/$libgdf_dir/build/
+    #cd $workspace_dir
+    #mkdir -p ${output}/cudf/$libgdf_dir/install
+    #cp -r $cudf_current_dir/cudf/* ${output}/cudf/
+    #cp -r $libgdf_install_dir/* ${output}/cudf/$libgdf_dir/install
+    #rm -rf ${output}/cudf/.git/
+    #rm -rf ${output}/cudf/$libgdf_dir/build/
 
     echo "### Cudf - end ###"
 fi

@@ -693,7 +693,7 @@ if [ $cudf_enable == true ]; then
     echo "### CUDF - cmake ###"
     cd $libgdf_build_dir
     BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
-        -DCMAKE_BUILD_TYPE=Release  \
+        -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
         ..
     echo "### CUDF - make ###"
@@ -702,10 +702,32 @@ if [ $cudf_enable == true ]; then
     #run ctest     
     echo "### BEGIN: CUDF -  ctest  ###"
     cd $libgdf_build_dir
-    /usr/local/cuda/bin/cuda-memcheck  --leak-check full ctest > $cudf_current_dir/cudf_ctest.log
+    # /usr/local/cuda/bin/cuda-memcheck  --leak-check full ctest > $cudf_current_dir/cudf_ctest.log
+    ctest > $cudf_current_dir/cudf_ctest.log
     cat $cudf_current_dir/cudf_ctest.log
     echo "### END: CUDF -  ctest  ###"
 
+    echo "### BEGIN: CUDF cffi tests:  ###"
+    make python_cffi   
+    make install_python    
+    cd $libgdf_build_dir/python  
+    py.test -v  > $cudf_current_dir/cudf_cffitest.log
+    cat $cudf_current_dir/cudf_cffitest.log
+    echo "### END: CUDF cffi tests:  ###"
+
+
+    echo "### BEGIN: CUDF Python tests:  ###"
+    cd $cudf_current_dir/cudf/python
+    python setup.py build_ext --inplace
+    NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
+    NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
+
+    py.test -v > $cudf_current_dir/cudf_pytest.log   
+    cat $cudf_current_dir/cudf_pytest.log   
+    python setup.py install     
+
+    echo "### END: CUDF Python tests:  ###"
+    
     #TODO remove this patch once cudf can install rmm
     # cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
     # cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include

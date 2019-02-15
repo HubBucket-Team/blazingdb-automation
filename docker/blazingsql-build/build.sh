@@ -678,6 +678,11 @@ if [ $cudf_enable == true ]; then
     git pull
     git submodule update --init --recursive
     
+    cd $cudf_current_dir/cudf/cpp/
+    git submodule update --init --recursive
+    
+    cd $cudf_current_dir/cudf
+
     libgdf_install_dir=$cudf_current_dir/install
     libgdf_dir=cpp
     
@@ -695,8 +700,8 @@ if [ $cudf_enable == true ]; then
     make -j$cudf_parallel install
     
     #TODO remove this patch once cudf can install rmm
-    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
-    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include
+    # cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
+    # cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include
     
     #END cudf
     
@@ -705,8 +710,8 @@ if [ $cudf_enable == true ]; then
     mkdir -p ${output}/cudf/$libgdf_dir/install
     cp -r $cudf_current_dir/cudf/* ${output}/cudf/
     cp -r $libgdf_install_dir/* ${output}/cudf/$libgdf_dir/install
-    rm -rf ${output}/cudf/.git/
-    rm -rf ${output}/cudf/$libgdf_dir/build/
+    # rm -rf ${output}/cudf/.git/
+    # rm -rf ${output}/cudf/$libgdf_dir/build/
 
     echo "### Cudf - end ###"
 fi
@@ -1044,8 +1049,11 @@ if [ $pyblazing_enable == true ]; then
 fi
 
 # Final step: compress files and delete temp folder
-cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
-rm -rf ${output}
+#cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
+# not delete binaries and libraries 
+#rm -rf ${output}
+
+cd $output_dir/ 
 
 cd $working_directory
 

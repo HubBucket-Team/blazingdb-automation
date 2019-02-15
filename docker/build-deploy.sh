@@ -50,6 +50,9 @@ echo "nvidia-docker rmi -f $image_build"
 nvidia-docker rmi -f $image_build
 echo "nvidia-docker build -t $image_build ."
 nvidia-docker build -t $image_build .
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### Remove previous tar ###"
 echo "rm -f $output/blazingsql-files.tar.gz"
@@ -85,4 +88,6 @@ echo "nvidia-docker rm -f $image_deploy"
 nvidia-docker rmi -f $image_deploy
 echo "nvidia-docker build -t $image_deploy ."
 nvidia-docker build -t $image_deploy .
-
+if [ $? != 0 ]; then
+  exit 1
+fi

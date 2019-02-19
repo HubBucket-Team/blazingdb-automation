@@ -12,7 +12,7 @@ fi
 
 BUILD_TYPE='Release'
 if [ $# -eq 3 ]; then
-	BUILD_TYPE=$3
+    BUILD_TYPE=$3
 fi
 
 
@@ -328,16 +328,28 @@ fi
 
 #BEGIN nvstrings
 
-nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
+nvstrings_package=nvstrings
 nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
 if [ ! -d $nvstrings_install_dir ]; then
     echo "### Nvstring - start ###"
     cd $workspace_dir/dependencies/
-    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
+    nvstrings_file=nvstrings-0.2.0-cuda9.2_py36_0.tar.bz2
+    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.2.0/download/linux-64/$nvstrings_file
     wget $nvstrings_url
     mkdir $nvstrings_package
-    tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
+
+    #TODO percy remove this fix once nvstrings has pre compiler flags in its headers
+    sed -i '1s/^/#define NVIDIA_NV_STRINGS_H_NVStrings\n/' $nvstrings_package/include/NVStrings.h
+    sed -i '1s/^/#ifndef NVIDIA_NV_STRINGS_H_NVStrings\n/' $nvstrings_package/include/NVStrings.h
+    echo "#endif" >> $nvstrings_package/include/NVStrings.h
+
+    sed -i '1s/^/#define NVIDIA_NV_STRINGS_H_NVCategory\n/' $nvstrings_package/include/NVCategory.h
+    sed -i '1s/^/#ifndef NVIDIA_NV_STRINGS_H_NVCategory\n/' $nvstrings_package/include/NVCategory.h
+    echo "#endif" >> $nvstrings_package/include/NVCategory.h
+
+    tar xvf $nvstrings_file -C $nvstrings_package
+
     if [ $? != 0 ]; then
       exit 1
     fi
@@ -644,7 +656,7 @@ if [ ! -d $arrow_install_dir ]; then
     cd $workspace_dir/dependencies/
     git clone https://github.com/apache/arrow.git
     cd $workspace_dir/dependencies/arrow
-    git checkout apache-arrow-0.11.1
+    git checkout apache-arrow-0.12.0
 
     arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
     
@@ -1186,9 +1198,105 @@ if [ $pyblazing_enable == true ]; then
 fi
 
 # Final step: compress files and delete temp folder
+
 cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
+
+if [ -d $output ]; then
+    echo "###################### BUILT STATUS #####################"
+    if [ $blazingdb_ral_enable == true ]; then
+        if [ -f $output/testing-libgdf ]; then
+            echo "RAL - built OK."
+        else
+            echo "RAL - compiled with errors."
+        fi
+    fi
+
+    if [ $blazingdb_orchestrator_enable == true ]; then
+        if [ -f $output/blazingdb_orchestator_service ]; then
+            echo "ORCHESTRATOR - built OK."
+        else
+            echo "ORCHESTRATOR - compiled with errors."
+        fi
+    fi
+
+    if [ $blazingdb_calcite_enable == true ]; then
+        if [ -f $output/BlazingCalcite.jar ]; then
+            echo "CALCITE - built OK."
+        else
+            echo "CALCITE - compiled with errors."
+        fi
+    fi
+fi
+
 rm -rf ${output}
 
 cd $working_directory
+
+echo "######################## SUMMARY ########################"
+
+if [ $cudf_enable == true ]; then
+    echo "CUDF: "
+    cudf_dir=$workspace_dir/cudf_project/$cudf_branch_name/cudf
+    cd $cudf_dir
+    cudf_commit=$(git log | head -n 1)
+    echo '      '$cudf_commit
+    echo '      '"branch "$cudf_branch_name
+fi
+
+if [ $blazingdb_protocol_enable == true ]; then
+    echo "PROTOCOL: "
+    protocol_dir=$workspace_dir/blazingdb-protocol_project/$blazingdb_protocol_branch_name/blazingdb-protocol
+    cd $protocol_dir
+    protocol_commit=$(git log | head -n 1)
+    echo '      '$protocol_commit
+    echo '      '"branch "$blazingdb_protocol_branch_name
+fi
+
+if [ $blazingdb_protocol_enable == true ]; then
+    echo "BLAZING-IO: "
+    io_dir=$workspace_dir/blazingdb-io_project/$blazingdb_io_branch_name/blazingdb-io
+    cd $io_dir
+    io_commit=$(git log | head -n 1)
+    echo '      '$io_commit
+    echo '      '"branch "$blazingdb_io_branch_name
+fi
+
+if [ $blazingdb_ral_enable == true ]; then
+    echo "RAL: "
+    ral_dir=$workspace_dir/blazingdb-ral_project/$blazingdb_ral_branch_name/blazingdb-ral
+    cd $ral_dir
+    ral_commit=$(git log | head -n 1)
+    echo '      '$ral_commit
+    echo '      '"branch "$blazingdb_ral_branch_name
+fi
+
+if [ $blazingdb_orchestrator_enable == true ]; then
+    echo "ORCHESTRATOR: "
+    orch_dir=$workspace_dir/blazingdb-orchestrator_project/$blazingdb_orchestrator_branch_name/blazingdb-orchestrator
+    cd $orch_dir
+    orch_commit=$(git log | head -n 1)
+    echo '      '$orch_commit
+    echo '      '"branch "$blazingdb_orchestrator_branch_name
+fi
+
+if [ $blazingdb_calcite_enable == true ]; then
+    echo "CALCITE: "
+    calcite_dir=$workspace_dir/blazingdb-calcite_project/$blazingdb_calcite_branch_name/blazingdb-calcite
+    cd $calcite_dir
+    calcite_commit=$(git log | head -n 1)
+    echo '      '$calcite_commit
+    echo '      '"branch "$blazingdb_calcite_branch_name
+fi
+
+if [ $pyblazing_enable == true ]; then
+    echo "PYBLAZING: "
+    pyblazing_dir=$workspace_dir/pyblazing_project/$pyblazing_branch_name/pyBlazing
+    cd $pyblazing_dir
+    pyblazing_commit=$(git log | head -n 1)
+    echo '      '$pyblazing_commit
+    echo '      '"branch "$pyblazing_branch_name
+fi
+
+echo "##########################################################"
 
 #END main

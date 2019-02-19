@@ -50,11 +50,21 @@ echo "nvidia-docker rmi -f $image_build"
 nvidia-docker rmi -f $image_build
 echo "nvidia-docker build -t $image_build ."
 nvidia-docker build -t $image_build .
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+echo "### Remove previous tar ###"
+echo "rm -f $output/blazingsql-files.tar.gz"
 
 # User builder uid=1000, but user jenkins uid=123
 echo "### Run de Build ###"
 echo "nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
 nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
+#echo "Resultado: $?"
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### Copy tar ###"
 echo "cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/"
@@ -78,4 +88,6 @@ echo "nvidia-docker rm -f $image_deploy"
 nvidia-docker rmi -f $image_deploy
 echo "nvidia-docker build -t $image_deploy ."
 nvidia-docker build -t $image_deploy .
-
+if [ $? != 0 ]; then
+  exit 1
+fi

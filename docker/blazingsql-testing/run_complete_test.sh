@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Remove old containers
+#TODO : We need to map all scenarios to know what container live in this jenkins-slave. Not remove all the container to start the end to end.
 echo "Removing old containers"
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)

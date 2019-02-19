@@ -12,7 +12,7 @@ fi
 
 BUILD_TYPE='Release'
 if [ $# -eq 3 ]; then
-	BUILD_TYPE=$3
+    BUILD_TYPE=$3
 fi
 
 
@@ -328,16 +328,28 @@ fi
 
 #BEGIN nvstrings
 
-nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
+nvstrings_package=nvstrings
 nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
 if [ ! -d $nvstrings_install_dir ]; then
     echo "### Nvstring - start ###"
     cd $workspace_dir/dependencies/
-    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
+    nvstrings_file=nvstrings-0.2.0-cuda9.2_py36_0.tar.bz2
+    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.2.0/download/linux-64/$nvstrings_file
     wget $nvstrings_url
     mkdir $nvstrings_package
-    tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
+
+    #TODO percy remove this fix once nvstrings has pre compiler flags in its headers
+    sed -i '1s/^/#define NVIDIA_NV_STRINGS_H_NVStrings\n/' $nvstrings_package/include/NVStrings.h
+    sed -i '1s/^/#ifndef NVIDIA_NV_STRINGS_H_NVStrings\n/' $nvstrings_package/include/NVStrings.h
+    echo "#endif" >> $nvstrings_package/include/NVStrings.h
+
+    sed -i '1s/^/#define NVIDIA_NV_STRINGS_H_NVCategory\n/' $nvstrings_package/include/NVCategory.h
+    sed -i '1s/^/#ifndef NVIDIA_NV_STRINGS_H_NVCategory\n/' $nvstrings_package/include/NVCategory.h
+    echo "#endif" >> $nvstrings_package/include/NVCategory.h
+
+    tar xvf $nvstrings_file -C $nvstrings_package
+
     if [ $? != 0 ]; then
       exit 1
     fi
@@ -644,7 +656,7 @@ if [ ! -d $arrow_install_dir ]; then
     cd $workspace_dir/dependencies/
     git clone https://github.com/apache/arrow.git
     cd $workspace_dir/dependencies/arrow
-    git checkout apache-arrow-0.11.1
+    git checkout apache-arrow-0.12.0
 
     arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
     
@@ -855,7 +867,7 @@ if [ $blazingdb_protocol_enable == true ]; then
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
-	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
+      -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -1006,7 +1018,7 @@ if [ $blazingdb_ral_enable == true ]; then
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
+      -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           -DCUDA_DEFINES=$blazingdb_ral_definitions \
           -DCXX_DEFINES=$blazingdb_ral_definitions \
           ..

@@ -33,6 +33,7 @@ sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$l
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/librmm_cffi/librmm_build.py
 
 pip install $cudf_dir/$libgdf_dir/python
+RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h  pip install $cudf_dir/thirdparty/rmm/python
 
 # Install cudf
 CFLAGS=-I/conda/envs/cudf/include CXXFLAGS=-I/conda/envs/cudf/include pip install $cudf_dir/python

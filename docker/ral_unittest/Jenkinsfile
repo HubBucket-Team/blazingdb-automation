@@ -1,0 +1,51 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+  
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  parameters {
+    booleanParam(name: 'DOCKERHUB_PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
+  }
+  
+  environment {
+  }
+
+  stages {
+
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage("Build") {
+      steps {
+        dir("docker/") {
+          sh "echo ${GIT_BRANCH}"
+        }
+      }
+    }
+    
+    stage("Build") {
+      steps {
+        dir("docker/") {
+          sh "build ral"
+        }
+      }
+    }
+
+    stage("Test") {
+      steps {
+        dir("docker/") {
+          sh "unit test ral"
+        }
+      }
+    }    
+  }
+}

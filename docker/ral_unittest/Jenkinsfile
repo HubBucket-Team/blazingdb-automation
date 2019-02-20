@@ -35,7 +35,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "build ral"
+          sh "build ral HII"
         }
       }
     }

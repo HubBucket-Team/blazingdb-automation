@@ -11,6 +11,7 @@ user=$1
 workdir=$2
 image_tag=$3
 data_set=$4
+branch_blazingdb_testing=$4
 # Variables
 home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0
@@ -34,10 +35,10 @@ if [ ! -d $blazingdb_testing_name ]; then
 echo " Clonning blazingdb-testing"
     git clone git@github.com:BlazingDB/blazingdb-testing.git
     cd $workdir/blazingdb-testing
-    git checkout develop
+    git checkout $branch_blazingdb_testing
 fi 
 cd $workdir/blazingdb-testing
-git checkout develop
+git checkout $branch_blazingdb_testing
 git pull
 
 echo " Installig apache drill"

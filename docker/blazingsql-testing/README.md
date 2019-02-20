@@ -28,10 +28,10 @@ cd blazingdb-automation/docker/blazingsql-testing
 nvidia-docker run --name bzsqlcontainer -d -p ....
 
 # Run the script to end to end test
-./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG $DATA_SET
+./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG $DATA_SET $BLAZINGDB_TESTING_BRANCH
 
 # Example:
-./run_complete_test.sh  edith  /home/edith/blazingdb/workspace-testing  demo:latest  DataSet1Mb
+./run_complete_test.sh  edith  /home/edith/blazingdb/workspace-testing  demo:latest  DataSet1Mb develop
 ```
 
 ## Jenkins Mode

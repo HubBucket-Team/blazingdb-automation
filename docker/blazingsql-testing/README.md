@@ -7,7 +7,6 @@
 -  You need the imagen **demo** and the **demobuid** are created, follow this : https://github.com/BlazingDB/blazingdb-automation/blob/develop/README.md
 -  You need a workspace  for end to end tes in your local machinet, example: **workspace-testing**
 -  Into **workspace-testing** you need this  two components: 
-        * DataSet1Mb
         * configurationFile.json
 -  The configuration file similar like this, where  **"edith"**, is your local machine user. (change it!)
 ```shell-script
@@ -31,7 +30,7 @@ nvidia-docker run --name bzsqlcontainer -d -p ....
 ./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG $DATA_SET $BLAZINGDB_TESTING_BRANCH
 
 # Example:
-./run_complete_test.sh  edith  /home/edith/blazingdb/workspace-testing  demo:latest  DataSet1Mb develop
+./run_complete_test.sh  edithbz  /home/edithbz/blazingdb/workspace-testing  demo:latest  DataSet1Mb develop
 ```
 
 ## Jenkins Mode

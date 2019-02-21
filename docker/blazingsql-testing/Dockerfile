@@ -1,4 +1,4 @@
-FROM demo:latest
+FROM demodeploy:latest
 
 ARG USER=default_value
 ENV USER=$USER

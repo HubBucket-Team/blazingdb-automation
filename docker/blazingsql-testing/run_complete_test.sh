@@ -16,7 +16,7 @@ branch_blazingdb_testing=$5
 home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0
 local_workdir=$PWD
-echo "PWD===" $PWD
+echo "PWD===>" $PWD
 ssh_key=$HOME/.ssh_jenkins/
 
 
@@ -91,7 +91,7 @@ echo "Init apache Drill"
 #!quit
 cd $local_workdir
 ./run_drill.sh  $workdir_drill/bin/drill-embedded
-sleep 10
+sleep 15
 
 echo "Init e2e test"
 #DEVELOPER MODE ( -it showing the process)

@@ -1,0 +1,28 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+  
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  stages {
+
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage("Build") {
+      steps {
+        dir("docker/") {
+          sh "./build_dependencies.sh ${env.BUILD_NUMBER}"
+        }
+      }
+    }
+  }
+}

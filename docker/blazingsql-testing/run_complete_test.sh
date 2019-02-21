@@ -11,7 +11,7 @@ user=$1
 workdir=$2
 image_tag=$3
 data_set=$4
-branch_blazingdb_testing=$4
+branch_blazingdb_testing=$5
 # Variables
 home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0

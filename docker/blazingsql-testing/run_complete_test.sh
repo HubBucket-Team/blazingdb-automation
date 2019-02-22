@@ -56,12 +56,13 @@ fi
 
 #We use DataSet1Mb from  blazigndb google storage
 cd  $workdir
+if [ ! -d $workdir/$data_set ]; then
 gsutil cp -R gs://blazingdbstorage/$data_set .
-
+fi
 #TO DO: Replace file configurationfile
-#cp  $local_workdir/configurationFile.json  $workdir
-
-
+if [ ! -f $workdir/configurationFile.json ]; then
+    gsutil cp gs://blazingdbstorage/configurationFile.json  .
+fi
 
 echo "Updating creation logtest directory "
 logTest_name=logtest
@@ -72,15 +73,16 @@ fi
 
 echo "Run end to end  test container"
 #DEVELOP MODE
-#nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $HOME/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
+nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $HOME/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
 #JENKINS MODE
-nvidia-docker run --name bzsqlcontainer -d -p 8884:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
+#nvidia-docker run --name bzsqlcontainer -d -p 8884:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
 
 
 echo "Changing permission"
-nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user /blazingsql/
-nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user $home_user
-nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user $workdir_drill
+echo "USERRRRRRRRR" $user
+nvidia-docker exec --user root bzsqlcontainer chown -R 1001:1001 /blazingsql/
+nvidia-docker exec --user root bzsqlcontainer chown -R 1001:1001 $home_user
+nvidia-docker exec --user root bzsqlcontainer chown -R 1001:1001 $workdir_drill
 
 echo "Init services"
 nvidia-docker exec -d bzsqlcontainer /home/jupyter/testing-libgdf

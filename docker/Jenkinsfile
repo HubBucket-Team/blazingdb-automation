@@ -2,7 +2,12 @@ pipeline {
   agent {
       label 'slave-gpu'
   }
-  
+
+   environment {
+    //ARTIFACTOR = "${env.BUILD_NUMBER}.zip"
+    SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
+  }
+
   options {
     ansiColor('xterm')
     timestamps()
@@ -18,7 +23,6 @@ pipeline {
     string(name: 'ANACONDA_PYTHON_VERSION', defaultValue: 'py35', description: 'Python version')   
     string(name: 'ANACONDA_BUILD_NUMBER', defaultValue: '1', description: 'Build number')   
     string(name: 'ANACONDA_LABEL', defaultValue: 'main', description: 'Label to blazinsql package')   
-    //string(name: 'SLACK_CHANNEL', defaultValue: '#devops', description: '')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: '')
@@ -26,6 +30,7 @@ pipeline {
     string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
+     string(name: 'SLACK_CHANNEL', defaultValue: 'devops-test', description: '')
   }
   
   environment {
@@ -43,6 +48,9 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
+         echo "build"
+         sh "echo ${env.BUILD_NUMBER}"
+         sh "echo ${env.SLACK_MESSAGE}"
           sh "./build-deploy.sh ${params.DOCKERHUB_TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"
         }
       }
@@ -63,6 +71,23 @@ pipeline {
         }
       }
     }
+
+    post {
+    always {
+      //archiveArtifacts artifacts: "${ARTIFACTOR}", onlyIfSuccessful: true
+      //sh "rm -f ${ARTIFACTOR}"
+      echo "Job has finished"
+    }
+    success {
+      slackSendMessage "good"
+    }
+    failure {
+      slackSendMessage "danger"
+    }
+    unstable {
+      slackSendMessage "warning"
+    }
+  }
     
     stage("Publish") {
       when {

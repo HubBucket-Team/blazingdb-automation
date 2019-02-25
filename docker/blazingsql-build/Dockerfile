@@ -58,7 +58,7 @@ RUN useradd -ms /bin/bash $TMP_USER -u $TMP_UID -g $TMP_GID
 
 # Create blazingsql directory
 RUN  mkdir /blazingsql
-RUN  chown builder:builder /blazingsql
+RUN  chown builder:builder /blazingsql/
 
 # Prepare the build script
 COPY build.sh /home/builder/

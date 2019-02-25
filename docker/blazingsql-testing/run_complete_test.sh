@@ -91,8 +91,8 @@ nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(
 #nvidia-docker exec -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
 #nvidia-docker exec -d bzsqlcontainer java -jar  /home/jupyter/BlazingCalcite.jar
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service 8890 127.0.0.1 8891 127.0.0.1 8892
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf 127.0.0.1 8892
+nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
+nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
 
 echo "Init apache Drill"
 #!quit
@@ -105,7 +105,9 @@ echo "Init e2e test"
 #DEVELOPER MODE ( -it showing the process)
 #nvidia-docker  exec  -it bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 # JENKINS MODE
+
 echo "============================First execution==============================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
-echo "=========================== Second execution ==========================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+
+#echo "=========================== Second execution ==========================================="
+#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

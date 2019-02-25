@@ -10,16 +10,17 @@ pipeline {
 
   parameters {
    string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
-    string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: '')
-    string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: '')
-    string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: 'develop', description: '')
-    string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: '')
-    string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: '')
-    string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
     string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/workspace/workspace-testing', description: '')
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
     string(name: 'E2E_IMAGE_TAG', defaultValue: 'blazingdb/blazingsql:latest', description: '')
+    string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: '')
   }
   
   stages {
@@ -38,14 +39,14 @@ pipeline {
           [$class: 'StringParameterValue', name: 'BLAZINGDB_RAL_BRANCH', value: "${params.BLAZINGDB_RAL_BRANCH}"],       
           [$class: 'StringParameterValue', name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', value: "${params.BLAZINGDB_ORCHESTRATOR_BRANCH}"],       
           [$class: 'StringParameterValue', name: 'BLAZINGDB_CALCITE_BRANCH', value: "${params.BLAZINGDB_CALCITE_BRANCH}"],
-           [$class: 'StringParameterValue', name: 'PYBLAZING_BRANCH', value: "${params.PYBLAZING_BRANCH}"],
+           [$class: 'StringParameterValue', name: 'PYBLAZING_BRANCH', value: "${params.PYBLAZING_BRANCH}"],           
         ]
       }
     }
     stage("Run end to end test") {
       steps {
         dir("docker/blazingsql-testing") {
-          sh "./run_complete_test.sh  ${params.E2E_USER}  ${params.E2E_WORKDIR} ${params.E2E_IMAGE_TAG} ${params.E2E_DATA_SET} "
+          sh "./run_complete_test.sh  ${params.E2E_USER}  ${params.E2E_WORKDIR} ${params.E2E_IMAGE_TAG} ${params.E2E_DATA_SET}  ${params.E2E_BLAZINGDB_TESTING_BRANCH}"
         }
       }
     }

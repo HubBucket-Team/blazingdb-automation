@@ -56,12 +56,14 @@ fi
 
 #We use DataSet1Mb from  blazigndb google storage
 cd  $workdir
+if [ ! -d $workdir/$data_set ]; then
 gsutil cp -R gs://blazingdbstorage/$data_set .
+fi
 
 #TO DO: Replace file configurationfile
-#cp  $local_workdir/configurationFile.json  $workdir
-
-
+if [ ! -f $workdir/configurationFile.json ]; then
+    gsutil cp gs://blazingdbstorage/configurationFile.json  .
+fi
 
 echo "Updating creation logtest directory "
 logTest_name=logtest

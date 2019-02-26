@@ -42,18 +42,6 @@ cd $workdir/blazingdb-testing
 git checkout $branch_blazingdb_testing
 git pull
 
-#echo " Installig apache drill"
-#cd $workdir
-#apache_drill_directory=apache-drill-1.12.0
-
-#if [ ! -d $apache_drill_directory ]; then
-#    wget http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
-#    tar -xvzf apache-drill-1.12.0.tar.gz
-    # Set time zone apache drill:  In the folder : /apache-drill-1.12.0/conf/ edit the file drill-env.sh and add the line: export DRILL_JAVA_OPTS="-Duser.timezone=UTC"
-#    DRILL_JAVA_OPTS_VAR='export DRILL_JAVA_OPTS="-Duser.timezone=UTC" '
-#    echo $DRILL_JAVA_OPTS_VAR >> apache-drill-1.12.0/conf/drill-env.sh
-#fi 
-
 #We use DataSet1Mb from  blazigndb google storage
 cd  $workdir
 if [ ! -d $workdir/$data_set ]; then
@@ -72,42 +60,25 @@ if [ ! -d $logTest_name ]; then
 fi   
 
 echo "Run end to end  test container"
-#DEVELOP MODE
-#nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $HOME/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsql/test  bash
 nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(id -g) -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user $docker_image bash
-
-#JENKINS MODE
-#nvidia-docker run --name bzsqlcontainer -d -p 8884:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
-
 
 #echo "Changing permission"
 echo "USERRRRRRRRR" $user
 nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
-#nvidia-docker exec --user root bzsqlcontainer chown -R 1001:1001 $home_user
-#nvidia-docker exec --user root bzsqlcontainer chown -R 1001:1001 $workdir_drill
 
 echo "Init services"
-#nvidia-docker exec -d bzsqlcontainer /home/jupyter/testing-libgdf
-#nvidia-docker exec -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
-#nvidia-docker exec -d bzsqlcontainer java -jar  /home/jupyter/BlazingCalcite.jar
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
 
 echo "Init apache Drill"
-#!quit
-#cd $local_workdir
-#./run_drill.sh  $workdir_drill/bin/drill-embedded
 nvidia-docker exec --user $(id -u):$(id -g) -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embedded
 sleep 15
 
 echo "Init e2e test"
-#DEVELOPER MODE ( -it showing the process)
-#nvidia-docker  exec  -it bzsqlcontainer   /tmp/run_e2e.sh  $home_user
-# JENKINS MODE
 
 echo "============================First execution==============================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 
-#echo "=========================== Second execution ==========================================="
-#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+echo "=========================== Second execution ==========================================="
+nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

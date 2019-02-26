@@ -30,7 +30,7 @@ nvidia-docker run --name bzsqlcontainer -d -p ....
 ./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG $DATA_SET $BLAZINGDB_TESTING_BRANCH
 
 # Example:
-./run_complete_test.sh  edithbz  /home/edithbz/blazingdb/workspace-testing  demo:latest  DataSet1Mb develop
+./run_complete_test.sh $USER /home/$USER/blazingdb/workspace-testing demo:latest DataSet1Mb develop
 ```
 
 ## Jenkins Mode

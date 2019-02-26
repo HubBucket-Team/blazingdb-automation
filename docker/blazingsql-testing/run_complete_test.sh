@@ -12,12 +12,14 @@ user=$1
 workdir=$2
 image_tag=$3
 data_set=$4
+branch_blazingdb_testing=$5
 # Variables
 home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0
 local_workdir=$PWD
-echo "PWD===" $PWD
-ssh_key=$HOME/.ssh_jenkins/
+docker_image="blazingsql/test"
+echo "PWD===>" $PWD
+ssh_key=$HOME/.ssh/
 
 
 echo "Using Blazingsql deploy image"
@@ -25,7 +27,7 @@ image_tag=`echo "$image_tag"| sed "s/\//\\\\\\\\\//g"`
 sed -ie "s/FROM.*/FROM $image_tag/g" $local_workdir/Dockerfile
 
 echo "Building e2e test image"
-nvidia-docker build --build-arg USER=$user -t blazingsqltest .
+nvidia-docker build --build-arg USER=$user -t $docker_image .
 
 echo "Updading blazingdb-testing repository"
 cd $workdir
@@ -35,10 +37,10 @@ if [ ! -d $blazingdb_testing_name ]; then
 echo " Clonning blazingdb-testing"
     git clone git@github.com:BlazingDB/blazingdb-testing.git
     cd $workdir/blazingdb-testing
-    git checkout fix/read_tpch_files_for_strings
+    git checkout $branch_blazingdb_testing
 fi 
 cd $workdir/blazingdb-testing
-git checkout fix/read_tpch_files_for_strings
+git checkout $branch_blazingdb_testing
 git pull
 
 echo " Installig apache drill"
@@ -73,30 +75,25 @@ if [ ! -d $logTest_name ]; then
 fi   
 
 echo "Run end to end  test container"
-#DEVELOP MODE
-#nvidia-docker run --name bzsqlcontainer -d -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $HOME/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
-#JENKINS MODE
-nvidia-docker run --name bzsqlcontainer -d -p 8884:8884 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/.ssh/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user -ti blazingsqltest  bash
+nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(id -g) -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user $docker_image bash
 
-
-echo "Changing permission"
-nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user /blazingsql/
-nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user $home_user
-nvidia-docker exec -u root bzsqlcontainer chown -R $user:$user $workdir_drill
+#echo "Changing permission"
+echo "USERRRRRRRRR" $user
+nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
 
 echo "Init services"
-nvidia-docker exec -d bzsqlcontainer /home/jupyter/testing-libgdf
-nvidia-docker exec -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
-nvidia-docker exec -d bzsqlcontainer java -jar  /home/jupyter/BlazingCalcite.jar
+nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar
+nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
+nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
 
 echo "Init apache Drill"
-#!quit
-cd $local_workdir
-./run_drill.sh  $workdir_drill/bin/drill-embedded
-sleep 10
+nvidia-docker exec --user $(id -u):$(id -g) -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embedded
+sleep 15
 
 echo "Init e2e test"
-#DEVELOPER MODE ( -it showing the process)
-#nvidia-docker  exec  -it bzsqlcontainer   /tmp/run_e2e.sh  $home_user
-# JENKINS MODE
+
+echo "============================First execution==============================================="
+nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+
+echo "=========================== Second execution ==========================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

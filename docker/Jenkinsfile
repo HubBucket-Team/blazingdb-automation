@@ -5,7 +5,7 @@ pipeline {
 
    environment {
     //ARTIFACTOR = "${env.BUILD_NUMBER}.zip"
-    SLACK_MESSAGE = "Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
+    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 
   options {
@@ -30,7 +30,7 @@ pipeline {
     string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
-     string(name: 'SLACK_CHANNEL', defaultValue: 'devops-test', description: '')
+     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
   }
   
   environment {
@@ -71,24 +71,7 @@ pipeline {
         }
       }
     }
-
-    post {
-    always {
-      //archiveArtifacts artifacts: "${ARTIFACTOR}", onlyIfSuccessful: true
-      //sh "rm -f ${ARTIFACTOR}"
-      echo "Job has finished"
-    }
-    success {
-      slackSendMessage "good"
-    }
-    failure {
-      slackSendMessage "danger"
-    }
-    unstable {
-      slackSendMessage "warning"
-    }
-  }
-    
+     
     stage("Publish") {
       when {
         expression {
@@ -121,4 +104,37 @@ pipeline {
       }
     }
   }
+}
+
+// Post method to slack notifications
+post {
+   // always {
+   //    notifySlack "Started"
+   //  }
+    success {
+         notifySlack "Success"
+    }
+    failure {
+          notifySlack "Failure"
+    }
+    unstable {
+          notifySlack "Warning"
+    }
+  }
+} 
+
+def notifySlack(String buildStatus = 'Started') {
+    buildStatus = buildStatus ?: 'Success'
+
+    def color
+    if (buildStatus == 'Started') {
+        color = '#6f7275'
+    } else if (buildStatus == 'Success') {
+        color = '#037c0e'
+    } else if (buildStatus == 'Warning') {
+        color = '#dfdd30'
+    } else {
+        color = '#8e0406'
+    }
+ slackSend channel: "${params.SLACK_CHANNEL}", color: color, failOnError: true, message: "${buildStatus}" + "$SLACK_MESSAGE"
 }

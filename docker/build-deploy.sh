@@ -91,4 +91,3 @@ nvidia-docker build -t $image_deploy .
 if [ $? != 0 ]; then
   exit 1
 fi
-asda

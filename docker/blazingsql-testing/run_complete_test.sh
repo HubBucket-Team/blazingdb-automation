@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Remove old containers
+#TODO : We need to map all scenarios to know what container live in this jenkins-slave. Not remove all the container to start the end to end.
 echo "Removing old containers"
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
@@ -42,11 +43,25 @@ cd $workdir/blazingdb-testing
 git checkout $branch_blazingdb_testing
 git pull
 
+echo " Installig apache drill"
+cd $workdir
+apache_drill_directory=apache-drill-1.12.0
+
+if [ ! -d $apache_drill_directory ]; then
+    wget http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
+    tar -xvzf apache-drill-1.12.0.tar.gz
+    # Set time zone apache drill:  In the folder : /apache-drill-1.12.0/conf/ edit the file drill-env.sh and add the line: export DRILL_JAVA_OPTS="-Duser.timezone=UTC"
+    DRILL_JAVA_OPTS_VAR='export DRILL_JAVA_OPTS="-Duser.timezone=UTC" '
+    echo $DRILL_JAVA_OPTS_VAR >> apache-drill-1.12.0/conf/drill-env.sh
+
+fi 
+
 #We use DataSet1Mb from  blazigndb google storage
 cd  $workdir
 if [ ! -d $workdir/$data_set ]; then
 gsutil cp -R gs://blazingdbstorage/$data_set .
 fi
+
 #TO DO: Replace file configurationfile
 if [ ! -f $workdir/configurationFile.json ]; then
     gsutil cp gs://blazingdbstorage/configurationFile.json  .

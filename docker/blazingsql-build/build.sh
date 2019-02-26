@@ -1,12 +1,18 @@
 #!/bin/bash
 
 # NOTE you need to have the blazingsql-build.properties file inside the workspace_dir
-workspace_dir=$1
-output_dir=$2
+workspace_dir=/home/builder/workspace/
+output_dir=/home/builder/output/
+if [ ! -z $1 ]; then
+  workspace_dir=$1
+fi
+if [ ! -z $2 ]; then
+  output_dir=$2
+fi
 
 BUILD_TYPE='Release'
 if [ $# -eq 3 ]; then
-	BUILD_TYPE=$3
+    BUILD_TYPE=$3
 fi
 
 
@@ -16,6 +22,7 @@ output_dir=$(readlink -f $output_dir)
 
 output=$output_dir/blazingsql-files
 
+#echo "mkdir -p $output"
 mkdir -p $output 
 
 working_directory=$PWD
@@ -218,6 +225,7 @@ fi
 zeromq_install_dir=$workspace_dir/dependencies/zeromq_install_dir
 
 if [ ! -d $zeromq_install_dir ]; then
+    echo "### Zeromq - Star ###"
     cd $workspace_dir/dependencies/
     git clone https://github.com/zeromq/libzmq.git
     cd $workspace_dir/dependencies/libzmq
@@ -227,6 +235,7 @@ if [ ! -d $zeromq_install_dir ]; then
 
     mkdir -p $zeromq_build_dir
     cd $zeromq_build_dir
+    echo "### Zeromq - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX:PATH=$zeromq_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
@@ -234,7 +243,17 @@ if [ ! -d $zeromq_install_dir ]; then
           -DENABLE_CURVE=OFF \
           -DZMQ_BUILD_TESTS=OFF \
           ..  
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Zeromq - make install ###"
     make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Zeromq - end ###"
 fi
 
 # Package zeromq
@@ -249,6 +268,7 @@ cp -r $zeromq_install_dir/lib/* ${output}/zeromq/
 jzmq_install_dir=$workspace_dir/dependencies/jzmq_install_dir
 
 if [ ! -d $jzmq_install_dir ]; then
+    echo "### Jzmq - Start ###"
     rm -rf $jzmq_install_dir
     cd $workspace_dir/dependencies/
     git clone https://github.com/zeromq/jzmq.git
@@ -260,13 +280,19 @@ if [ ! -d $jzmq_install_dir ]; then
     LDFLAGS="-L$zeromq_install_dir/lib" CFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./configure --prefix=$jzmq_install_dir
     LDFLAGS="-L$zeromq_install_dir/lib" CFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-I$zeromq_install_dir/include -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" make -j4 install
     cd ..
+
+    echo "### Jzmq - mvn ###"
     mvn clean install -Dgpg.skip=true -DskipTests=true
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 fi
 
 # Package jzmq
 cd $workspace_dir
 mkdir -p ${output}/jzmq/
 cp -r $jzmq_install_dir/lib/* ${output}/jzmq/
+echo "### Jzmq - end ###"
 
 #END jzmq
 
@@ -275,6 +301,7 @@ cp -r $jzmq_install_dir/lib/* ${output}/jzmq/
 boost_install_dir=$workspace_dir/dependencies/boost_install_dir
 
 if [ ! -d $boost_install_dir ]; then
+    echo "### Boost - start ###"
     cd $workspace_dir/dependencies/
 
     boost_dir=$workspace_dir/dependencies/boost/
@@ -291,21 +318,42 @@ if [ ! -d $boost_install_dir ]; then
     cd $boost_build_dir
     ./bootstrap.sh --with-libraries=system,filesystem,regex,atomic,chrono,container,context,thread --with-icu --prefix=$boost_install_dir
     ./b2 install variant=release define=_GLIBCXX_USE_CXX11_ABI=0 stage cxxflags=-fPIC cflags=-fPIC link=static runtime-link=static threading=multi --exec-prefix=$boost_install_dir --prefix=$boost_install_dir -a
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    echo "### Boost - end ###"
 fi
 
 #END boost
 
 #BEGIN nvstrings
 
-nvstrings_package=nvstrings-0.0.3-cuda9.2_py35_0
+nvstrings_package=nvstrings
 nvstrings_install_dir=$workspace_dir/dependencies/$nvstrings_package
 
 if [ ! -d $nvstrings_install_dir ]; then
+    echo "### Nvstring - start ###"
     cd $workspace_dir/dependencies/
-    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.0.3/download/linux-64/"$nvstrings_package".tar.bz2
+    nvstrings_file=nvstrings-0.2.0-cuda9.2_py36_0.tar.bz2
+    nvstrings_url=https://anaconda.org/nvidia/nvstrings/0.2.0/download/linux-64/$nvstrings_file
     wget $nvstrings_url
     mkdir $nvstrings_package
-    tar xvf "$nvstrings_package".tar.bz2 -C $nvstrings_package
+
+    #TODO percy remove this fix once nvstrings has pre compiler flags in its headers
+    sed -i '1s/^/#define NVIDIA_NV_STRINGS_H_NVStrings\n/' $nvstrings_package/include/NVStrings.h
+    sed -i '1s/^/#ifndef NVIDIA_NV_STRINGS_H_NVStrings\n/' $nvstrings_package/include/NVStrings.h
+    echo "#endif" >> $nvstrings_package/include/NVStrings.h
+
+    sed -i '1s/^/#define NVIDIA_NV_STRINGS_H_NVCategory\n/' $nvstrings_package/include/NVCategory.h
+    sed -i '1s/^/#ifndef NVIDIA_NV_STRINGS_H_NVCategory\n/' $nvstrings_package/include/NVCategory.h
+    echo "#endif" >> $nvstrings_package/include/NVCategory.h
+
+    tar xvf $nvstrings_file -C $nvstrings_package
+
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    echo "### Nvstring - end ###"
 fi
 
 # Package nvstrings (always do this since this lib is needed by further deployment processes: conda, docker)
@@ -321,11 +369,16 @@ libhdfs3_package=libhdfs3
 libhdfs3_install_dir=$workspace_dir/dependencies/$libhdfs3_package
 
 if [ ! -d $libhdfs3_install_dir ]; then
+    echo "### Libhdfs3 - start ###"
     cd $workspace_dir/dependencies/
     libhdfs3_url=https://s3-us-west-2.amazonaws.com/blazing-public-downloads/_libs_/libhdfs3/libhdfs3.tar.gz
     wget $libhdfs3_url
     mkdir $libhdfs3_package
     tar xvf "$libhdfs3_package".tar.gz -C $libhdfs3_package
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    echo "### Libhdfs3 - end ###"
 fi
 
 cd $workspace_dir
@@ -356,8 +409,15 @@ if [ ! -d $googletest_install_dir ]; then
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
-    echo "### Googletest - make ###"
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Googletest - make install ###"
     make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
     echo "### Googletest - End ###"
 fi
 
@@ -385,8 +445,16 @@ if [ ! -d $flatbuffers_install_dir ]; then
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           ..
-    echo "### Flatbufferts - make ###"
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Flatbufferts - make install ###"
     make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     echo "### Flatbufferts - End ###"
 fi
 
@@ -406,9 +474,12 @@ if [ ! -d $lz4_install_dir ]; then
     lz4_build_dir=$workspace_dir/dependencies/lz4
 
     # NOTE build Boost with old C++ ABI _GLIBCXX_USE_CXX11_ABI=0 and with -fPIC
-    echo "### Lz4 - make ###"
+    echo "### Lz4 - make install ###"
     cd $lz4_build_dir
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC" PREFIX=$lz4_install_dir make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Lz4 - End ###"
 fi
@@ -439,8 +510,15 @@ if [ ! -d $zstd_install_dir ]; then
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DZSTD_BUILD_STATIC=ON \
           ..
-    echo "### Zstd - make ###"
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Zstd - make install ###"
     make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Zstd - End ###"
 fi
@@ -471,8 +549,15 @@ if [ ! -d $brotli_install_dir ]; then
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DBUILD_SHARED_LIBS=OFF \
           ..
-    echo "### Brotli - make ###"
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Brotli - make install ###"
     make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Brotli - End ###"
 fi
@@ -499,8 +584,11 @@ if [ ! -d $snappy_install_dir ]; then
     echo "### Snappy - Configure ###"
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" ./configure --prefix=$snappy_install_dir
 
-    echo "### Snappy - make ###"
+    echo "### Snappy - make install ###"
     CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -O3 -fPIC -O2" make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Snappy - End ###"
 fi
@@ -544,9 +632,15 @@ if [ ! -d $thrift_install_dir ]; then
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DBOOST_ROOT=$boost_install_dir \
           ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
-    echo "### Thrift - make ###"
+    echo "### Thrift - make install ###"
     make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Thrift - end ###"
 fi
@@ -562,7 +656,7 @@ if [ ! -d $arrow_install_dir ]; then
     cd $workspace_dir/dependencies/
     git clone https://github.com/apache/arrow.git
     cd $workspace_dir/dependencies/arrow
-    git checkout apache-arrow-0.11.1
+    git checkout apache-arrow-0.12.0
 
     arrow_build_dir=$workspace_dir/dependencies/arrow/cpp/build/
     
@@ -606,8 +700,15 @@ if [ ! -d $arrow_install_dir ]; then
         -DARROW_TENSORFLOW=ON \
         -DARROW_PARQUET=ON \
         ..
-    echo "### Arrow - make ###"
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Arrow - make install ###"
     make -j4 install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Arrow - end ###"
 fi
@@ -641,8 +742,15 @@ if [ ! -d $aws_sdk_cpp_build_dir ]; then
         -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
         ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     echo "### Aws sdk - make ###"
     make -j4
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Arrow - end ###"
 fi
@@ -691,8 +799,11 @@ if [ $cudf_enable == true ]; then
         -DCMAKE_BUILD_TYPE=Release  \
         -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
         ..
-    echo "### CUDF - make ###"
+    echo "### CUDF - make install ###"
     make -j$cudf_parallel install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
     
     #TODO remove this patch once cudf can install rmm
     cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
@@ -703,8 +814,17 @@ if [ $cudf_enable == true ]; then
     # Package cudf
     cd $workspace_dir
     mkdir -p ${output}/cudf/$libgdf_dir/install
+
     cp -r $cudf_current_dir/cudf/* ${output}/cudf/
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     cp -r $libgdf_install_dir/* ${output}/cudf/$libgdf_dir/install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     rm -rf ${output}/cudf/.git/
     rm -rf ${output}/cudf/$libgdf_dir/build/
 
@@ -758,11 +878,23 @@ if [ $blazingdb_protocol_enable == true ]; then
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
 	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
-    echo "### Protocol - make ###"
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Protocol - make install ###"
     make -j$blazingdb_protocol_parallel install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
     
     cd $blazingdb_protocol_current_dir/blazingdb-protocol/java
+    echo "### Protocol - mvn ###"
     mvn clean install -Dmaven.test.skip=true
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     blazingdb_protocol_java_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/java/target/
     
     #END blazingdb-protocol
@@ -820,8 +952,15 @@ if [ $blazingdb_io_enable == true ]; then
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     echo "### Blazingdb IO - make ###"
     make -j$blazingdb_io_parallel install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
     
     echo "### Blazingdb IO - end ###"
     #END blazingdb-io
@@ -892,9 +1031,15 @@ if [ $blazingdb_ral_enable == true ]; then
           -DCUDA_DEFINES=$blazingdb_ral_definitions \
           -DCXX_DEFINES=$blazingdb_ral_definitions \
           ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Ral - make ###"
     make -j$blazingdb_ral_parallel
+    if [ $? != 0 ]; then
+      exit 1
+    fi
     
     #END blazingdb-ral
     
@@ -902,6 +1047,9 @@ if [ $blazingdb_ral_enable == true ]; then
     cd $workspace_dir
     blazingdb_ral_artifact_name=testing-libgdf
     cp $blazingdb_ral_build_dir/$blazingdb_ral_artifact_name $output
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Ral - end ###"
 fi
@@ -950,8 +1098,15 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
           -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch \
           ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     echo "### Orchestrator - make ###"
     make -j$blazingdb_orchestrator_parallel
+    if [ $? != 0 ]; then
+      exit 1
+    fi
     
     #END blazingdb-orchestrator
     
@@ -993,6 +1148,10 @@ if [ $blazingdb_calcite_enable == true ]; then
     
     echo "### Calcite - mvn clean install ###"
     mvn clean install -Dmaven.test.skip=true
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     blazingdb_calcite_build_dir=$blazingdb_calcite_current_dir/blazingdb-calcite/blazingdb-calcite-application/target/
     
     #END blazingdb-calcite
@@ -1039,14 +1198,114 @@ if [ $pyblazing_enable == true ]; then
     cd $workspace_dir
     mkdir -p ${output}/pyBlazing/
     cp -r $pyblazing_current_dir/pyBlazing/* ${output}/pyBlazing/
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
     rm -rf ${output}/pyBlazing/.git/
     echo "### Pyblazing - end ###"
 fi
 
 # Final step: compress files and delete temp folder
+
 cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
+
+if [ -d $output ]; then
+    echo "###################### BUILT STATUS #####################"
+    if [ $blazingdb_ral_enable == true ]; then
+        if [ -f $output/testing-libgdf ]; then
+            echo "RAL - built OK."
+        else
+            echo "RAL - compiled with errors."
+        fi
+    fi
+
+    if [ $blazingdb_orchestrator_enable == true ]; then
+        if [ -f $output/blazingdb_orchestator_service ]; then
+            echo "ORCHESTRATOR - built OK."
+        else
+            echo "ORCHESTRATOR - compiled with errors."
+        fi
+    fi
+
+    if [ $blazingdb_calcite_enable == true ]; then
+        if [ -f $output/BlazingCalcite.jar ]; then
+            echo "CALCITE - built OK."
+        else
+            echo "CALCITE - compiled with errors."
+        fi
+    fi
+fi
+
 rm -rf ${output}
 
 cd $working_directory
+
+echo "######################## SUMMARY ########################"
+
+if [ $cudf_enable == true ]; then
+    echo "CUDF: "
+    cudf_dir=$workspace_dir/cudf_project/$cudf_branch_name/cudf
+    cd $cudf_dir
+    cudf_commit=$(git log | head -n 1)
+    echo '      '$cudf_commit
+    echo '      '"branch "$cudf_branch_name
+fi
+
+if [ $blazingdb_protocol_enable == true ]; then
+    echo "PROTOCOL: "
+    protocol_dir=$workspace_dir/blazingdb-protocol_project/$blazingdb_protocol_branch_name/blazingdb-protocol
+    cd $protocol_dir
+    protocol_commit=$(git log | head -n 1)
+    echo '      '$protocol_commit
+    echo '      '"branch "$blazingdb_protocol_branch_name
+fi
+
+if [ $blazingdb_protocol_enable == true ]; then
+    echo "BLAZING-IO: "
+    io_dir=$workspace_dir/blazingdb-io_project/$blazingdb_io_branch_name/blazingdb-io
+    cd $io_dir
+    io_commit=$(git log | head -n 1)
+    echo '      '$io_commit
+    echo '      '"branch "$blazingdb_io_branch_name
+fi
+
+if [ $blazingdb_ral_enable == true ]; then
+    echo "RAL: "
+    ral_dir=$workspace_dir/blazingdb-ral_project/$blazingdb_ral_branch_name/blazingdb-ral
+    cd $ral_dir
+    ral_commit=$(git log | head -n 1)
+    echo '      '$ral_commit
+    echo '      '"branch "$blazingdb_ral_branch_name
+fi
+
+if [ $blazingdb_orchestrator_enable == true ]; then
+    echo "ORCHESTRATOR: "
+    orch_dir=$workspace_dir/blazingdb-orchestrator_project/$blazingdb_orchestrator_branch_name/blazingdb-orchestrator
+    cd $orch_dir
+    orch_commit=$(git log | head -n 1)
+    echo '      '$orch_commit
+    echo '      '"branch "$blazingdb_orchestrator_branch_name
+fi
+
+if [ $blazingdb_calcite_enable == true ]; then
+    echo "CALCITE: "
+    calcite_dir=$workspace_dir/blazingdb-calcite_project/$blazingdb_calcite_branch_name/blazingdb-calcite
+    cd $calcite_dir
+    calcite_commit=$(git log | head -n 1)
+    echo '      '$calcite_commit
+    echo '      '"branch "$blazingdb_calcite_branch_name
+fi
+
+if [ $pyblazing_enable == true ]; then
+    echo "PYBLAZING: "
+    pyblazing_dir=$workspace_dir/pyblazing_project/$pyblazing_branch_name/pyBlazing
+    cd $pyblazing_dir
+    pyblazing_commit=$(git log | head -n 1)
+    echo '      '$pyblazing_commit
+    echo '      '"branch "$pyblazing_branch_name
+fi
+
+echo "##########################################################"
 
 #END main

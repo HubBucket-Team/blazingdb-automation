@@ -8,7 +8,7 @@ cd $WORKSPACE/blazingsql-build/
 
 workspace=$HOME/blazingsql/workspace/
 output=$HOME/blazingsql/output3/
-ssh_key=$HOME/.ssh_jenkins/
+ssh_key=$HOME/.ssh/
 image_build="blazingsql/build:latest"
 image_deploy="blazingdb/blazingsql:$1"
 
@@ -25,9 +25,9 @@ pyblazing_branch="pyblazing_branch=$8"
 
 mkdir -p $workspace $output
 
-sudo chown 1000:1000 -R $workspace
-sudo chown 1000:1000 -R $output
-sudo chown 1000:1000 -R $ssh_key
+#sudo chown 1000:1000 -R $workspace
+#sudo chown 1000:1000 -R $output
+#sudo chown 1000:1000 -R $ssh_key
 
 
 echo "### Copy properties ###"
@@ -50,11 +50,23 @@ echo "nvidia-docker rmi -f $image_build"
 nvidia-docker rmi -f $image_build
 echo "nvidia-docker build -t $image_build ."
 nvidia-docker build -t $image_build .
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+echo "### Remove previous tar ###"
+echo "rm -f $output/blazingsql-files.tar.gz"
 
 # User builder uid=1000, but user jenkins uid=123
 echo "### Run de Build ###"
-echo "nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
-nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
+#echo "nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
+#nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
+echo "nvidia-docker run --rm -e NEW_UID=$(id -u) -e NEW_GID=$(id -g) --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
+nvidia-docker run --rm -e NEW_UID=$(id -u) -e NEW_GID=$(id -g) --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
+#echo "Resultado: $?"
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### Copy tar ###"
 echo "cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/"
@@ -69,8 +81,8 @@ echo "HOME ------------>> " $HOME
 # BEFORE DEPLOY
 cd $WORKSPACE/blazingsql/
 
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-chmod +x Miniconda3-latest-Linux-x86_64.sh
+#wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+#chmod +x Miniconda3-latest-Linux-x86_64.sh
 
 #DEPLOY
 echo "### Build de Image Deploy ###"

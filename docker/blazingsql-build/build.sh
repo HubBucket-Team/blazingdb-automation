@@ -780,7 +780,7 @@ if [ $cudf_enable == true ]; then
     fi
     
     cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
-
+    
     cd $cudf_current_dir/cudf
     git checkout $cudf_branch
     git pull
@@ -876,7 +876,7 @@ if [ $blazingdb_protocol_enable == true ]; then
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
-      -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
+	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -1027,7 +1027,7 @@ if [ $blazingdb_ral_enable == true ]; then
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-      -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
+	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           -DCUDA_DEFINES=$blazingdb_ral_definitions \
           -DCXX_DEFINES=$blazingdb_ral_definitions \
           ..

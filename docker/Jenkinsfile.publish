@@ -75,7 +75,7 @@ post {
           notifySlack "Warning"
     }
   }
-} 
+
 
 // Define method to validate build status 
 def notifySlack(String buildStatus = 'Started') {

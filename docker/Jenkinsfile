@@ -3,11 +3,6 @@ pipeline {
       label 'slave-gpu'
   }
 
-   environment {
-    //ARTIFACTOR = "${env.BUILD_NUMBER}.zip"
-    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
-  }
-
   options {
     ansiColor('xterm')
     timestamps()
@@ -35,6 +30,7 @@ pipeline {
   
   environment {
     IMAGE = "blazingdb/blazingsql:${params.DOCKERHUB_TAG_DEPLOY}"
+     SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 
   stages {

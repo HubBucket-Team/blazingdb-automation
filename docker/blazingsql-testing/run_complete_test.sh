@@ -66,7 +66,7 @@ nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(
 
 #echo "Changing permission"
 echo "USERRRRRRRRR" $user
-#nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
+nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
 
 echo "Init services"
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar

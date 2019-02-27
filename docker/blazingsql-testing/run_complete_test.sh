@@ -27,7 +27,7 @@ image_tag=`echo "$image_tag"| sed "s/\//\\\\\\\\\//g"`
 sed -ie "s/FROM.*/FROM $image_tag/g" $local_workdir/Dockerfile
 
 echo "Building e2e test image"
-nvidia-docker build --build-arg USER=$user -t $docker_image .
+nvidia-docker build -t $docker_image .
 
 echo "Updading blazingdb-testing repository"
 cd $workdir
@@ -79,7 +79,7 @@ nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(
 
 #echo "Changing permission"
 echo "USERRRRRRRRR" $user
-nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
+#nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
 
 echo "Init services"
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar

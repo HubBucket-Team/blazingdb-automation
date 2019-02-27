@@ -37,6 +37,7 @@ RUN mkdir -p /etc/apache-drill-1.12.0/log && chmod 777 /etc/apache-drill-1.12.0/
 #No puede cambiar accesos
 #RUN touch /blazingsql/hi.txt
 #RUN chown -R $USER:$USER /blazingsql/
+RUN chmod 777 /blazingsql/
 
 #USER $USER
 #WORKDIR /home/$USER/

@@ -21,6 +21,11 @@ pipeline {
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
     string(name: 'E2E_IMAGE_TAG', defaultValue: 'blazingdb/blazingsql:latest', description: '')
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+  }
+
+  environment {
+    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
   
   stages {
@@ -51,4 +56,41 @@ pipeline {
       }
     }
   }
+
+  // Method to post jenkinsfile
+  post {
+   // always {
+   //    notifySlack "Started"
+   //  }
+    success {
+         notifySlack "Success"
+    }
+    failure {
+          notifySlack "Failure"
+    }
+    unstable {
+          notifySlack "Warning"
+    }
+  }
+
+}
+
+// Method to send notifications for slack
+def notifySlack(String buildStatus = 'Started') {
+    buildStatus = buildStatus ?: 'Success'
+
+    def color
+
+    if (buildStatus == 'Started') {
+        color = '#6f7275'
+    } else if (buildStatus == 'Success') {
+        color = '#037c0e'
+    } else if (buildStatus == 'Warning') {
+        color = '#dfdd30'
+    } else {
+        color = '#8e0406'
+    }
+
+
+ slackSend channel: "${params.SLACK_CHANNEL}", color: color, failOnError: true, message: "${buildStatus}" + "$SLACK_MESSAGE"
 }

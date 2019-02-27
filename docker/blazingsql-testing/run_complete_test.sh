@@ -43,19 +43,6 @@ cd $workdir/blazingdb-testing
 git checkout $branch_blazingdb_testing
 git pull
 
-echo " Installig apache drill"
-cd $workdir
-apache_drill_directory=apache-drill-1.12.0
-
-if [ ! -d $apache_drill_directory ]; then
-    wget http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
-    tar -xvzf apache-drill-1.12.0.tar.gz
-    # Set time zone apache drill:  In the folder : /apache-drill-1.12.0/conf/ edit the file drill-env.sh and add the line: export DRILL_JAVA_OPTS="-Duser.timezone=UTC"
-    DRILL_JAVA_OPTS_VAR='export DRILL_JAVA_OPTS="-Duser.timezone=UTC" '
-    echo $DRILL_JAVA_OPTS_VAR >> apache-drill-1.12.0/conf/drill-env.sh
-
-fi 
-
 #We use DataSet1Mb from  blazigndb google storage
 cd  $workdir
 if [ ! -d $workdir/$data_set ]; then

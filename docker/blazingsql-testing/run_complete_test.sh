@@ -54,12 +54,12 @@ if [ ! -f $workdir/configurationFile.json ]; then
     gsutil cp gs://blazingdbstorage/configurationFile.json  .
 fi
 
-echo "Updating creation logtest directory "
+echo "Updating creation logtest directory"
 logTest_name=logtest
 
 if [ ! -d $logTest_name ]; then
     mkdir $logTest_name
-fi   
+fi
 
 echo "Run end to end  test container"
 nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(id -g) -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user $docker_image bash
@@ -75,7 +75,7 @@ nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/test
 
 echo "Init apache Drill"
 nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embedded
-sleep 15
+#sleep 15
 
 echo "Init e2e test"
 

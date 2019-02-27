@@ -27,7 +27,7 @@ image_tag=`echo "$image_tag"| sed "s/\//\\\\\\\\\//g"`
 sed -ie "s/FROM.*/FROM $image_tag/g" $local_workdir/Dockerfile
 
 echo "Building e2e test image"
-nvidia-docker build --build-arg USER=$user -t $docker_image .
+nvidia-docker build -t $docker_image .
 
 echo "Updading blazingdb-testing repository"
 cd $workdir
@@ -43,23 +43,10 @@ cd $workdir/blazingdb-testing
 git checkout $branch_blazingdb_testing
 git pull
 
-echo " Installig apache drill"
-cd $workdir
-apache_drill_directory=apache-drill-1.12.0
-
-if [ ! -d $apache_drill_directory ]; then
-    wget http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
-    tar -xvzf apache-drill-1.12.0.tar.gz
-    # Set time zone apache drill:  In the folder : /apache-drill-1.12.0/conf/ edit the file drill-env.sh and add the line: export DRILL_JAVA_OPTS="-Duser.timezone=UTC"
-    DRILL_JAVA_OPTS_VAR='export DRILL_JAVA_OPTS="-Duser.timezone=UTC" '
-    echo $DRILL_JAVA_OPTS_VAR >> apache-drill-1.12.0/conf/drill-env.sh
-
-fi 
-
 #We use DataSet1Mb from  blazigndb google storage
 cd  $workdir
 if [ ! -d $workdir/$data_set ]; then
-gsutil cp -R gs://blazingdbstorage/$data_set .
+  gsutil cp -R gs://blazingdbstorage/$data_set .
 fi
 
 #TO DO: Replace file configurationfile
@@ -79,7 +66,7 @@ nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(
 
 #echo "Changing permission"
 echo "USERRRRRRRRR" $user
-nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
+#nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
 
 echo "Init services"
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar

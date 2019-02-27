@@ -74,7 +74,7 @@ nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blaz
 nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
 
 echo "Init apache Drill"
-nvidia-docker exec --user $(id -u):$(id -g) -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embedded
+nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embedded
 sleep 15
 
 echo "Init e2e test"

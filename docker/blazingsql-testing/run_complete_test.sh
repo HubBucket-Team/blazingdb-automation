@@ -1,4 +1,6 @@
 #!/bin/bash
+# Usage: ./run_complete_test.sh user path_workspace_testing docker_image path_data_set branch
+# Example: ./run_complete.test.sh mario21ic /home/mario21ic/workspace/workspace-testing blazingdb/blazingsql:latest DataSet1Mb develop
 
 # Remove old containers
 #TODO : We need to map all scenarios to know what container live in this jenkins-slave. Not remove all the container to start the end to end.

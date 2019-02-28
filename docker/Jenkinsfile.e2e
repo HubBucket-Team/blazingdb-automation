@@ -10,7 +10,7 @@ pipeline {
 
   parameters {
     booleanParam(name: 'CALL_JOB_BUILD', defaultValue: false, description: 'Call to job build-deploy')
-    string(name: 'DOCKER_IMAGE_BASE', defaultValue: 'blazingdb/blazingsql:latest', description: '')
+    string(name: 'DOCKER_IMAGE_TAG', defaultValue: 'latest', description: 'The image base will be blazingdb/blazingsql:latest')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
@@ -46,7 +46,7 @@ pipeline {
       steps {
         build job: "01.BUILD_DEPLOY_BLAZINGSQL", parameters: [
           [$class: 'StringParameterValue', name: 'CALL_JOB_E2E', value: "false"],
-          [$class: 'StringParameterValue', name: 'DOCKERHUB_TAG_DEPLOY', value: "${params.DOCKER_IMAGE_BASE}"],
+          [$class: 'StringParameterValue', name: 'DOCKERHUB_TAG_DEPLOY', value: "${params.DOCKER_IMAGE_TAG}"],
           [$class: 'StringParameterValue', name: 'CUDF_BRANCH', value: "${params.CUDF_BRANCH}"],
           [$class: 'StringParameterValue', name: 'BLAZINGDB_PROTOCOL_BRANCH', value: "${params.BLAZINGDB_PROTOCOL_BRANCH}"],  
           [$class: 'StringParameterValue', name: 'BLAZINGDB_IO_BRANCH', value: "${params.BLAZINGDB_IO_BRANCH}"],

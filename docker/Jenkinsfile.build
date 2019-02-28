@@ -26,6 +26,7 @@ pipeline {
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+    string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
   }
   
   environment {
@@ -73,7 +74,8 @@ pipeline {
       }
       steps {
         build job: "04.ENDTOEND_TEST_BLAZINGSQL", parameters: [
-          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE', value: "${env.IMAGE}"]
+          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE_BASE', value: "${env.IMAGE}"]
+          [$class: 'StringParameterValue', name: 'E2E_BLAZINGDB_TESTING_BRANCH', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"]
         ]
       }
     }

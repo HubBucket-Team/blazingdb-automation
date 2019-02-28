@@ -44,7 +44,7 @@ pipeline {
       }
       steps {
         build job: "01.BUILD_DEPLOY_BLAZINGSQL", parameters: [
-          [$class: 'StringParameterValue', name: 'CALL_JOB_E2E', value: false],
+          [$class: 'booleanParam', name: 'CALL_JOB_E2E', value: false],
           [$class: 'StringParameterValue', name: 'DOCKERHUB_TAG_DEPLOY', value: "${params.DOCKER_IMAGE_BASE}"],
           [$class: 'StringParameterValue', name: 'CUDF_BRANCH', value: "${params.CUDF_BRANCH}"],
           [$class: 'StringParameterValue', name: 'BLAZINGDB_PROTOCOL_BRANCH', value: "${params.BLAZINGDB_PROTOCOL_BRANCH}"],  

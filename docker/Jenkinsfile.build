@@ -74,7 +74,7 @@ pipeline {
       }
       steps {
         build job: "04.ENDTOEND_TEST_BLAZINGSQL", parameters: [
-          [$class: 'booleanParam', name: 'CALL_JOB_BUILD', value: false],
+          [$class: 'StringParameterValue', name: 'CALL_JOB_BUILD', value: "false"],
           [$class: 'StringParameterValue', name: 'DOCKER_IMAGE_BASE', value: "${env.IMAGE}"],
           [$class: 'StringParameterValue', name: 'BRANCH_BLAZINGDB_AUTOMATION', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"]
         ]

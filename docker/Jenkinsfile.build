@@ -69,7 +69,7 @@ pipeline {
     stage("Call Job E2E") {
       when {
         expression {
-          return params.CALL_2E2 ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+          return params.CALL_JOB_E2E ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
         }
       }
       steps {

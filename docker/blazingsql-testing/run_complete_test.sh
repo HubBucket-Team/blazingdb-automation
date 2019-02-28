@@ -12,7 +12,7 @@ docker rm $(docker ps -a -q)
 # Parameters
 user=$1
 workdir=$2
-image_tag=$3
+image_tag="blazingdb/blazingsql:"$3
 data_set=$4
 branch_blazingdb_testing=$5
 # Variables

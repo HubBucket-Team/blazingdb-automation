@@ -9,7 +9,9 @@ pipeline {
   }
 
   parameters {
-   string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    booleanParam(name: 'CALL_JOB_BUILD', defaultValue: false, description: 'Call to job e2e')
+    string(name: 'DOCKER_IMAGE_BASE', defaultValue: 'blazingdb/blazingsql:latest', description: '')
+    string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
@@ -19,7 +21,6 @@ pipeline {
     string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
     string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/workspace/workspace-testing', description: '')
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
-    string(name: 'E2E_IMAGE_TAG', defaultValue: 'blazingdb/blazingsql:latest', description: '')
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
   }
@@ -36,8 +37,15 @@ pipeline {
       }
     }
      stage("Build and deploy BlazingSQL") {
+      when {
+        expression {
+          return params.CALL_JOB_BUILD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
       steps {
         build job: "01.BUILD_DEPLOY_BLAZINGSQL", parameters: [
+          [$class: 'StringParameterValue', name: 'CALL_JOB_E2E', value: false],
+          [$class: 'StringParameterValue', name: 'DOCKERHUB_TAG_DEPLOY', value: "${params.DOCKER_IMAGE_BASE}"],
           [$class: 'StringParameterValue', name: 'CUDF_BRANCH', value: "${params.CUDF_BRANCH}"],
           [$class: 'StringParameterValue', name: 'BLAZINGDB_PROTOCOL_BRANCH', value: "${params.BLAZINGDB_PROTOCOL_BRANCH}"],  
           [$class: 'StringParameterValue', name: 'BLAZINGDB_IO_BRANCH', value: "${params.BLAZINGDB_IO_BRANCH}"],
@@ -51,7 +59,7 @@ pipeline {
     stage("Run end to end test") {
       steps {
         dir("docker/blazingsql-testing") {
-          sh "./run_complete_test.sh  ${params.E2E_USER}  ${params.E2E_WORKDIR} ${params.E2E_IMAGE_TAG} ${params.E2E_DATA_SET} ${params.E2E_BLAZINGDB_TESTING_BRANCH}"
+          sh "./run_complete_test.sh ${params.E2E_USER} ${params.E2E_WORKDIR} ${params.DOCKER_IMAGE_BASE} ${params.E2E_DATA_SET} ${params.E2E_BLAZINGDB_TESTING_BRANCH}"
         }
       }
     }

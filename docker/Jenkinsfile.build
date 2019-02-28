@@ -10,9 +10,10 @@ pipeline {
   }
 
   parameters {
+    booleanParam(name: 'CALL_JOB_E2E', defaultValue: true, description: 'Call to job e2e')
     booleanParam(name: 'DOCKERHUB_PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
     booleanParam(name: 'DOCKERHUB_LATEST', defaultValue: false, description: 'Publish image as latest')
-    string(name: 'DOCKERHUB_TAG_DEPLOY', defaultValue: 'latest', description: 'NOTE: Write your deploy tag')
+    string(name: 'DOCKERHUB_TAG_DEPLOY', defaultValue: 'latest', description: 'NOTE: Write your deploy tag, if leave in blank it'll be the automatic')
     booleanParam(name: 'ANACONDA_PUBLISH_CLOUD', defaultValue: false, description: 'Publish to Conda Cloud')
     string(name: 'ANACONDA_BLAZINGSQL_VERSION', defaultValue: '0.2.0', description: 'Blazingsql version')   
     string(name: 'ANACONDA_PYTHON_VERSION', defaultValue: 'py35', description: 'Python version')   
@@ -63,8 +64,21 @@ pipeline {
         }
       }
     }
+
+    stage("Call Job E2E") {
+      when {
+        expression {
+          return params.CALL_2E2 ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        build job: "04.ENDTOEND_TEST_BLAZINGSQL", parameters: [
+          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE', value: "${env.IMAGE}"]
+        ]
+      }
+    }
     
-    stage("Publish") {
+    stage("Publish to Docker Hub") {
       when {
         expression {
           return params.DOCKERHUB_PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
@@ -79,7 +93,7 @@ pipeline {
       }     
     }
 
-    stage("Publish Anaconda Cloud") {
+    stage("Publish to Anaconda Cloud") {
       when {
         expression {
           return params.ANACONDA_PUBLISH_CLOUD ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/

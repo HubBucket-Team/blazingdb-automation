@@ -22,6 +22,7 @@ pipeline {
     string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/workspace/workspace-testing', description: '')
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+    string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
   }
 
@@ -60,7 +61,7 @@ pipeline {
     stage("Run end to end test") {
       steps {
         dir("docker/blazingsql-testing") {
-          sh "./run_complete_test.sh ${params.E2E_USER} ${params.E2E_WORKDIR} ${params.DOCKER_IMAGE_BASE} ${params.E2E_DATA_SET} ${params.BRANCH_BLAZINGDB_AUTOMATION}"
+          sh "./run_complete_test.sh ${params.E2E_USER} ${params.E2E_WORKDIR} ${params.DOCKER_IMAGE_BASE} ${params.E2E_DATA_SET} ${params.E2E_BLAZINGDB_TESTING_BRANCH}"
         }
       }
     }

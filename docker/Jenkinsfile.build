@@ -74,7 +74,7 @@ pipeline {
       }
       steps {
         build job: "04.ENDTOEND_TEST_BLAZINGSQL", parameters: [
-          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE_BASE', value: "${env.IMAGE}"]
+          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE_BASE', value: "${env.IMAGE}"],
           [$class: 'StringParameterValue', name: 'E2E_BLAZINGDB_TESTING_BRANCH', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"]
         ]
       }

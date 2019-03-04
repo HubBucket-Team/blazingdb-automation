@@ -6,7 +6,7 @@ GIT_BRANCH=$1
 
 workspace=$HOME/blazingsql/workspace_ral/
 output=$HOME/blazingsql/output_ral/
-ssh_key=$HOME/.ssh_jenkins/
+ssh_key=$HOME/.ssh/
 image_build="blazingsql/ral:test"
 
 #mkdir -p /home/mario21ic/blazingsql/workspace_ral/blazingdb-ral_project/develop/

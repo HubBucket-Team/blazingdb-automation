@@ -13,10 +13,13 @@ RUN apt-get update
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y git netcat
 RUN apt-get clean
+RUN apt-get install -y mysql-client 
 
 
 RUN source activate cudf && pip install pydrill
 RUN source activate cudf && pip install openpyxl
+RUN source activate cudf && pip install pymysql
+RUN source activate cudf && pip install gitpython
 
 # Create the user 'tester'
 #RUN useradd -ms /bin/bash $USER

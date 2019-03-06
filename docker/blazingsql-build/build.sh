@@ -1172,6 +1172,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     echo "### Orchestrator - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
           -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch \
+	  -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \
           ..
     if [ $? != 0 ]; then
       exit 1

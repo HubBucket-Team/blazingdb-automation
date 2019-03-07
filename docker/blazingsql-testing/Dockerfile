@@ -1,4 +1,4 @@
-FROM demodeploy:latest
+FROM blazingdb/blazingsql:latest
 
 USER root
 

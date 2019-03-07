@@ -12,6 +12,5 @@ echo "Executing tests"
 echo "python allE2ETest.py $workdir_home/configurationFile.json"
 
 echo "PRINT configurationFile.json"
-cat  $workdir_home/configurationFile.json
 #python allE2ETest.py $workdir_home/configurationFile.json
 python -m EndToEndTests.allE2ETest  $workdir_home/configurationFile.json

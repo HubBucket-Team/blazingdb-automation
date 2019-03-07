@@ -135,3 +135,11 @@ docker/user/blazingsql-*.tar.bz2
 
 #tar
 *.tar.gz
+
+#drill
+apache-drill-1.12.0
+
+#data
+docker/blazingsql-testing/DataSet1Mb
+docker/blazingsql-testing/blazingdb-testing
+docker/blazingsql-testing/logtest

@@ -62,31 +62,6 @@ if [ -z "$blazingdb_ral_branch" ]; then
     exit 1
 fi
 
-if [ -z "$blazingdb_orchestrator_branch" ]; then
-    echo "Error: Need the 'blazingdb_orchestrator_branch' argument in order to run the build process."
-    touch FAILED
-    exit 1
-fi
-
-if [ -z "$blazingdb_calcite_branch" ]; then
-    echo "Error: Need the 'blazingdb_calcite_branch' argument in order to run the build process."
-    touch FAILED
-    exit 1
-fi
-
-if [ -z "$pyblazing_branch" ]; then
-    echo "Error: Need the 'pyblazing_branch' argument in order to run the build process."
-    touch FAILED
-    exit 1
-fi
-
-if [ -z "$blazingdb_communication_branch" ]; then
-    echo "Error: Need the 'blazingdb_communication_branch' argument in order to run the build process."
-    touch FAILED
-    exit 1
-fi
-
-
 #END check mandatory arguments
 
 #BEGIN set default optional arguments for active/enable the build
@@ -105,22 +80,6 @@ fi
 
 if [ -z "$blazingdb_ral_enable" ]; then
     blazingdb_ral_enable=true
-fi
-
-if [ -z "$blazingdb_orchestrator_enable" ]; then
-    blazingdb_orchestrator_enable=true
-fi
-
-if [ -z "$blazingdb_calcite_enable" ]; then
-    blazingdb_calcite_enable=true
-fi
-
-if [ -z "$pyblazing_enable" ]; then
-    pyblazing_enable=true
-fi
-
-if [ -z "$blazingdb_communication_enable" ]; then
-    blazingdb_communication_enable=true
 fi
 
 #END set default optional arguments for active/enable the build
@@ -143,18 +102,6 @@ if [ -z "$blazingdb_ral_parallel" ]; then
     blazingdb_ral_parallel=4
 fi
 
-if [ -z "$blazingdb_orchestrator_parallel" ]; then
-    blazingdb_orchestrator_parallel=4
-fi
-
-if [ -z "$blazingdb_calcite_parallel" ]; then
-    blazingdb_calcite_parallel=4
-fi
-
-if [ -z "$blazingdb_communication_parallel" ]; then
-    blazingdb_communication_parallel=4
-fi
-
 #END set default optional arguments for parallel build
 
 #BEGIN set default optional arguments for tests
@@ -173,22 +120,6 @@ fi
 
 if [ -z "$blazingdb_ral_tests" ]; then
     blazingdb_ral_tests=false
-fi
-
-if [ -z "$blazingdb_orchestrator_tests" ]; then
-    blazingdb_orchestrator_tests=false
-fi
-
-if [ -z "$blazingdb_calcite_tests" ]; then
-    blazingdb_calcite_tests=false
-fi
-
-if [ -z "$pyblazing_tests" ]; then
-    pyblazing_tests=false
-fi
-
-if [ -z "$blazingdb_communication_tests" ]; then
-    blazingdb_communication_tests=false
 fi
 
 #END set default optional arguments for tests
@@ -227,10 +158,6 @@ cudf_branch_name=$(normalize_branch_name $cudf_branch)
 blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
 blazingdb_io_branch_name=$(normalize_branch_name $blazingdb_io_branch)
 blazingdb_ral_branch_name=$(normalize_branch_name $blazingdb_ral_branch)
-blazingdb_orchestrator_branch_name=$(normalize_branch_name $blazingdb_orchestrator_branch)
-blazingdb_calcite_branch_name=$(normalize_branch_name $blazingdb_calcite_branch)
-pyblazing_branch_name=$(normalize_branch_name $pyblazing_branch)
-blazingdb_communication_branch_name=$(normalize_branch_name $blazingdb_communication_branch)
 
 cd $workspace_dir
 
@@ -800,7 +727,7 @@ if [ $cudf_enable == true ]; then
     fi
     
     cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
-    
+
     cd $cudf_current_dir/cudf
     git checkout $cudf_branch
     git pull
@@ -896,7 +823,7 @@ if [ $blazingdb_protocol_enable == true ]; then
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
           -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
-	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
+      -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -986,60 +913,6 @@ if [ $blazingdb_io_enable == true ]; then
     #END blazingdb-io
 fi
 
-if [ $blazingdb_communication_enable == true ]; then
-    #BEGIN blazingdb-communication
-    echo "### Blazingdb Communication - start ###"
-    
-    cd $workspace_dir
-    
-    if [ ! -d blazingdb-communication_project ]; then
-        mkdir blazingdb-communication_project
-    fi
-    
-    blazingdb_communication_project_dir=$workspace_dir/blazingdb-communication_project
-    
-    cd $blazingdb_communication_project_dir
-    
-    if [ ! -d $blazingdb_communication_branch_name ]; then
-        mkdir $blazingdb_communication_branch_name
-        cd $blazingdb_communication_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-communication.git
-    fi
-    
-    blazingdb_communication_current_dir=$blazingdb_communication_project_dir/$blazingdb_communication_branch_name/
-    
-    cd $blazingdb_communication_current_dir/blazingdb-communication
-    git checkout $blazingdb_communication_branch
-    git pull
-    
-    blazingdb_communication_install_dir=$blazingdb_communication_current_dir/install
-    blazingdb_communication_cpp_build_dir=$blazingdb_communication_current_dir/blazingdb-communication/build/
-    
-    mkdir -p $blazingdb_communication_cpp_build_dir
-    
-    cd $blazingdb_communication_cpp_build_dir
-    
-    blazingdb_communication_artifact_name=libblazingdb-communication.a
-    rm -rf $blazingdb_communication_artifact_name
-    
-    echo "### Blazingdb IO - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_communication_install_dir \
-          ..
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-
-    echo "### Blazingdb Communication - make ###"
-    make -j$blazingdb_communication_parallel install
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-    
-    echo "### Blazingdb Communication - end ###"
-    #END blazingdb-communication
-fi
-
 if [ $blazingdb_ral_enable == true ]; then
     #BEGIN blazingdb-ral
     echo "### Ral - start ###"
@@ -1100,9 +973,8 @@ if [ $blazingdb_ral_enable == true ]; then
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
-          -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \
           -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
+      -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           -DCUDA_DEFINES=$blazingdb_ral_definitions \
           -DCXX_DEFINES=$blazingdb_ral_definitions \
           ..
@@ -1112,6 +984,12 @@ if [ $blazingdb_ral_enable == true ]; then
 
     echo "### Ral - make ###"
     make -j$blazingdb_ral_parallel
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Ral - ctest ###"
+    ctest
     if [ $? != 0 ]; then
       exit 1
     fi
@@ -1128,269 +1006,5 @@ if [ $blazingdb_ral_enable == true ]; then
 
     echo "### Ral - end ###"
 fi
-
-if [ $blazingdb_orchestrator_enable == true ]; then
-    #BEGIN blazingdb-orchestrator
-    echo "### Orchestrator - start ###"
-    
-    cd $workspace_dir
-    
-    if [ ! -d blazingdb-orchestrator_project ]; then
-        mkdir blazingdb-orchestrator_project
-    fi
-    
-    blazingdb_orchestrator_project_dir=$workspace_dir/blazingdb-orchestrator_project
-    
-    cd $blazingdb_orchestrator_project_dir
-    
-    if [ ! -d $blazingdb_orchestrator_branch_name ]; then
-        mkdir $blazingdb_orchestrator_branch_name
-        cd $blazingdb_orchestrator_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
-    fi
-    
-    blazingdb_orchestrator_current_dir=$blazingdb_orchestrator_project_dir/$blazingdb_orchestrator_branch_name/
-    
-    cd $blazingdb_orchestrator_current_dir/blazingdb-orchestrator
-    git checkout $blazingdb_orchestrator_branch
-    git pull
-    
-    blazingdb_orchestrator_install_dir=$blazingdb_orchestrator_current_dir/install
-    blazingdb_orchestrator_build_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
-    
-    mkdir -p $blazingdb_orchestrator_build_dir
-    cd $blazingdb_orchestrator_build_dir
-    
-    #TODO fix the artifacts name
-    blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
-    rm -f $blazingdb_orchestrator_artifact_name
-    
-    # TODO percy FIX orchestrator
-    #-DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
-    # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
-    # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-    echo "### Orchestrator - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
-          -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch \
-	  -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \
-          ..
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-
-    echo "### Orchestrator - make ###"
-    make -j$blazingdb_orchestrator_parallel
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-    
-    #END blazingdb-orchestrator
-    
-    # Package blazingdb-orchestrator
-    cd $workspace_dir
-    blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
-    cp $blazingdb_orchestrator_build_dir/$blazingdb_orchestrator_artifact_name $output
-
-    echo "### Orchestrator - end ###"
-fi
-
-if [ $blazingdb_calcite_enable == true ]; then
-    #BEGIN blazingdb-calcite
-    echo "### Calcite - start ###"
-    
-    cd $workspace_dir
-    
-    if [ ! -d blazingdb-calcite_project ]; then
-        mkdir blazingdb-calcite_project
-    fi
-    
-    blazingdb_calcite_project_dir=$workspace_dir/blazingdb-calcite_project
-    
-    cd $blazingdb_calcite_project_dir
-    
-    if [ ! -d $blazingdb_calcite_branch_name ]; then
-        mkdir $blazingdb_calcite_branch_name
-        cd $blazingdb_calcite_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-calcite.git
-    fi
-    
-    blazingdb_calcite_current_dir=$blazingdb_calcite_project_dir/$blazingdb_calcite_branch_name/
-    
-    cd $blazingdb_calcite_current_dir/blazingdb-calcite
-    git checkout $blazingdb_calcite_branch
-    git pull
-    
-    blazingdb_calcite_install_dir=$blazingdb_calcite_current_dir/install
-    
-    echo "### Calcite - mvn clean install ###"
-    mvn clean install -Dmaven.test.skip=true
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-
-    blazingdb_calcite_build_dir=$blazingdb_calcite_current_dir/blazingdb-calcite/blazingdb-calcite-application/target/
-    
-    #END blazingdb-calcite
-    
-    # Package blazingdb-calcite
-    cd $workspace_dir
-    blazingdb_calcite_artifact_name=BlazingCalcite.jar
-    cp $blazingdb_calcite_build_dir/$blazingdb_calcite_artifact_name ${output}
-
-    echo "### Calcite - end ###"
-fi
-
-if [ $pyblazing_enable == true ]; then
-    #BEGIN pyblazing
-    echo "### Pyblazing - start ###"
-    
-    cd $workspace_dir
-    
-    if [ ! -d pyblazing_project ]; then
-        mkdir pyblazing_project
-    fi
-    
-    pyblazing_project_dir=$workspace_dir/pyblazing_project
-    
-    cd $pyblazing_project_dir
-    
-    if [ ! -d $pyblazing_branch_name ]; then
-        mkdir $pyblazing_branch_name
-        cd $pyblazing_branch_name
-        git clone git@github.com:BlazingDB/pyBlazing.git
-    fi
-    
-    pyblazing_current_dir=$pyblazing_project_dir/$pyblazing_branch_name/
-    
-    cd $pyblazing_current_dir/pyBlazing
-    git checkout $pyblazing_branch
-    git pull
-    
-    pyblazing_install_dir=$pyblazing_current_dir/install
-    
-    #END pyblazing
-    
-    # Package PyBlazing
-    cd $workspace_dir
-    mkdir -p ${output}/pyBlazing/
-    cp -r $pyblazing_current_dir/pyBlazing/* ${output}/pyBlazing/
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-
-    rm -rf ${output}/pyBlazing/.git/
-    echo "### Pyblazing - end ###"
-fi
-
-# Final step: compress files and delete temp folder
-
-cd $output_dir && tar czf blazingsql-files.tar.gz blazingsql-files/
-
-if [ -d $output ]; then
-    echo "###################### BUILT STATUS #####################"
-    if [ $blazingdb_ral_enable == true ]; then
-        if [ -f $output/testing-libgdf ]; then
-            echo "RAL - built OK."
-        else
-            echo "RAL - compiled with errors."
-        fi
-    fi
-
-    if [ $blazingdb_orchestrator_enable == true ]; then
-        if [ -f $output/blazingdb_orchestator_service ]; then
-            echo "ORCHESTRATOR - built OK."
-        else
-            echo "ORCHESTRATOR - compiled with errors."
-        fi
-    fi
-
-    if [ $blazingdb_calcite_enable == true ]; then
-        if [ -f $output/BlazingCalcite.jar ]; then
-            echo "CALCITE - built OK."
-        else
-            echo "CALCITE - compiled with errors."
-        fi
-    fi
-fi
-
-rm -rf ${output}
-
-cd $working_directory
-
-echo "######################## SUMMARY ########################"
-
-if [ $cudf_enable == true ]; then
-    echo "CUDF: "
-    cudf_dir=$workspace_dir/cudf_project/$cudf_branch_name/cudf
-    cd $cudf_dir
-    cudf_commit=$(git log | head -n 1)
-    echo '      '$cudf_commit
-    echo '      '"branch "$cudf_branch_name
-fi
-
-if [ $blazingdb_protocol_enable == true ]; then
-    echo "PROTOCOL: "
-    protocol_dir=$workspace_dir/blazingdb-protocol_project/$blazingdb_protocol_branch_name/blazingdb-protocol
-    cd $protocol_dir
-    protocol_commit=$(git log | head -n 1)
-    echo '      '$protocol_commit
-    echo '      '"branch "$blazingdb_protocol_branch_name
-fi
-
-if [ $blazingdb_protocol_enable == true ]; then
-    echo "BLAZING-IO: "
-    io_dir=$workspace_dir/blazingdb-io_project/$blazingdb_io_branch_name/blazingdb-io
-    cd $io_dir
-    io_commit=$(git log | head -n 1)
-    echo '      '$io_commit
-    echo '      '"branch "$blazingdb_io_branch_name
-fi
-
-if [ $blazingdb_communication_enable == true ]; then
-    echo "COMMUNICATION: "
-    protocol_dir=$workspace_dir/blazingdb-communication_project/$blazingdb_communication_branch_name/blazingdb-communication
-    cd $communication_dir
-    communication_commit=$(git log | head -n 1)
-    echo '      '$communication_commit
-    echo '      '"branch "$blazingdb_communication_branch_name
-fi
-
-if [ $blazingdb_ral_enable == true ]; then
-    echo "RAL: "
-    ral_dir=$workspace_dir/blazingdb-ral_project/$blazingdb_ral_branch_name/blazingdb-ral
-    cd $ral_dir
-    ral_commit=$(git log | head -n 1)
-    echo '      '$ral_commit
-    echo '      '"branch "$blazingdb_ral_branch_name
-fi
-
-if [ $blazingdb_orchestrator_enable == true ]; then
-    echo "ORCHESTRATOR: "
-    orch_dir=$workspace_dir/blazingdb-orchestrator_project/$blazingdb_orchestrator_branch_name/blazingdb-orchestrator
-    cd $orch_dir
-    orch_commit=$(git log | head -n 1)
-    echo '      '$orch_commit
-    echo '      '"branch "$blazingdb_orchestrator_branch_name
-fi
-
-if [ $blazingdb_calcite_enable == true ]; then
-    echo "CALCITE: "
-    calcite_dir=$workspace_dir/blazingdb-calcite_project/$blazingdb_calcite_branch_name/blazingdb-calcite
-    cd $calcite_dir
-    calcite_commit=$(git log | head -n 1)
-    echo '      '$calcite_commit
-    echo '      '"branch "$blazingdb_calcite_branch_name
-fi
-
-if [ $pyblazing_enable == true ]; then
-    echo "PYBLAZING: "
-    pyblazing_dir=$workspace_dir/pyblazing_project/$pyblazing_branch_name/pyBlazing
-    cd $pyblazing_dir
-    pyblazing_commit=$(git log | head -n 1)
-    echo '      '$pyblazing_commit
-    echo '      '"branch "$pyblazing_branch_name
-fi
-
-echo "##########################################################"
 
 #END main

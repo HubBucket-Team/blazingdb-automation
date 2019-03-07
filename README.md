@@ -43,7 +43,7 @@ cd docker
 ./build-deploy.sh latest develop develop develop develop develop develop develop
 ```
 
-# Run Build and Deploy
+# Run end to end test
 ```shell-script
 # You need configurationFile.json and  DataSet1Mb into /home/$USER/blazingsql
 

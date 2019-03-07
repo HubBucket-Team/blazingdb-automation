@@ -17,14 +17,9 @@
     }
 }
 ```
-- Clone this repo and use: feature/sprint16-e2e-automation  branch
-
 **2. Launch the script to run end to end test**
 ```shell-script
 cd blazingdb-automation/docker/blazingsql-testing
-
-#  Comment JENKINS MODE and descoment DEVELOP MODE, line 68 and 70 in run_complete_test.sh
-nvidia-docker run --name bzsqlcontainer -d -p ....
 
 # Run the script to end to end test
 ./run_complete_test.sh $USUARIO $WORKDIR $IMAGE_TAG $DATA_SET $BLAZINGDB_TESTING_BRANCH

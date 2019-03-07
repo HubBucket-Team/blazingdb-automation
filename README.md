@@ -52,7 +52,7 @@ cd blazingdb-testing
 # Script
 ./run_complete_test.sh $USER $WORKDIR $IMAGE_TAG $DATA_SET $BLAZINGDB_TESTING_BRANCH
 # Example
-./run_complete_test.sh $USER  /home/$USER/blazingsql/workspace-testing latest DataSet1Mb develop
+./run_complete_test.sh $USER  /home/$USER/blazingsql/ latest DataSet1Mb develop
 ```
 
 Notes:

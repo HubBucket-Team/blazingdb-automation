@@ -13,4 +13,10 @@ echo "python allE2ETest.py $workdir_home/configurationFile.json"
 
 echo "PRINT configurationFile.json"
 #python allE2ETest.py $workdir_home/configurationFile.json
-python -m EndToEndTests.allE2ETest  $workdir_home/configurationFile.json
+
+#First execution
+echo "================================ First execution ================================"
+python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileTrue.json
+
+echo "================================ First execution ================================"
+python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileFalse.json

@@ -84,5 +84,5 @@ echo "Init e2e test"
 echo "============================First execution==============================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 
-echo "=========================== Second execution ==========================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+#echo "=========================== Second execution ==========================================="
+#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

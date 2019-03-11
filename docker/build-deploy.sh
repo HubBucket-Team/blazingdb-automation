@@ -7,7 +7,18 @@ WORKSPACE=$PWD
 cd $WORKSPACE/blazingsql-build/
 
 workspace=$HOME/blazingsql/workspace/
+if [ ! -d "$workspace" ]; then
+  rm -rf $workspace
+  echo "mkdir -p $workspace"
+  mkdir -p $workspace
+fi
+
 output=$HOME/blazingsql/output3/
+if [ ! -d "$output" ]; then
+  rm -rf $output
+  echo "mkdir -p $output"
+  mkdir -p $output
+fi
 ssh_key=$HOME/.ssh/
 image_build="blazingsql/build:latest"
 image_deploy="blazingdb/blazingsql:$1"

@@ -23,8 +23,11 @@ blazingdb_calcite_branch="blazingdb_calcite_branch=$7"
 pyblazing_branch="pyblazing_branch=$8"
 clean_workspace=$9
 
+
+echo "Aqui esta el indicador para limpiar workspace "  $clean_workspace
 if [ clean_workspace== true ]; then
-      rm -r workspace/*
+      echo "Removiendo todo wl workspace dentro de "
+      rm -r $workspace/*
 fi
 
 mkdir -p $workspace $output

@@ -21,7 +21,11 @@ blazingdb_ral_branch="blazingdb_ral_branch=$5"
 blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$6"
 blazingdb_calcite_branch="blazingdb_calcite_branch=$7"
 pyblazing_branch="pyblazing_branch=$8"
+clean_workspace=$9
 
+if [ clean_workspace== true ]; then
+      rm -r workspace/*
+fi
 
 mkdir -p $workspace $output
 

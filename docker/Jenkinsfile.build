@@ -11,7 +11,6 @@ pipeline {
 
   parameters {
     booleanParam(name: 'CALL_JOB_E2E', defaultValue: true, description: 'Call to job e2e')
-    booleanParam(name: 'CLEAN_WORKSPACE_BUILD', defaultValue: false, description: 'Clean the directory:  /home/mario21ic/blazingsql/workspace')
     booleanParam(name: 'DOCKERHUB_PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
     booleanParam(name: 'DOCKERHUB_LATEST', defaultValue: false, description: 'Publish image as latest')
     string(name: 'DOCKERHUB_TAG_DEPLOY', defaultValue: 'latest', description: "NOTE: Write your deploy tag, if leave in blank it'll be the automatic")
@@ -28,6 +27,8 @@ pipeline {
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
+    booleanParam(name: 'CLEAN_WORKSPACE_BUILD', defaultValue: false, description: 'Clean the directory:  /home/mario21ic/blazingsql/workspace')
+
   }
   
   environment {

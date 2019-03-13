@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while :                                                                                                                                                                                              1 ↵
+while :
 do
   python dask_demo.py
 done

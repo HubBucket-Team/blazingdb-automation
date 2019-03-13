@@ -26,8 +26,6 @@ clean_workspace=$9
 
 echo "Aqui esta el indicador para limpiar workspace "  $clean_workspace
 if [ $clean_workspace == true ]; then
-      echo "Removiendo todo wl workspace dentro de "
-      #sudo rm -r $workspace/*
       sudo rm -r $workspace/blazingdb*
       sudo rm -r $workspace/cudf*
       sudo rm -r $workspace/pyblazing*

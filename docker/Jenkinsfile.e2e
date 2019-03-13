@@ -56,8 +56,8 @@ pipeline {
           [$class: 'StringParameterValue', name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', value: "${params.BLAZINGDB_ORCHESTRATOR_BRANCH}"],       
           [$class: 'StringParameterValue', name: 'BLAZINGDB_CALCITE_BRANCH', value: "${params.BLAZINGDB_CALCITE_BRANCH}"],
           [$class: 'StringParameterValue', name: 'PYBLAZING_BRANCH', value: "${params.PYBLAZING_BRANCH}"],
-          [$class: 'StringParameterValue', name: 'BRANCH_BLAZINGDB_AUTOMATION', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"]
-          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_BUILD', value: "${params.CLEAN_WORKSPACE_BUILD}"],
+          [$class: 'StringParameterValue', name: 'BRANCH_BLAZINGDB_AUTOMATION', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_BUILD', value: "${params.CLEAN_WORKSPACE_BUILD}"]
         ]
       }
     }

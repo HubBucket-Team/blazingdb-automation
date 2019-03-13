@@ -15,8 +15,8 @@
 echo "### docker build ###"
 nvidia-docker build -t blazingdb/blazingsql:numa .
 
-echo "### docker run ###"
-nvidia-docker run --rm -d --name bzsql_singlea -e NVIDIA_VISIBLE_DEVICES=0 --cpuset-cpus="0-11" --cpuset-mems="0" -p 8880:8888 -p 9000:9001 -p 9060:9090 -p 9061:9091 -p 9062:9092 blazingdb/blazingsql:numa
+echo "### docker run single ###"
+nvidia-docker run --rm -d --name bzsql_singlea -e NVIDIA_VISIBLE_DEVICES=0 --cpuset-cpus="0-11" --cpuset-mems="0" -p 8880:8888 -p 9000:9001 -p 8786:8786 -p 8787:8787 -p 9060:9090 -p 9061:9091 -p 9062:9092 blazingdb/blazingsql:numa
 nvidia-docker run --rm -d --name bzsql_singleb -e NVIDIA_VISIBLE_DEVICES=0 --cpuset-cpus="0-11" --cpuset-mems="0" -p 8881:8888 -p 9001:9001 -p 9070:9090 -p 9071:9091 -p 9072:9092 blazingdb/blazingsql:numa
 nvidia-docker run --rm -d --name bzsql_singlec -e NVIDIA_VISIBLE_DEVICES=0 --cpuset-cpus="0-11" --cpuset-mems="0" -p 8882:8888 -p 9002:9001 -p 9080:9090 -p 9081:9091 -p 9082:9092 blazingdb/blazingsql:numa
 

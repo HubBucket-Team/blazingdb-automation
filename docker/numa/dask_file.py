@@ -1,3 +1,5 @@
+import dask
+
 from dask.distributed import Client
 
 
@@ -27,13 +29,11 @@ def run_inc(index):
     return result
 
 
-client1 = Client('192.168.2.10:8786')
-client2 = Client('192.168.2.10:8786')
-for i in range(20):
-    print("i:", i)
-
-    sum_square = client1.submit(run_square, i)
-    print("sum_square:", sum_square.result())
-
-    sum_inc = client2.submit(run_inc, i)
-    print("sum_inc:", sum_inc.result())
+client = Client('192.168.2.10:8786')
+with dask.config.set(num_workers=2):
+    for i in range(20):
+        print("i:", i)
+        sum_square = client.submit(run_square, i)
+        print("sum_square:", sum_square.result())
+        sum_inc = client.submit(run_inc, i)
+        print("sum_inc:", sum_inc.result())

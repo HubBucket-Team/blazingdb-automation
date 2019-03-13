@@ -11,6 +11,8 @@ def neg(x):
 def inc(x):
   return x+1
 
+#A = client.map(square, range(1000), workers=['192.168.2.11', '192.168.2.12'])
+#B = client.map(neg, A, workers=['192.168.2.12'])
 A = client.map(square, range(1000))
 B = client.map(neg, A)
 total = client.submit(sum, B)

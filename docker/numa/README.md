@@ -1,17 +1,18 @@
-Run dask cluster with Docker:
+Option 1: Run dask cluster with Docker:
 ```
 $ ./start-dask-local.sh
 $ open http://localhost:8787/workers
 ```
 
 
-Run docker container as single node
+Option 2: Run dask cluster in a Nume node
 
 ```
-$ ./main.sh
+$ ./start-dask-numa.sh
 ```
 
-Run dask with vagrant
+
+Option 3: Run dask with vagrant
 ```
 $ vagrant up
 ```

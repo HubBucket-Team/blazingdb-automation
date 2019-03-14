@@ -7,7 +7,7 @@ echo "### docker build worker ###"
 nvidia-docker build -t blazingdb/dask:worker ./dask-worker/
 
 echo "### docker network ###"
-nvidia-docker network create --subnet=172.18.0.0/16 dask_net
+docker network create --subnet=172.18.0.0/16 dask_net
 
 echo "### docker scheduler ###"
 nvidia-docker run --rm -d --name bzsql_scheduler -e NVIDIA_VISIBLE_DEVICES=0 --cpuset-cpus="0-15" --cpuset-mems="0" --net dask_net --ip 172.18.0.22 -p 8880:8888 -p 9000:9001 -p 8786:8786 -p 8787:8787 blazingdb/dask:scheduler

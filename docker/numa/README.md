@@ -1,3 +1,10 @@
+Run dask cluster with Docker:
+```
+$ ./start-dask-local.sh
+$ open http://localhost:8787/workers
+```
+
+
 Run docker container as single node
 
 ```

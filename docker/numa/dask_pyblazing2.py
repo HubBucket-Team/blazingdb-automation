@@ -1,21 +1,31 @@
 import cudf
 import pyblazing
+from pyblazing import DriverType, FileSystemType, EncryptionType
+from pyblazing import SchemaFrom
+
 import time
 
 from dask.distributed import Client
 
 
-def load_data(index):
-    print("load_data index:", index)
-    column_names = ['n_nationkey', 'n_name', 'n_regionkey', 'n_comments']
-    column_types = ['int32', 'int64', 'int32', 'int64']
-    nation_gdf = cudf.read_csv("/blazingdb/data/nation.psv", delimiter='|', dtype=column_types, names=column_names)
-    tables = {'nation': nation_gdf}
-    return tables
+dir_path = '/tmp/tpch/'
+chunk_files = ['customer_0_0.parquet', 'customer_0_1.parquet']
 
 def run_query(index, tables):
     print("run_query index:", index)
-    sql = 'select n_nationkey, n_regionkey, n_nationkey + n_regionkey as addition from main.nation'
+    print("load_data:", dir_path + chunk_files[index])
+    customer_table = pyblazing.create_table(table_name='customer_parquet', type=SchemaFrom.ParquetFile, path= dir_path + chunk_files[index])
+    nation_table = pyblazing.create_table(table_name='nation_parquet', type=SchemaFrom.ParquetFile, path= dir_path + '/nation_0_0.parquet')
+    tables = {'customer_parquet': customer_table, 'nation_parquet': nation_table}
+
+    sql = '''
+        select avg(c.c_custkey), avg(c.c_nationkey), n.n_regionkey
+        from main.customer_parquet as c
+        inner join main.nation_parquet as n
+        on c.c_nationkey = n.n_nationkey
+        group by n.n_regionkey
+    '''
+
     result_gdf = pyblazing.run_query(sql, tables)
     tamanio = len(result_gdf.columns)
     print("tamanio:", tamanio)
@@ -25,13 +35,20 @@ def run_query(index, tables):
     return tamanio
 
 
-for x in range(20):
-    client = Client('127.0.0.1:8786')
-    #print("x: ", x)
-    sum_demo = client.map(sum, [x], workers=['172.18.0.23', '172.18.0.24'])
-    tables = client.map(load_data, [x], workers=['172.18.0.24'])
-    results = client.map(run_query, [x], tables, workers=['172.18.0.25'])
-    total = client.submit(sum, results)
-    print("x: %s - result: %s" % (x, total.result()))
-    del client
+print('*** Register a POSIX File System ***')
+fs_status = pyblazing.register_file_system(
+    authority="tpch",
+    type=FileSystemType.POSIX,
+    root="/"
+)
+print(fs_status)
 
+chunk_ids = [0, 1]
+workers_ips = ['172.18.0.23', '172.18.0.24']
+
+client = Client('127.0.0.1:8786')
+results = client.map(run_query, [chunk_ids], workers=workers_ips)
+
+total = client.submit(sum, results)
+print("x: %s - result: %s" % (chunk_ids, total.result()))
+del client

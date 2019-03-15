@@ -16,7 +16,7 @@ def run_query(index, tables):
     print("load_data:", dir_path + chunk_files[index])
     customer_table = pyblazing.create_table(table_name='customer_parquet', type=SchemaFrom.ParquetFile, path= dir_path + chunk_files[index])
     nation_table = pyblazing.create_table(table_name='nation_parquet', type=SchemaFrom.ParquetFile, path= dir_path + '/nation_0_0.parquet')
-    tables = {'customer_parquet': customer_table, 'nation_parquet': nation_table}
+    tables = {'customer_parquet': customer_table.columns, 'nation_parquet': nation_table..columns}
 
     sql = '''
         select avg(c.c_custkey), avg(c.c_nationkey), n.n_regionkey

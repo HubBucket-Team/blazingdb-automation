@@ -1,4 +1,4 @@
-FROM blazingdb/blazingsql:latest
+FROM blazingdb/blazingsql:netflowdemo
 
 RUN apt-get install -y socat netcat && apt-get clean
 RUN source activate cudf && pip install "dask[complete]"

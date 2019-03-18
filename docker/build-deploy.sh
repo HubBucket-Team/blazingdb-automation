@@ -21,16 +21,55 @@ blazingdb_ral_branch="blazingdb_ral_branch=$5"
 blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$6"
 blazingdb_calcite_branch="blazingdb_calcite_branch=$7"
 pyblazing_branch="pyblazing_branch=$8"
-clean_workspace=$9
+clean_workspace_blazingdb-calcite_project=$9
+clean_workspace_blazingdb-io_project=${10}
+clean_workspace_blazingdb-orchestrator_project=${11}
+clean_workspace_blazingdb-protocol_project=${12}
+clean_workspace_blazingdb-ral_project=${13}
+clean_workspace_cudf_project=${14}
+clean_workspace_pyblazing_project=${15}
+clean_workspace_dependencies=${16}
+clean_workspace_maven-repository=${17}
 
 
-echo "Aqui esta el indicador para limpiar workspace "  $clean_workspace
-if [ $clean_workspace == true ]; then
-      sudo rm -r $workspace/blazingdb*
-      sudo rm -r $workspace/cudf*
-      sudo rm -r $workspace/pyblazing*
 
+if [ $clean_workspace_blazingdb-calcite_project == true ]; then
+      echo "clean blazingdb-calcite_project "
+      sudo rm -r $workspace/blazingdb-calcite_project
 fi
+if [ $clean_workspace_blazingdb-io_project == true ]; then
+      echo "clean blazingdb-io_project"
+      sudo rm -r $workspace/blazingdb-io_project
+fi
+if [ $clean_workspace_blazingdb-orchestrator_project == true ]; then
+      echo "clean blazingdb-orchestrator_project "
+      sudo rm -r $workspace/blazingdb-orchestrator_project
+fi
+if [ $clean_workspace_blazingdb-protocol_project == true ]; then
+      echo "clean blazingdb-protocol_project"
+      sudo rm -r $workspace/blazingdb-protocol_project
+fi
+if [ $clean_workspace_blazingdb-ral_project== true ]; then
+      echo "clean blazingdb-ral_project"
+      sudo rm -r $workspace/blazingdb-ral_project
+fi
+if [ $clean_workspace_cudf_project== true ]; then
+      echo "clean cudf_project "
+      sudo rm -r $workspace/cudf_project
+fi
+if [ $clean_workspace_pyblazing_project== true ]; then
+      echo "clean pyblazing_project "
+      sudo rm -r $workspace/pyblazing_project
+fi
+if [ $clean_workspace_dependencies == true ]; then
+      echo "clean dependencies "
+      sudo rm -r $workspace/dependencies
+fi
+if [ $clean_workspace_maven-repository == true ]; then
+      echo "clean maven-repository "
+      sudo rm -r $workspace/maven-repository
+fi
+
 
 mkdir -p $workspace $output
 

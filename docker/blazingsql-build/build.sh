@@ -21,9 +21,11 @@ workspace_dir=$(readlink -f $workspace_dir)
 output_dir=$(readlink -f $output_dir)
 
 output=$output_dir/blazingsql-files
-
-#echo "mkdir -p $output"
-mkdir -p $output 
+if [ ! -d "$output" ]; then
+  rm -rf $output
+  echo "mkdir -p $output"
+  mkdir -p $output 
+fi
 
 working_directory=$PWD
 blazingsql_build_properties=blazingsql-build.properties

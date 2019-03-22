@@ -29,10 +29,10 @@ pipeline {
     booleanParam(name: 'CLEAN_WORKSPACE_ORCHESTRATOR', defaultValue: false, description: 'blazingdb-orchestrator_project')
     booleanParam(name: 'CLEAN_WORKSPACE_PROTOCOL', defaultValue: false, description: 'blazingdb-protocol_project')
     booleanParam(name: 'CLEAN_WORKSPACE_RAL', defaultValue: false, description: 'blazingdb-ral_project')
-    booleanParam(name: 'CLEAN_WORKSPACE_CUDF', defaultValue: false, descripiton: 'cudf_project')
-    booleanParam(name: 'CLEAN_WORKSPACE_PYBLAZING', defaultValue: false, descripiton: 'pyblazing_project')
-    booleanParam(name: 'CLEAN_WORKSPACE_DEPENDENCIES', defaultValue: false, descripiton: 'dependencies')
-    booleanParam(name: 'CLEAN_WORKSPACE_MAVEN', defaultValue: false, descripiton: 'maven-repository')
+    booleanParam(name: 'CLEAN_WORKSPACE_CUDF', defaultValue: false, description: 'cudf_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_PYBLAZING', defaultValue: false, description: 'pyblazing_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_DEPENDENCIES', defaultValue: false, description: 'dependencies')
+    booleanParam(name: 'CLEAN_WORKSPACE_MAVEN', defaultValue: false, description: 'maven-repository')
   }
 
   environment {

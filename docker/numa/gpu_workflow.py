@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import pandas as pd
 import cudf
 import argparse
@@ -112,7 +113,6 @@ def run_gpu_workflow(quarter=1, year=2000, perf_file="", **kwargs):
     names = gpu_load_names()
     acq_gdf = gpu_load_acquisition_csv(acquisition_path=acq_data_path + "/Acquisition_"
                                                         + str(year) + "Q" + str(quarter) + ".txt")
-
 
     print("perf_file", perf_file)
     gdf = gpu_load_performance_csv(perf_file)
@@ -521,9 +521,10 @@ def gpu_workflow():
     args = parser.parse_args()
     quarter = args.quarter
     year = args.year
-    perf_file = args.perf_file
+    perf_file_id = args.perf_file
 
-    
+    perf_file = perf_data_path + "/Performance_" + str(year) + perf_file_id
+
     load_start_time = time.time()
 
     names = gpu_load_names()
@@ -567,7 +568,7 @@ def gpu_workflow():
     etl_end_time = time.time()
     
     
-    with open('/blazingdb/data/tpch/results/'   +  str(year) + "Q" + str(quarter)  +'.txt', 'w') as file:
+    with open('/blazingdb/data/results/' +  perf_file_id, 'w') as file:
         file.write(str(load_end_time - load_start_time) + " " + str(etl_end_time - etl_start_time))
     return 1
 
@@ -590,9 +591,9 @@ if use_registered_hdfs:
     perf_data_path = "hdfs://myLocalHdfs/data/perf"
     col_names_path = "hdfs://myLocalHdfs/data/names.csv"
 elif use_registered_posix:
-    acq_data_path = "/blazingdb/data/tpch/acq"
-    perf_data_path = "/blazingdb/data/tpch/perf"
-    col_names_path = "/blazingdb/data/tpch/names.csv"
+    acq_data_path = "/blazingdb/data/tpch/mortgage/acq"
+    perf_data_path = "/blazingdb/data/tpch/mortgage/perf"
+    col_names_path = "/blazingdb/data/tpch/mortgage/names.csv"
 
 start_year = 2000
 end_year = 2000  # end_year is inclusive

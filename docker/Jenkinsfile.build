@@ -27,7 +27,15 @@ pipeline {
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
-    booleanParam(name: 'CLEAN_WORKSPACE_BUILD', defaultValue: false, description: 'Clean the directory:  /home/mario21ic/blazingsql/workspace')
+    booleanParam(name: 'CLEAN_WORKSPACE_CALCITE', defaultValue: false, description: 'blazingdb-calcite_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_IO', defaultValue: false, description: 'blazingdb-io_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_ORCHESTRATOR', defaultValue: false, description: 'blazingdb-orchestrator_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_PROTOCOL', defaultValue: false, description: 'blazingdb-protocol_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_RAL', defaultValue: false, description: 'blazingdb-ral_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_CUDF', defaultValue: false, description: 'cudf_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_PYBLAZING', defaultValue: false, description: 'pyblazing_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_DEPENDENCIES', defaultValue: false, description: 'dependencies')
+    booleanParam(name: 'CLEAN_WORKSPACE_MAVEN', defaultValue: false, description: 'maven-repository')
 
   }
   
@@ -47,7 +55,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "./build-deploy.sh ${params.DOCKERHUB_TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}, ${params.CLEAN_WORKSPACE_BUILD}"
+          sh "./build-deploy.sh ${params.DOCKERHUB_TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH} ${params.CLEAN_WORKSPACE_CALCITE} ${params.CLEAN_WORKSPACE_IO} ${params.CLEAN_WORKSPACE_ORCHESTRATOR} ${params.CLEAN_WORKSPACE_PROTOCOL} ${params.CLEAN_WORKSPACE_RAL} ${params.CLEAN_WORKSPACE_CUDF} ${params.CLEAN_WORKSPACE_PYBLAZING} ${params.CLEAN_WORKSPACE_DEPENDENCIES} ${params.CLEAN_WORKSPACE_MAVEN}"
         }
       }
     }

@@ -32,6 +32,54 @@ blazingdb_ral_branch="blazingdb_ral_branch=$5"
 blazingdb_orchestrator_branch="blazingdb_orchestrator_branch=$6"
 blazingdb_calcite_branch="blazingdb_calcite_branch=$7"
 pyblazing_branch="pyblazing_branch=$8"
+workspace_blazingdb_calcite_project=$9
+workspace_blazingdb_io_project=${10}
+workspace_blazingdb_orchestrator_project=${11}
+workspace_blazingdb_protocol_project=${12}
+workspace_blazingdb_ral_project=${13}
+workspace_cudf_project=${14}
+workspace_pyblazing_project=${15}
+workspace_dependencies=${16}
+workspace_maven_repository=${17}
+
+
+
+if [ $workspace_blazingdb_calcite_project == true ]; then
+      echo "clean blazingdb-calcite_project "
+      sudo rm -r $workspace/blazingdb-calcite_project
+fi
+if [ $workspace_blazingdb_io_project == true ]; then
+      echo "clean blazingdb-io_project"
+      sudo rm -r $workspace/blazingdb-io_project
+fi
+if [ $workspace_blazingdb_orchestrator_project == true ]; then
+      echo "clean blazingdb-orchestrator_project "
+      sudo rm -r $workspace/blazingdb-orchestrator_project
+fi
+if [ $workspace_blazingdb_protocol_project == true ]; then
+      echo "clean blazingdb-protocol_project"
+      sudo rm -r $workspace/blazingdb-protocol_project
+fi
+if [ $workspace_blazingdb_ral_project == true ]; then
+      echo "clean blazingdb-ral_project"
+      sudo rm -r $workspace/blazingdb-ral_project
+fi
+if [ $workspace_cudf_project == true ]; then
+      echo "clean cudf_project "
+      sudo rm -r $workspace/cudf_project
+fi
+if [ $workspace_pyblazing_project == true ]; then
+      echo "clean pyblazing_project "
+      sudo rm -r $workspace/pyblazing_project
+fi
+if [ $workspace_dependencies == true ]; then
+      echo "clean dependencies "
+      sudo rm -r $workspace/dependencies
+fi
+if [ $workspace_maven_repository == true ]; then
+      echo "clean maven-repository "
+      sudo rm -r $workspace/maven-repository
+fi
 
 
 mkdir -p $workspace $output

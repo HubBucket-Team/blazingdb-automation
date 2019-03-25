@@ -19,11 +19,20 @@ pipeline {
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
-    string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/workspace/workspace-testing', description: '')
+    string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/blazingsql/workspace', description: '')
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
+    booleanParam(name: 'CLEAN_WORKSPACE_CALCITE', defaultValue: false, description: 'blazingdb-calcite_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_IO', defaultValue: false, description: 'blazingdb-io_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_ORCHESTRATOR', defaultValue: false, description: 'blazingdb-orchestrator_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_PROTOCOL', defaultValue: false, description: 'blazingdb-protocol_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_RAL', defaultValue: false, description: 'blazingdb-ral_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_CUDF', defaultValue: false, description: 'cudf_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_PYBLAZING', defaultValue: false, description: 'pyblazing_project')
+    booleanParam(name: 'CLEAN_WORKSPACE_DEPENDENCIES', defaultValue: false, description: 'dependencies')
+    booleanParam(name: 'CLEAN_WORKSPACE_MAVEN', defaultValue: false, description: 'maven-repository')
   }
 
   environment {
@@ -54,7 +63,16 @@ pipeline {
           [$class: 'StringParameterValue', name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', value: "${params.BLAZINGDB_ORCHESTRATOR_BRANCH}"],       
           [$class: 'StringParameterValue', name: 'BLAZINGDB_CALCITE_BRANCH', value: "${params.BLAZINGDB_CALCITE_BRANCH}"],
           [$class: 'StringParameterValue', name: 'PYBLAZING_BRANCH', value: "${params.PYBLAZING_BRANCH}"],
-          [$class: 'StringParameterValue', name: 'BRANCH_BLAZINGDB_AUTOMATION', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"]
+          [$class: 'StringParameterValue', name: 'BRANCH_BLAZINGDB_AUTOMATION', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_CALCITE', value: "${params.CLEAN_WORKSPACE_CALCITE}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_IO', value: "${params.CLEAN_WORKSPACE_IO}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_ORCHESTRATOR', value: "${params.CLEAN_WORKSPACE_ORCHESTRATOR}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_PROTOCOL', value: "${params.CLEAN_WORKSPACE_PROTOCOL}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_RAL', value: "${params.CLEAN_WORKSPACE_RAL}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_CUDF', value: "${params.CLEAN_WORKSPACE_CUDF}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_PYBLAZING', value: "${params.CLEAN_WORKSPACE_PYBLAZING}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_DEPENDENCIES', value: "${params.CLEAN_WORKSPACE_DEPENDENCIES}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_MAVEN', value: "${params.CLEAN_WORKSPACE_MAVEN}"]
         ]
       }
     }

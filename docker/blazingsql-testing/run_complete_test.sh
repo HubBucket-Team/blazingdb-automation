@@ -53,7 +53,8 @@ fi
 
 #TO DO: Replace file configurationfile
 if [ ! -f $workdir/configurationFile.json ]; then
-    gsutil cp gs://blazingdbstorage/configurationFile.json  .
+    gsutil cp gs://blazingdbstorage/configurationFileTrue.json  .
+    gsutil cp gs://blazingdbstorage/configurationFileFalse.json  .
 fi
 
 echo "Updating creation logtest directory"
@@ -84,5 +85,5 @@ echo "Init e2e test"
 echo "============================First execution==============================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 
-echo "=========================== Second execution ==========================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+#echo "=========================== Second execution ==========================================="
+#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

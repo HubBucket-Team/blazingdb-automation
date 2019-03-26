@@ -21,4 +21,4 @@ echo "================================ First execution =========================
 echo "================================ First execution ================================"
 #python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileFalse.json
 echo "================================ HDFS TEST ================================"
-python EndToEndTests.parquetFromHdfsTest
+python -m EndToEndTests.parquetFromHdfsTest

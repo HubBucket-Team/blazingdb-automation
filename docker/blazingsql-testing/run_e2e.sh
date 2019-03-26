@@ -16,7 +16,9 @@ echo "PRINT configurationFile.json"
 
 #First execution
 echo "================================ First execution ================================"
-python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileTrue.json
+#python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileTrue.json
 
 echo "================================ First execution ================================"
-python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileFalse.json
+#python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileFalse.json
+echo "================================ HDFS TEST ================================"
+python parquetFromHdfsTest.py

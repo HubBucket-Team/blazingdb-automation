@@ -40,9 +40,9 @@ mkdir /home/$USER/blazingsql/workspace-testing
 
 # Execute the script to build and deploy into docker folder
 cd docker
+./build-deploy.sh latest cudf_branch blazingdb_protocol_branch  blazingdb_io_branch blazingdb_ral_branch blazingdb_orchestrator_branch blazingdb_calcite_branch  pyblazing_branch
 ./build-deploy.sh latest develop develop develop develop develop develop develop
 ```
-
 # Run end to end test
 ```shell-script
 # You need configurationFile.json and  DataSet1Mb into /home/$USER/blazingsql

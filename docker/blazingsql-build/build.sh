@@ -1348,7 +1348,7 @@ fi
 
 if [ $blazingdb_communication_enable == true ]; then
     echo "COMMUNICATION: "
-    protocol_dir=$workspace_dir/blazingdb-communication_project/$blazingdb_communication_branch_name/blazingdb-communication
+    communication_dir=$workspace_dir/blazingdb-communication_project/$blazingdb_communication_branch_name/blazingdb-communication
     cd $communication_dir
     communication_commit=$(git log | head -n 1)
     echo '      '$communication_commit

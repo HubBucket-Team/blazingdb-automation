@@ -22,4 +22,7 @@ echo "================================ First execution =========================
 #python -m EndToEndTests.allE2ETest  $workdir_home/configurationFileFalse.json
 echo "================================ HDFS TEST ================================"
 echo "parquet from hdfs"
-python -m EndToEndTests.parquetFromHdfsTest  $workdir_home/configurationFileFalse.json
+#python -m EndToEndTests.parquetFromHdfsTest  $workdir_home/configurationFileFalse.json
+
+echo "================================ HDFS AGReGATION TEST ================================"
+python -m EndToEndTests.aggregationsWithoutGroupByTest  $workdir_home/configurationFileFalse.json

@@ -58,6 +58,12 @@ if [ -z "$blazingdb_io_branch" ]; then
     exit 1
 fi
 
+if [ -z "$blazingdb_communication_branch" ]; then
+    echo "Error: Need the 'blazingdb_communication_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
 if [ -z "$blazingdb_ral_branch" ]; then
     echo "Error: Need the 'blazingdb_ral_branch' argument in order to run the build process."
     touch FAILED
@@ -95,7 +101,11 @@ if [ -z "$blazingdb_protocol_enable" ]; then
 fi
 
 if [ -z "$blazingdb_io_enable" ]; then
-    blazingdb_protocol_enable=true
+    blazingdb_io_enable=true
+fi
+
+if [ -z "$blazingdb_communication_enable" ]; then
+    blazingdb_communication_enable=true
 fi
 
 if [ -z "$blazingdb_ral_enable" ]; then
@@ -127,7 +137,11 @@ if [ -z "$blazingdb_protocol_parallel" ]; then
 fi
 
 if [ -z "$blazingdb_io_parallel" ]; then
-    blazingdb_protocol_parallel=4
+    blazingdb_io_parallel=4
+fi
+
+if [ -z "$blazingdb_communication_parallel" ]; then
+    blazingdb_communication_parallel=4
 fi
 
 if [ -z "$blazingdb_ral_parallel" ]; then
@@ -155,7 +169,11 @@ if [ -z "$blazingdb_protocol_tests" ]; then
 fi
 
 if [ -z "$blazingdb_io_tests" ]; then
-    blazingdb_protocol_tests=false
+    blazingdb_io_tests=false
+fi
+
+if [ -z "$blazingdb_communication_tests" ]; then
+    blazingdb_communication_tests=false
 fi
 
 if [ -z "$blazingdb_ral_tests" ]; then
@@ -209,6 +227,7 @@ function normalize_branch_name() {
 cudf_branch_name=$(normalize_branch_name $cudf_branch)
 blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
 blazingdb_io_branch_name=$(normalize_branch_name $blazingdb_io_branch)
+blazingdb_communication_branch_name=$(normalize_branch_name $blazingdb_communication_branch)
 blazingdb_ral_branch_name=$(normalize_branch_name $blazingdb_ral_branch)
 blazingdb_orchestrator_branch_name=$(normalize_branch_name $blazingdb_orchestrator_branch)
 blazingdb_calcite_branch_name=$(normalize_branch_name $blazingdb_calcite_branch)
@@ -360,10 +379,18 @@ if [ $cudf_enable == true ]; then
 
     mkdir -p $libgdf_build_dir
 
+    build_testing_cudf="OFF"
+    if [ $cudf_tests == true ]; then
+        build_testing_cudf="ON"
+    fi
+
+    echo "build_testing_cudf: $build_testing_cudf"
+
     echo "### CUDF - cmake ###"
     cd $libgdf_build_dir
     BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda-9.2/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
         -DCMAKE_BUILD_TYPE=Release  \
+        -DBUILD_TESTS=$build_testing_cudf  \
         -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
         ..
     echo "### CUDF - make install ###"
@@ -521,6 +548,61 @@ if [ $blazingdb_io_enable == true ]; then
     #END blazingdb-io
 fi
 
+if [ $blazingdb_communication_enable == true ]; then
+    #BEGIN blazingdb-communication
+    echo "### Blazingdb communication - start ###"
+    
+    cd $workspace_dir
+    
+    if [ ! -d blazingdb-communication_project ]; then
+        mkdir blazingdb-communication_project
+    fi
+    
+    blazingdb_communication_project_dir=$workspace_dir/blazingdb-communication_project
+    
+    cd $blazingdb_communication_project_dir
+    
+    if [ ! -d $blazingdb_communication_branch_name ]; then
+        mkdir $blazingdb_communication_branch_name
+        cd $blazingdb_communication_branch_name
+        git clone git@github.com:BlazingDB/blazingdb-communication.git
+    fi
+    
+    blazingdb_communication_current_dir=$blazingdb_communication_project_dir/$blazingdb_communication_branch_name/
+    
+    cd $blazingdb_communication_current_dir/blazingdb-communication
+    git checkout $blazingdb_communication_branch
+    git pull
+    
+    blazingdb_communication_install_dir=$blazingdb_communication_current_dir/install
+    blazingdb_communication_cpp_build_dir=$blazingdb_communication_current_dir/blazingdb-communication/build/
+    
+    mkdir -p $blazingdb_communication_cpp_build_dir
+    
+    cd $blazingdb_communication_cpp_build_dir
+    
+    blazingdb_communication_artifact_name=libblazingdb-communication.a
+    rm -rf $blazingdb_communication_artifact_name
+    
+    echo "### Blazingdb communication - cmake ###"
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+          -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
+          -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_communication_install_dir \
+          ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### Blazingdb communication - make ###"
+    make -j$blazingdb_communication_parallel install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    echo "### Blazingdb communication - end ###"
+    #END blazingdb-communication
+fi
+
 if [ $blazingdb_ral_enable == true ]; then
     #BEGIN blazingdb-ral
     echo "### Ral - start ###"
@@ -572,6 +654,7 @@ if [ $blazingdb_ral_enable == true ]; then
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
+          -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \
           -DCUDA_DEFINES=$blazingdb_ral_definitions \
           -DCXX_DEFINES=$blazingdb_ral_definitions \
           ..
@@ -642,6 +725,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
+          -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -813,6 +897,15 @@ if [ $blazingdb_io_enable == true ]; then
     io_commit=$(git log | head -n 1)
     echo '      '$io_commit
     echo '      '"branch "$blazingdb_io_branch_name
+fi
+
+if [ $blazingdb_communication_enable == true ]; then
+    echo "COMMUNICATION: "
+    communication_dir=$workspace_dir/blazingdb-communication_project/$blazingdb_communication_branch_name/blazingdb-communication
+    cd $communication_dir
+    communication_commit=$(git log | head -n 1)
+    echo '      '$communication_commit
+    echo '      '"branch "$blazingdb_communication_branch_name
 fi
 
 if [ $blazingdb_ral_enable == true ]; then

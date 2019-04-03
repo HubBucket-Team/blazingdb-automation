@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-np-svc
+spec:
+  type: NodePort
+  selector:
+    app: blazingdb
+  ports:
+  - port: 80

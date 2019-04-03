@@ -2,7 +2,7 @@ version: '2.3'
 
 services:
   blazingsql:
-    image: blazingdb/blazingsql:latest
+    image: blazingdb/blazingsql:test
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all

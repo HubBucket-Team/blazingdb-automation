@@ -152,6 +152,6 @@ EXPOSE 9001
 EXPOSE 80
 
 # haddop
-EXPOSE 54310
+#EXPOSE 54310
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

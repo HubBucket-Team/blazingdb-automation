@@ -372,10 +372,6 @@ if [ $cudf_enable == true ]; then
       exit 1
     fi
     
-    #TODO remove this patch once cudf can install rmm
-    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/memory.h $libgdf_install_dir/include
-    cp $cudf_current_dir/cudf/$libgdf_dir/src/rmm/rmm.h $libgdf_install_dir/include
-    
     #END cudf
     
     # Package cudf
@@ -438,12 +434,8 @@ if [ $blazingdb_protocol_enable == true ]; then
     
     echo "### Protocol - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
-          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
+          -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
-          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
-          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
-	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -512,12 +504,8 @@ if [ $blazingdb_io_enable == true ]; then
     
     echo "### Blazingdb IO - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -DAWS_SDK_CPP_BUILD_DIR=${aws_sdk_cpp_build_dir} \
-          -DARROW_INSTALL_DIR=${arrow_install_dir} \
-          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
+          -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
-          -DCMAKE_C_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
-          -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -580,21 +568,10 @@ if [ $blazingdb_ral_enable == true ]; then
     # Configure blazingdb-ral with dependencies
     CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DBUILD_TESTING=$build_testing_ral \
-          -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir \
-          -DBOOST_INSTALL_DIR=$boost_install_dir \
-          -DAWS_SDK_CPP_BUILD_DIR=$aws_sdk_cpp_build_dir \
-          -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
-          -DLZ4_INSTALL_DIR=$lz4_install_dir \
-          -DZSTD_INSTALL_DIR=$zstd_install_dir \
-          -DBROTLI_INSTALL_DIR=$brotli_install_dir \
-          -DSNAPPY_INSTALL_DIR=$snappy_install_dir \
-          -DTHRIFT_INSTALL_DIR=$thrift_install_dir \
-          -DARROW_INSTALL_DIR=$arrow_install_dir \
+          -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
-          -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
-	  -DZEROMQ_INSTALL_DIR=$zeromq_install_dir \
           -DCUDA_DEFINES=$blazingdb_ral_definitions \
           -DCXX_DEFINES=$blazingdb_ral_definitions \
           ..
@@ -663,7 +640,8 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
     echo "### Orchestrator - cmake ###"
     cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
-          -DBLAZINGDB_PROTOCOL_BRANCH=$blazingdb_protocol_branch \
+          -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
+          -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -828,7 +806,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     echo '      '"branch "$blazingdb_protocol_branch_name
 fi
 
-if [ $blazingdb_protocol_enable == true ]; then
+if [ $blazingdb_io_enable == true ]; then
     echo "BLAZING-IO: "
     io_dir=$workspace_dir/blazingdb-io_project/$blazingdb_io_branch_name/blazingdb-io
     cd $io_dir

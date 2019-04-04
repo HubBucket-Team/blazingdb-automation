@@ -244,13 +244,19 @@ fi
 cd $workspace_dir/dependencies/
 
 if [ ! -d $workspace_dir/dependencies/blazingdb-dependencies/build ]; then
-    git clone git@github.com:BlazingDB/blazingdb-dependencies.git
-    cd blazingdb-dependencies
+    cd $workspace_dir/
+
+    git clone git@github.com:BlazingDB/blazingdb-toolchain.git
+    cd blazingdb-toolchain
     git checkout feature/easy-build
     mkdir -p build
     cd build
     CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
     make -j8 install
+    
+    #TODO percy clear these hacks until we migrate to cudf 0.7
+    mkdir -p ${output}/nvstrings
+    cp $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
 fi
 
 #BEGIN boost

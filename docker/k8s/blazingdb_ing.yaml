@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: blazingdb-ing-svc
+  name: blazingdb-ing
   annotations:
     #nginx.ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.global-static-ip-name: "k8s-ingress"
@@ -12,5 +12,5 @@ spec:
       paths:
         - path: /*
           backend:
-            serviceName: blazingdb-np-svc
+            serviceName: blazingdb-svc
             servicePort: 80

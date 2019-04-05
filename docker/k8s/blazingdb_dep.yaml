@@ -1,5 +1,5 @@
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: blazingdb-deployment
 spec:
@@ -22,7 +22,7 @@ spec:
         - containerPort: 80
         readinessProbe:
           httpGet:
-            path: /
+            path: /login
             port: 80
           periodSeconds: 1
           timeoutSeconds: 1

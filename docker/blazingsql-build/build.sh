@@ -253,11 +253,11 @@ if [ ! -d $workspace_dir/dependencies/blazingdb-dependencies/build ]; then
     cd build
     CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
     make -j8 install
-    
-    #TODO percy clear these hacks until we migrate to cudf 0.7
-    mkdir -p ${output}/nvstrings
-    cp $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
 fi
+
+#TODO percy clear these hacks until we migrate to cudf 0.7
+mkdir -p ${output}/nvstrings
+cp $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
 
 #BEGIN boost
 

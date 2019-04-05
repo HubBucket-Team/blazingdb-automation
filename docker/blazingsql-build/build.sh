@@ -259,7 +259,7 @@ fi
 mkdir -p ${output}/nvstrings
 cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
 
-mkdir -p ${output}/nvstrings_src
+mkdir -p ${output}/nvstrings-src
 cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
 
 #BEGIN boost

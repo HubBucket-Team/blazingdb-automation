@@ -243,7 +243,7 @@ fi
 
 cd $workspace_dir/dependencies/
 
-if [ ! -d $workspace_dir/dependencies/blazingdb-dependencies/build ]; then
+if [ ! -d $workspace_dir/blazingdb-toolchain/build ]; then
     cd $workspace_dir/
 
     git clone git@github.com:BlazingDB/blazingdb-toolchain.git
@@ -257,7 +257,7 @@ fi
 
 #TODO percy clear these hacks until we migrate to cudf 0.7
 mkdir -p ${output}/nvstrings
-cp $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
+cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
 
 #BEGIN boost
 

@@ -41,7 +41,7 @@ pip install $cudf_dir/$libgdf_dir/python
 RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h pip install $cudf_dir/thirdparty/rmm/python
 
 # Install cudf
-CFLAGS=-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/ CXXFLAGS=-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/ pip install $cudf_dir/python
+CFLAGS="-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/" CXXFLAGS="-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/" pip install $cudf_dir/python
 
 # Install blazingsql
 blazingdb_ral_artifact_name=testing-libgdf

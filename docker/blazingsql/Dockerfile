@@ -61,13 +61,13 @@ RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numba=${NUMBA_V
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
-RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c defaults nvstrings
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.12
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults gtest=1.8.0
 
 # libgdf dependencies
 RUN source activate cudf && pip install --upgrade pip
-RUN source activate cudf && conda install -c nvidia nvstrings
+# TODO percy mario edith uncomment this when we don't need to build nvstrings(custrings)
+#RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c defaults nvstrings
 
 # blazingdb-protocol dependencies
 RUN source activate cudf && pip install flatbuffers

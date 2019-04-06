@@ -28,7 +28,7 @@ cp $blazingsql_files/nvstrings/lib/libNVStrings.so /conda/envs/cudf/lib/
 # Install libhdfs3
 cp -r $blazingsql_files/libhdfs3/* /usr/lib
 
-python $blazingsql_files/nvstrings_src/python/setup.py install
+python $blazingsql_files/nvstrings-src/python/setup.py install
 
 # Install libgdf_cffi
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/libgdf_cffi/libgdf_build.py

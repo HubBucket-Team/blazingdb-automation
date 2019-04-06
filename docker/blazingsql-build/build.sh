@@ -262,6 +262,9 @@ cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-i
 mkdir -p ${output}/nvstrings-src
 cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
 
+mkdir -p ${output}/nvstrings-build
+cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
+
 #BEGIN boost
 
 boost_install_dir=$workspace_dir/dependencies/

@@ -47,7 +47,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Create the conda env called 'cudf'
 # Build 'cudf' conda env
-ARG PYTHON_VERSION=3.5
+ARG PYTHON_VERSION=3.6
 RUN conda create -n cudf python=${PYTHON_VERSION}
 
 ARG NUMBA_VERSION=0.40.0

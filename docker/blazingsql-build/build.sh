@@ -251,7 +251,7 @@ if [ ! -d $workspace_dir/blazingdb-toolchain/build ]; then
     git checkout feature/easy-build
     mkdir -p build
     cd build
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
     make -j8 install
 fi
 
@@ -660,7 +660,7 @@ if [ $blazingdb_ral_enable == true ]; then
     
     echo "### Ral - cmake ###"
     # Configure blazingdb-ral with dependencies
-    CUDACXX=/usr/local/cuda-9.2/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DBUILD_TESTING=$build_testing_ral \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \

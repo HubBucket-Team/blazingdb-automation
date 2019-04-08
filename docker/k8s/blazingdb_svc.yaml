@@ -5,7 +5,8 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: blazingdb
+    #app: blazingdb
+    app: blazingdb-jupyter
   ports:
     - protocol: TCP
       port: 80

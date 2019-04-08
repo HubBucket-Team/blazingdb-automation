@@ -76,7 +76,7 @@ mkdir -p $workspace $output
 echo "### Copy properties ###"
 cp blazingsql-build.properties $workspace
 
-echo "Branches"
+echo "Branches:"
 
 echo "cudf_branch: $cudf_branch"
 echo "blazingdb_protocol_branch: $blazingdb_protocol_branch"
@@ -133,8 +133,12 @@ blazingdb_ral_definitions="-DLOG_PERFORMANCE"
 
 EOF
 
-# The blazingsql-build.properties:
+echo "********************************"
+echo "********************************"
+echo "The blazingsql-build.properties:"
 cat $workspace/blazingsql-build.properties
+echo "********************************"
+echo "********************************"
 
 
 echo "### Build de Build ###"

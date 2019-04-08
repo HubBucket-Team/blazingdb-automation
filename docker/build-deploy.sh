@@ -44,6 +44,19 @@ mkdir -p $workspace $output
 echo "### Copy properties ###"
 cp blazingsql-build.properties $workspace
 
+echo "Original branches"
+
+cat $workspace/blazingsql-build.properties
+
+echo "cudf_branch: $cudf_branch"
+echo "blazingdb_protocol_branch: $blazingdb_protocol_branch"
+echo "blazingdb_io_branch: $blazingdb_io_branch"
+echo "blazingdb_ral_branch: $blazingdb_ral_branch"
+echo "blazingdb_orchestrator_branch: $blazingdb_orchestrator_branch"
+echo "blazingdb_calcite_branch: $blazingdb_calcite_branch"
+echo "pyblazing_branch: $pyblazing_branch"
+echo "----"
+
 # Replace with input branchs
 sed -ie "s/cudf_branch.*/$cudf_branch/g" $workspace/blazingsql-build.properties
 sed -ie "s/blazingdb_protocol_branch.*/$blazingdb_protocol_branch/g" $workspace/blazingsql-build.properties

@@ -272,9 +272,6 @@ if [ ! -d $workspace_dir/blazingdb-toolchain/build ]; then
     git clone git@github.com:BlazingDB/blazingdb-toolchain.git
     cd blazingdb-toolchain
     git checkout $blazingdb_toolchain_branch
-    mkdir -p build
-    cd build
-    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
 fi
 
 if [ $blazingdb_toolchain_force_clean == true ]; then
@@ -282,7 +279,10 @@ if [ $blazingdb_toolchain_force_clean == true ]; then
 fi
 
 echo "Installing dependencies"
-cd $workspace_dir/blazingdb-toolchain/build
+cd $workspace_dir/blazingdb-toolchain/
+mkdir -p build
+rm -f CMakeCache.txt
+CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
 make -j8 install
 
 #TODO percy clear these hacks until we migrate to cudf 0.7

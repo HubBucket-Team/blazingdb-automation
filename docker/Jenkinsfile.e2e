@@ -26,7 +26,7 @@ pipeline {
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
-    booleanParam(name: 'BLAZINGDB_TOOLCHAIN_FORCE_CLEAN', defaultValue: false, description: 'Call to job build-deploy')
+    booleanParam(name: 'BLAZINGDB_TOOLCHAIN_FORCE_CLEAN', defaultValue: false, description: 'Clean and build again all dependencies')
   }
 
   environment {

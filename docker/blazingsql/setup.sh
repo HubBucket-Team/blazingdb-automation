@@ -22,30 +22,34 @@ cp $cudf_dir/$libgdf_dir/install/lib/librmm.so /conda/envs/cudf/lib/
 # Install libgdf
 cp -r $cudf_dir/$libgdf_dir/install/* /conda/envs/cudf/
 
-# Install 
-cp $blazingsql_files/nvstrings/lib/libNVStrings.so /conda/envs/cudf/lib/
-
 # Install libhdfs3
 cp -r $blazingsql_files/libhdfs3/* /usr/lib
 
+# Install rmm (from nvstrings)
+cp -f $blazingsql_files/nvstrings-build/rmm/*.so /conda/envs/cudf/lib/
+
+# Install nvstrings (custrings)
+cp -f $blazingsql_files/nvstrings-build/*.so /conda/envs/cudf/lib/
+
+working_directory_tmp=$PWD
+cd $blazingsql_files/nvstrings-src/python/
+python setup.py install
+cd $working_directory_tmp
+
 # Install libgdf_cffi
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/libgdf_cffi/libgdf_build.py
-sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/librmm_cffi/librmm_build.py
+sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/thirdparty/rmm/python/librmm_cffi/librmm_build.py
 
 pip install $cudf_dir/$libgdf_dir/python
-RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h  pip install $cudf_dir/thirdparty/rmm/python
+RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h pip install $cudf_dir/thirdparty/rmm/python
 
 # Install cudf
-CFLAGS=-I/conda/envs/cudf/include CXXFLAGS=-I/conda/envs/cudf/include pip install $cudf_dir/python
+CFLAGS="-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/" CXXFLAGS="-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/" pip install $cudf_dir/python
 
 # Install blazingsql
 blazingdb_ral_artifact_name=testing-libgdf
 blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
 blazingdb_calcite_artifact_name=BlazingCalcite.jar
-
-# Install jzmq & zeromq
-cp -r $blazingsql_files/jzmq /home/jupyter/lib
-cp -r $blazingsql_files/zeromq/* /home/jupyter/lib
 
 cp $blazingsql_files/$blazingdb_ral_artifact_name /home/jupyter
 cp $blazingsql_files/$blazingdb_orchestrator_artifact_name /home/jupyter

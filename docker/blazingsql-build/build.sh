@@ -218,6 +218,10 @@ if [ -z "$blazingdb_ral_definitions" ]; then
     blazingdb_ral_definitions="-DLOG_PERFORMANCE"
 fi
 
+if [ -z "$blazingdb_toolchain_force_clean" ]; then
+    blazingdb_toolchain_force_clean=false
+fi
+
 #END set default optional arguments for build options (precompiler definitions, etc.)
 
 #BEGIN functions
@@ -271,6 +275,10 @@ if [ ! -d $workspace_dir/blazingdb-toolchain/build ]; then
     mkdir -p build
     cd build
     CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
+fi
+
+if [ $blazingdb_toolchain_force_clean == true ]; then
+    rm -rf $workspace_dir/blazingdb-toolchain/build
 fi
 
 echo "Installing dependencies"

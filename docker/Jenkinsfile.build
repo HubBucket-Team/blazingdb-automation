@@ -29,7 +29,7 @@ pipeline {
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
-    booleanParam(name: 'BLAZINGDB_TOOLCHAIN_FORCE_CLEAN', defaultValue: false, description: 'Call to job build-deploy')
+    booleanParam(name: 'BLAZINGDB_TOOLCHAIN_FORCE_CLEAN', defaultValue: false, description: 'Clean and build again all dependencies')
   }
   
   environment {

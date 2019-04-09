@@ -134,8 +134,8 @@ blazingdb_ral_definitions="-DLOG_PERFORMANCE"
 EOF
 
 echo "********************************"
-echo "********************************"
 echo "The blazingsql-build.properties:"
+echo "********************************"
 cat $workspace/blazingsql-build.properties
 echo "********************************"
 echo "********************************"

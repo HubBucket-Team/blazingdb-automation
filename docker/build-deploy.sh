@@ -25,14 +25,24 @@ image_deploy="blazingdb/blazingsql:$1"
 
 
 # Parametrize branchs
-cudf_branch=$2
-blazingdb_protocol_branch=$3
-blazingdb_io_branch=$4
-blazingdb_communication_branch=$5
-blazingdb_ral_branch=$6
-blazingdb_orchestrator_branch=$7
-blazingdb_calcite_branch=$8
-pyblazing_branch=$9
+blazingdb_toolchain_branch=$2
+cudf_branch=$3
+blazingdb_protocol_branch=$4
+blazingdb_io_branch=$5
+blazingdb_communication_branch=$6
+blazingdb_ral_branch=$7
+blazingdb_orchestrator_branch=$8
+blazingdb_calcite_branch=$9
+pyblazing_branch=${10}
+
+# Parametrize more options
+blazingdb_toolchain_force_clean=${11}
+
+echo "Forcing build dependencies: ${11}"
+
+if [ -z "$blazingdb_toolchain_branch" ]; then
+    blazingdb_toolchain_branch=develop
+fi
 
 if [ -z "$cudf_branch" ]; then
     cudf_branch=develop
@@ -64,6 +74,10 @@ fi
 
 if [ -z "$pyblazing_branch" ]; then
     pyblazing_branch=develop
+fi
+
+if [ -z "$blazingdb_toolchain_force_clean" ]; then
+    blazingdb_toolchain_force_clean=false
 fi
 
 mkdir -p $workspace $output
@@ -130,6 +144,7 @@ pyblazing_tests=false
 
 #optional: build options (precompiler definitions, etc.)
 blazingdb_ral_definitions="-DLOG_PERFORMANCE"
+blazingdb_toolchain_force_clean=$blazingdb_toolchain_force_clean
 
 EOF
 

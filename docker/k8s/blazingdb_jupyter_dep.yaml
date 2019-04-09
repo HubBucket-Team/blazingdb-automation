@@ -12,12 +12,16 @@ spec:
       labels:
         app: blazingdb-jupyter
     spec:
+      volumes:
+        - name: mi-volume
+          persistentVolumeClaim:
+            claimName: myclaim
       containers:
       - name: blazingdb-jupyter
-        #image: "blazingdb/blazingsql:latest"
-        #image: "blazingdb/blazingsql:netflowdemo"
-        #image: "blazingdb/blazingsql:demo"
         image: "blazingdb/blazingsql:test"
+        volumeMounts:
+        - mountPath: /tmp
+          name: mi-volume
         ports:
         - containerPort: 80
         readinessProbe:

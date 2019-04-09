@@ -281,6 +281,7 @@ fi
 echo "Installing dependencies"
 cd $workspace_dir/blazingdb-toolchain/
 mkdir -p build
+cd build
 rm -f CMakeCache.txt
 CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
 make -j8 install

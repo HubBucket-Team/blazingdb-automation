@@ -40,6 +40,12 @@ source $blazingsql_build_properties
 
 #BEGIN check mandatory arguments
 
+if [ -z "$blazingdb_toolchain_branch" ]; then
+    echo "Error: Need the 'blazingdb_toolchain_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
 if [ -z "$cudf_branch" ]; then
     echo "Error: Need the 'cudf_branch' argument in order to run the build process."
     touch FAILED
@@ -92,6 +98,10 @@ fi
 
 #BEGIN set default optional arguments for active/enable the build
 
+if [ -z "$blazingdb_toolchain_enable" ]; then
+    blazingdb_toolchain_enable=true
+fi
+
 if [ -z "$cudf_enable" ]; then
     cudf_enable=true
 fi
@@ -128,6 +138,10 @@ fi
 
 #BEGIN set default optional arguments for parallel build
 
+if [ -z "$blazingdb_toolchain_parallel" ]; then
+    blazingdb_toolchain_parallel=4
+fi
+
 if [ -z "$cudf_parallel" ]; then
     cudf_parallel=4
 fi
@@ -159,6 +173,10 @@ fi
 #END set default optional arguments for parallel build
 
 #BEGIN set default optional arguments for tests
+
+if [ -z "$blazingdb_toolchain_tests" ]; then
+    blazingdb_toolchain_tests=false
+fi
 
 if [ -z "$cudf_tests" ]; then
     cudf_tests=false
@@ -224,6 +242,7 @@ function normalize_branch_name() {
 
 #BEGIN main
 
+blazingdb_toolchain_branch_name=$(normalize_branch_name $blazingdb_toolchain_branch)
 cudf_branch_name=$(normalize_branch_name $cudf_branch)
 blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
 blazingdb_io_branch_name=$(normalize_branch_name $blazingdb_io_branch)
@@ -248,12 +267,15 @@ if [ ! -d $workspace_dir/blazingdb-toolchain/build ]; then
 
     git clone git@github.com:BlazingDB/blazingdb-toolchain.git
     cd blazingdb-toolchain
-    git checkout feature/easy-build
+    git checkout $blazingdb_toolchain_branch
     mkdir -p build
     cd build
     CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
-    make -j8 install
 fi
+
+echo "Installing dependencies"
+cd $workspace_dir/blazingdb-toolchain/build
+make -j8 install
 
 #TODO percy clear these hacks until we migrate to cudf 0.7
 mkdir -p ${output}/nvstrings

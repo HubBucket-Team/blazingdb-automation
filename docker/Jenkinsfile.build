@@ -48,7 +48,7 @@ pipeline {
     stage("Build") {
       steps {
         dir("docker/") {
-          sh "./build-deploy.sh ${params.DOCKERHUB_TAG_DEPLOY} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"
+          sh "./build-deploy.sh ${params.DOCKERHUB_TAG_DEPLOY} ${BLAZINGDB_TOOLCHAIN_BRANCH} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${BLAZINGDB_COMMUNICATION_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH} ${BLAZINGDB_TOOLCHAIN_FORCE_CLEAN}"
         }
       }
     }

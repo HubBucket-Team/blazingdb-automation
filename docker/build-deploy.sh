@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: tag_deploy cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch
+# Usage: tag_deploy blazingdb_toolchain_branch cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch blazingdb_toolchain_force_clean
 
 #BUILD
 WORKSPACE=$PWD
@@ -92,6 +92,7 @@ cp blazingsql-build.properties $workspace
 
 echo "Branches:"
 
+echo "blazingdb_toolchain_branch: $blazingdb_toolchain_branch"
 echo "cudf_branch: $cudf_branch"
 echo "blazingdb_protocol_branch: $blazingdb_protocol_branch"
 echo "blazingdb_io_branch: $blazingdb_io_branch"
@@ -104,6 +105,7 @@ echo "pyblazing_branch: $pyblazing_branch"
 # define the properties template
 cat << EOF > $workspace/blazingsql-build.properties
 #mandatory: branches
+blazingdb_toolchain_branch=$blazingdb_toolchain_branch
 cudf_branch=$cudf_branch
 blazingdb_protocol_branch=$blazingdb_protocol_branch
 blazingdb_io_branch=$blazingdb_io_branch
@@ -114,6 +116,7 @@ blazingdb_calcite_branch=$blazingdb_calcite_branch
 pyblazing_branch=$pyblazing_branch
 
 #optional: enable build (default is true)
+blazingdb_toolchain_enable=true
 cudf_enable=true
 blazingdb_protocol_enable=true
 blazingdb_io_enable=true
@@ -124,6 +127,7 @@ blazingdb_calcite_enable=true
 pyblazing_enable=true
 
 #optional: parallel builds for make -jX and mvn -T XC (default is 4)
+blazingdb_toolchain_parallel=4
 cudf_parallel=4
 blazingdb_protocol_parallel=4
 blazingdb_io_parallel=4
@@ -133,6 +137,7 @@ blazingdb_orchestrator_parallel=4
 blazingdb_calcite_parallel=4
 
 #optional: tests build & run (default is false)
+blazingdb_toolchain_tests=false
 cudf_tests=false
 blazingdb_protocol_tests=false
 blazingdb_io_tests=false

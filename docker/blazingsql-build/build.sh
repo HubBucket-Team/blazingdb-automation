@@ -218,11 +218,47 @@ if [ -z "$blazingdb_ral_definitions" ]; then
     blazingdb_ral_definitions="-DLOG_PERFORMANCE"
 fi
 
-if [ -z "$blazingdb_toolchain_force_clean" ]; then
-    blazingdb_toolchain_force_clean=false
+#END set default optional arguments for build options (precompiler definitions, etc.)
+
+#BEGIN set default optional arguments for clean before build
+
+if [ -z "$blazingdb_toolchain_clean_before_build" ]; then
+    blazingdb_toolchain_clean_before_build=false
 fi
 
-#END set default optional arguments for build options (precompiler definitions, etc.)
+if [ -z "$cudf_clean_before_build" ]; then
+    cudf_clean_before_build=false
+fi
+
+if [ -z "$blazingdb_protocol_clean_before_build" ]; then
+    blazingdb_protocol_clean_before_build=false
+fi
+
+if [ -z "$blazingdb_io_clean_before_build" ]; then
+    blazingdb_io_clean_before_build=false
+fi
+
+if [ -z "$blazingdb_communication_clean_before_build" ]; then
+    blazingdb_communication_clean_before_build=false
+fi
+
+if [ -z "$blazingdb_ral_clean_before_build" ]; then
+    blazingdb_ral_clean_before_build=false
+fi
+
+if [ -z "$blazingdb_orchestrator_clean_before_build" ]; then
+    blazingdb_orchestrator_clean_before_build=false
+fi
+
+if [ -z "$blazingdb_calcite_clean_before_build" ]; then
+    blazingdb_calcite_clean_before_build=false
+fi
+
+if [ -z "$pyblazing_clean_before_build" ]; then
+    pyblazing_clean_before_build=false
+fi
+
+#END set default optional arguments for clean before build
 
 #BEGIN functions
 
@@ -271,7 +307,7 @@ if [ ! -d $workspace_dir/blazingdb-toolchain/ ]; then
     git clone git@github.com:BlazingDB/blazingdb-toolchain.git
 fi
 
-if [ $blazingdb_toolchain_force_clean == true ]; then
+if [ $blazingdb_toolchain_clean_before_build == true ]; then
     rm -rf $workspace_dir/blazingdb-toolchain/build/
     rm -rf $workspace_dir/dependencies/
 fi
@@ -404,16 +440,41 @@ if [ $cudf_enable == true ]; then
     fi
     
     cudf_project_dir=$workspace_dir/cudf_project
+    cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
+    libgdf_dir=cpp
+    libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
+    
+    echo "### CUDF - clean before build: $cudf_clean_before_build ###"
+    
+    if [ $cudf_clean_before_build == true ]; then
+        rm -rf $libgdf_build_dir
+    fi
     
     cd $cudf_project_dir
     
+    # NOTE only for cudf run the cmake command only once so we avoid rebuild everytime 
     if [ ! -d $cudf_branch_name ]; then
         mkdir $cudf_branch_name
         cd $cudf_branch_name
         git clone git@github.com:BlazingDB/cudf.git
+        
+        mkdir -p $libgdf_build_dir
+        
+        build_testing_cudf="OFF"
+        if [ $cudf_tests == true ]; then
+            build_testing_cudf="ON"
+        fi
+        
+        echo "build_testing_cudf: $build_testing_cudf"
+        
+        echo "### CUDF - cmake ###"
+        cd $libgdf_build_dir
+        BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_TESTS=$build_testing_cudf  \
+            -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
+            ..
     fi
-    
-    cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
     
     cd $cudf_current_dir/cudf
     git checkout $cudf_branch
@@ -421,27 +482,9 @@ if [ $cudf_enable == true ]; then
     git submodule update --init --recursive
     
     libgdf_install_dir=$cudf_current_dir/install
-    libgdf_dir=cpp
     
-    libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
-
-    mkdir -p $libgdf_build_dir
-
-    build_testing_cudf="OFF"
-    if [ $cudf_tests == true ]; then
-        build_testing_cudf="ON"
-    fi
-
-    echo "build_testing_cudf: $build_testing_cudf"
-
-    echo "### CUDF - cmake ###"
-    cd $libgdf_build_dir
-    BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
-        -DCMAKE_BUILD_TYPE=Release  \
-        -DBUILD_TESTS=$build_testing_cudf  \
-        -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
-        ..
     echo "### CUDF - make install ###"
+    cd $libgdf_build_dir
     make -j$cudf_parallel install
     if [ $? != 0 ]; then
       exit 1
@@ -500,6 +543,11 @@ if [ $blazingdb_protocol_enable == true ]; then
     blazingdb_protocol_install_dir=$blazingdb_protocol_current_dir/install
     
     blazingdb_protocol_cpp_build_dir=$blazingdb_protocol_current_dir/blazingdb-protocol/cpp/build/
+    
+    if [ $blazingdb_protocol_clean_before_build == true ]; then
+        rm -rf $blazingdb_protocol_cpp_build_dir
+    fi
+    
     mkdir -p $blazingdb_protocol_cpp_build_dir
     
     cd $blazingdb_protocol_cpp_build_dir
@@ -570,6 +618,10 @@ if [ $blazingdb_io_enable == true ]; then
     blazingdb_io_install_dir=$blazingdb_io_current_dir/install
     blazingdb_io_cpp_build_dir=$blazingdb_io_current_dir/blazingdb-io/build/
     
+    if [ $blazingdb_io_clean_before_build == true ]; then
+        rm -rf $blazingdb_io_cpp_build_dir
+    fi
+    
     mkdir -p $blazingdb_io_cpp_build_dir
     
     cd $blazingdb_io_cpp_build_dir
@@ -624,6 +676,10 @@ if [ $blazingdb_communication_enable == true ]; then
     
     blazingdb_communication_install_dir=$blazingdb_communication_current_dir/install
     blazingdb_communication_cpp_build_dir=$blazingdb_communication_current_dir/blazingdb-communication/build/
+    
+    if [ $blazingdb_communication_clean_before_build == true ]; then
+        rm -rf $blazingdb_communication_cpp_build_dir
+    fi
     
     mkdir -p $blazingdb_communication_cpp_build_dir
     
@@ -680,6 +736,10 @@ if [ $blazingdb_ral_enable == true ]; then
     
     blazingdb_ral_install_dir=$blazingdb_ral_current_dir/install
     blazingdb_ral_build_dir=$blazingdb_ral_current_dir/blazingdb-ral/build/
+    
+    if [ $blazingdb_ral_clean_before_build == true ]; then
+        rm -rf $blazingdb_ral_build_dir
+    fi
     
     mkdir -p $blazingdb_ral_build_dir
     
@@ -757,6 +817,10 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     
     blazingdb_orchestrator_install_dir=$blazingdb_orchestrator_current_dir/install
     blazingdb_orchestrator_build_dir=$blazingdb_orchestrator_current_dir/blazingdb-orchestrator/build/
+    
+    if [ $blazingdb_orchestrator_clean_before_build == true ]; then
+        rm -rf $blazingdb_orchestrator_build_dir
+    fi
     
     mkdir -p $blazingdb_orchestrator_build_dir
     cd $blazingdb_orchestrator_build_dir

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: tag_deploy blazingdb_toolchain_branch cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch blazingdb_toolchain_force_clean
+# Usage: tag_deploy blazingdb_toolchain_branch cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch blazingdb_toolchain_clean_before_build cudf_clean_before_build blazingdb_protocol_clean_before_build blazingdb_io_clean_before_build blazingdb_communication_clean_before_build blazingdb_ral_clean_before_build blazingdb_orchestrator_clean_before_build blazingdb_calcite_clean_before_build pyblazing_clean_before_build
 
 #BUILD
 WORKSPACE=$PWD
@@ -35,10 +35,20 @@ blazingdb_orchestrator_branch=$8
 blazingdb_calcite_branch=$9
 pyblazing_branch=${10}
 
-# Parametrize more options
-blazingdb_toolchain_force_clean=${11}
+# Parametrize clean before build options
+blazingdb_toolchain_clean_before_build=${11}
+cudf_clean_before_build=${12}
+blazingdb_protocol_clean_before_build=${13}
+blazingdb_io_clean_before_build=${14}
+blazingdb_communication_clean_before_build=${15}
+blazingdb_ral_clean_before_build=${16}
+blazingdb_orchestrator_clean_before_build=${17}
+blazingdb_calcite_clean_before_build=${18}
+pyblazing_clean_before_build=${19}
 
-echo "Forcing build dependencies: ${11}"
+echo "Forcing build dependencies: $blazingdb_toolchain_clean_before_build"
+
+# Mandatory args
 
 if [ -z "$blazingdb_toolchain_branch" ]; then
     blazingdb_toolchain_branch=develop
@@ -74,10 +84,6 @@ fi
 
 if [ -z "$pyblazing_branch" ]; then
     pyblazing_branch=develop
-fi
-
-if [ -z "$blazingdb_toolchain_force_clean" ]; then
-    blazingdb_toolchain_force_clean=false
 fi
 
 mkdir -p $workspace $output
@@ -149,7 +155,17 @@ pyblazing_tests=false
 
 #optional: build options (precompiler definitions, etc.)
 blazingdb_ral_definitions="-DLOG_PERFORMANCE"
-blazingdb_toolchain_force_clean=$blazingdb_toolchain_force_clean
+
+#optional: clean options for selected branch (will delete the build folder before build)
+blazingdb_toolchain_clean_before_build=$blazingdb_toolchain_clean_before_build
+cudf_clean_before_build=$cudf_clean_before_build
+blazingdb_protocol_clean_before_build=$blazingdb_protocol_clean_before_build
+blazingdb_io_clean_before_build=$blazingdb_io_clean_before_build
+blazingdb_communication_clean_before_build=$blazingdb_communication_clean_before_build
+blazingdb_ral_clean_before_build=$blazingdb_ral_clean_before_build
+blazingdb_orchestrator_clean_before_build=$blazingdb_orchestrator_clean_before_build
+blazingdb_calcite_clean_before_build=$blazingdb_calcite_clean_before_build
+pyblazing_clean_before_build=$pyblazing_clean_before_build
 
 EOF
 

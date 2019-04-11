@@ -72,9 +72,11 @@ echo "USERRRRRRRRR" $user
 nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
 
 echo "Init services"
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
+#nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar
+#nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
+#nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
+
+nvidia-docker exec -d bzsqlcontainer /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 echo "Init apache Drill"
 nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embedded

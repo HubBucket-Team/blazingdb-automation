@@ -18,7 +18,7 @@ fileExistenceTests:
   - name: 'libNVStrings.so'
     path: '/conda/envs/cudf/lib/libNVStrings.so'
     shouldExist: true
-    permissions: '-rwxrwxr-x'
+#    permissions: '-rwxrwxr-x'
 
   - name: 'libcudf.so'
     path: '/conda/envs/cudf/lib/libcudf.so'

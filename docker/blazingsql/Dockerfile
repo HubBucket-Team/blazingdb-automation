@@ -47,7 +47,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Create the conda env called 'cudf'
 # Build 'cudf' conda env
-ARG PYTHON_VERSION=3.5
+ARG PYTHON_VERSION=3.6
 RUN conda create -n cudf python=${PYTHON_VERSION}
 
 ARG NUMBA_VERSION=0.40.0
@@ -61,13 +61,13 @@ RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numba=${NUMBA_V
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
-RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c defaults nvstrings
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.12
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults gtest=1.8.0
 
 # libgdf dependencies
 RUN source activate cudf && pip install --upgrade pip
-RUN source activate cudf && conda install -c nvidia nvstrings
+# TODO percy mario edith uncomment this when we don't need to build nvstrings(custrings)
+#RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c defaults nvstrings
 
 # blazingdb-protocol dependencies
 RUN source activate cudf && pip install flatbuffers
@@ -78,7 +78,14 @@ RUN source activate cudf && conda install -c conda-forge jupyterlab
 #RUN source activate cudf && pip install pycuda==2018.1.1
 RUN source activate cudf && pip install cython
 
+# Demo dependencies
+RUN source activate cudf && pip install xgboost
+RUN source activate cudf && pip install sklearn
+
 USER root
+
+# Install hdfs stuff
+RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
 ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
@@ -117,18 +124,6 @@ WORKDIR /home/jupyter
 USER root
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
-
-USER root
-
-# Install hdfs stuff
-RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
-
-USER jupyter
-WORKDIR /home/jupyter
-RUN source activate cudf && pip install xgboost
-RUN source activate cudf && pip install sklearn
-
-USER root
 
 # NOTE Expose CUDF runtime
 ENV LD_LIBRARY_PATH /conda/envs/cudf/lib/

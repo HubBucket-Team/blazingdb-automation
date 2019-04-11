@@ -78,7 +78,14 @@ RUN source activate cudf && conda install -c conda-forge jupyterlab
 #RUN source activate cudf && pip install pycuda==2018.1.1
 RUN source activate cudf && pip install cython
 
+# Demo dependencies
+RUN source activate cudf && pip install xgboost
+RUN source activate cudf && pip install sklearn
+
 USER root
+
+# Install hdfs stuff
+RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
 ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
@@ -117,18 +124,6 @@ WORKDIR /home/jupyter
 USER root
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
-
-USER root
-
-# Install hdfs stuff
-RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
-
-USER jupyter
-WORKDIR /home/jupyter
-RUN source activate cudf && pip install xgboost
-RUN source activate cudf && pip install sklearn
-
-USER root
 
 # NOTE Expose CUDF runtime
 ENV LD_LIBRARY_PATH /conda/envs/cudf/lib/

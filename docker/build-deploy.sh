@@ -46,6 +46,13 @@ blazingdb_orchestrator_clean_before_build=${17}
 blazingdb_calcite_clean_before_build=${18}
 pyblazing_clean_before_build=${19}
 
+workspace_maven_repository=${20}
+
+if [ $workspace_maven_repository == true ]; then
+      echo "clean maven-repository "
+      sudo rm -r $workspace/maven-repository
+fi
+
 echo "Forcing build dependencies: $blazingdb_toolchain_clean_before_build"
 
 # Mandatory args

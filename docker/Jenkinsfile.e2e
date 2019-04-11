@@ -21,7 +21,7 @@ pipeline {
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
-    string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/workspace/workspace-testing', description: '')
+    string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/blazingsql/workspace', description: '')
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
@@ -35,6 +35,7 @@ pipeline {
     booleanParam(name: 'BLAZINGDB_ORCHESTRATOR_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'PYBLAZING_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'CLEAN_WORKSPACE_MAVEN', defaultValue: false, description: 'maven-repository')
   }
 
   environment {
@@ -76,7 +77,8 @@ pipeline {
           [$class: 'BooleanParameterValue', name: 'BLAZINGDB_RAL_CLEAN_BEFORE_BUILD', value: "${params.BLAZINGDB_RAL_CLEAN_BEFORE_BUILD}"],
           [$class: 'BooleanParameterValue', name: 'BLAZINGDB_ORCHESTRATOR_CLEAN_BEFORE_BUILD', value: "${params.BLAZINGDB_ORCHESTRATOR_CLEAN_BEFORE_BUILD}"],
           [$class: 'BooleanParameterValue', name: 'BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD', value: "${params.BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD}"],
-          [$class: 'BooleanParameterValue', name: 'PYBLAZING_CLEAN_BEFORE_BUILD', value: "${params.PYBLAZING_CLEAN_BEFORE_BUILD}"]
+          [$class: 'BooleanParameterValue', name: 'PYBLAZING_CLEAN_BEFORE_BUILD', value: "${params.PYBLAZING_CLEAN_BEFORE_BUILD}"],
+          [$class: 'StringParameterValue', name: 'CLEAN_WORKSPACE_MAVEN', value: "${params.CLEAN_WORKSPACE_MAVEN}"]
         ]
       }
     }

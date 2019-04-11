@@ -296,46 +296,56 @@ cd $workspace_dir
 
 #BEGIN dependencies
 
-if [ ! -d dependencies ]; then
-    mkdir dependencies
-fi
-
-cd $workspace_dir/dependencies/
-
-if [ ! -d $workspace_dir/blazingdb-toolchain/ ]; then
-    cd $workspace_dir/
-    git clone git@github.com:BlazingDB/blazingdb-toolchain.git
-fi
-
 if [ $blazingdb_toolchain_clean_before_build == true ]; then
     rm -rf $workspace_dir/blazingdb-toolchain/build/
     rm -rf $workspace_dir/dependencies/
 fi
 
-echo "Installing dependencies"
-cd $workspace_dir/blazingdb-toolchain/
-git checkout $blazingdb_toolchain_branch
-git pull
-
-mkdir -p build
-cd build
-rm -f CMakeCache.txt
-CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
-make -j8 install
-
-if [ $? != 0 ]; then
-  exit 1
+if [ ! -d $workspace_dir/dependencies/include/ ]; then
+    echo "## ## ## ## ## ## ## ## Building and installing dependencies ## ## ## ## ## ## ## ##"
+    
+    mkdir -p $workspace_dir/dependencies/
+    
+    if [ ! -d $workspace_dir/blazingdb-toolchain/ ]; then
+        cd $workspace_dir/
+        git clone git@github.com:BlazingDB/blazingdb-toolchain.git
+    fi
+    
+    cd $workspace_dir/blazingdb-toolchain/
+    git checkout $blazingdb_toolchain_branch
+    git pull
+    
+    mkdir -p build
+    cd build
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
+    make -j8 install
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    #TODO percy clear these hacks until we migrate to cudf 0.7
+    mkdir -p ${output}/nvstrings
+    cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    mkdir -p ${output}/nvstrings-src
+    cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    mkdir -p ${output}/nvstrings-build
+    cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 fi
-
-#TODO percy clear these hacks until we migrate to cudf 0.7
-mkdir -p ${output}/nvstrings
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
-
-mkdir -p ${output}/nvstrings-src
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
-
-mkdir -p ${output}/nvstrings-build
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
 
 #BEGIN boost
 
@@ -444,11 +454,12 @@ if [ $cudf_enable == true ]; then
     libgdf_dir=cpp
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
     
-    echo "### CUDF - clean before build: $cudf_clean_before_build ###"
-    
-    if [ $cudf_clean_before_build == true ]; then
-        rm -rf $libgdf_build_dir
+    build_testing_cudf="OFF"
+    if [ $cudf_tests == true ]; then
+        build_testing_cudf="ON"
     fi
+    
+    echo "build_testing_cudf: $build_testing_cudf"
     
     cd $cudf_project_dir
     
@@ -458,16 +469,8 @@ if [ $cudf_enable == true ]; then
         cd $cudf_branch_name
         git clone git@github.com:BlazingDB/cudf.git
         
-        mkdir -p $libgdf_build_dir
-        
-        build_testing_cudf="OFF"
-        if [ $cudf_tests == true ]; then
-            build_testing_cudf="ON"
-        fi
-        
-        echo "build_testing_cudf: $build_testing_cudf"
-        
         echo "### CUDF - cmake ###"
+        mkdir -p $libgdf_build_dir
         cd $libgdf_build_dir
         BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
             -DCMAKE_BUILD_TYPE=Release  \
@@ -482,6 +485,21 @@ if [ $cudf_enable == true ]; then
     git submodule update --init --recursive
     
     libgdf_install_dir=$cudf_current_dir/install
+    
+    echo "### CUDF - clean before build: $cudf_clean_before_build ###"
+    
+    if [ $cudf_clean_before_build == true ]; then
+        rm -rf $libgdf_build_dir
+        
+        echo "### CUDF - cmake ###"
+        mkdir -p $libgdf_build_dir
+        cd $libgdf_build_dir
+        BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
+            -DCMAKE_BUILD_TYPE=Release  \
+            -DBUILD_TESTS=$build_testing_cudf  \
+            -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
+            ..
+    fi
     
     echo "### CUDF - make install ###"
     cd $libgdf_build_dir

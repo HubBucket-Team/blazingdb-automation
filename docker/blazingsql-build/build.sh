@@ -323,28 +323,28 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     if [ $? != 0 ]; then
       exit 1
     fi
-    
-    #TODO percy clear these hacks until we migrate to cudf 0.7
-    mkdir -p ${output}/nvstrings
-    cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
-    
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-    
-    mkdir -p ${output}/nvstrings-src
-    cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
-    
-    if [ $? != 0 ]; then
-      exit 1
-    fi
-    
-    mkdir -p ${output}/nvstrings-build
-    cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
-    
-    if [ $? != 0 ]; then
-      exit 1
-    fi
+fi
+
+#TODO percy clear these hacks until we migrate to cudf 0.7 properly
+mkdir -p ${output}/nvstrings
+cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+mkdir -p ${output}/nvstrings-src
+cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+mkdir -p ${output}/nvstrings-build
+cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
+
+if [ $? != 0 ]; then
+  exit 1
 fi
 
 #BEGIN boost

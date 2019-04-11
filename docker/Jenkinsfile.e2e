@@ -62,7 +62,7 @@ pipeline {
           [$class: 'StringParameterValue', name: 'CUDF_BRANCH', value: "${params.CUDF_BRANCH}"],
           [$class: 'StringParameterValue', name: 'BLAZINGDB_PROTOCOL_BRANCH', value: "${params.BLAZINGDB_PROTOCOL_BRANCH}"],  
           [$class: 'StringParameterValue', name: 'BLAZINGDB_IO_BRANCH', value: "${params.BLAZINGDB_IO_BRANCH}"],
-          [$class: 'StringParameterValue', name: 'BLAZINGDB_TOOLCHAIN_BRANCH', value: "${params.BLAZINGDB_TOOLCHAIN_BRANCH}"],
+          [$class: 'StringParameterValue', name: 'BLAZINGDB_COMMUNICATION_BRANCH', value: "${params.BLAZINGDB_COMMUNICATION_BRANCH}"],
           [$class: 'StringParameterValue', name: 'BLAZINGDB_RAL_BRANCH', value: "${params.BLAZINGDB_RAL_BRANCH}"],       
           [$class: 'StringParameterValue', name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', value: "${params.BLAZINGDB_ORCHESTRATOR_BRANCH}"],       
           [$class: 'StringParameterValue', name: 'BLAZINGDB_CALCITE_BRANCH', value: "${params.BLAZINGDB_CALCITE_BRANCH}"],

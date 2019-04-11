@@ -453,6 +453,7 @@ if [ $cudf_enable == true ]; then
     cudf_current_dir=$cudf_project_dir/$cudf_branch_name/
     libgdf_dir=cpp
     libgdf_build_dir=$cudf_current_dir/cudf/$libgdf_dir/build/
+    libgdf_install_dir=$cudf_current_dir/install
     
     build_testing_cudf="OFF"
     if [ $cudf_tests == true ]; then
@@ -487,8 +488,6 @@ if [ $cudf_enable == true ]; then
     git checkout $cudf_branch
     git pull
     git submodule update --init --recursive
-    
-    libgdf_install_dir=$cudf_current_dir/install
     
     echo "### CUDF - clean before build: $cudf_clean_before_build ###"
     

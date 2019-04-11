@@ -468,6 +468,9 @@ if [ $cudf_enable == true ]; then
         mkdir $cudf_branch_name
         cd $cudf_branch_name
         git clone git@github.com:BlazingDB/cudf.git
+        git checkout $cudf_branch
+        git pull
+        git submodule update --init --recursive
         
         echo "### CUDF - cmake ###"
         mkdir -p $libgdf_build_dir

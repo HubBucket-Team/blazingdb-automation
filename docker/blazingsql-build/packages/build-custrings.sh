@@ -66,5 +66,7 @@ function package_custrings() {
     package_compile_and_install "$(declare -p custrings_data)"
 
     ### result
+    output['project']="${custrings_data['project']}"
+    output['branch_name']="${branch_name}"
     output['install_dir']="${custrings_data['install_dir']}"
 }

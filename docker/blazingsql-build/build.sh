@@ -1028,6 +1028,15 @@ rm -rf ${output}
 cd $working_directory
 
 echo "######################## SUMMARY ########################"
+if [ ${source_build_util} == true ] && [ ${source_build_custrings} == true ]; then
+    if [ $custring_enable == true ]; then
+        echo "CUSTRINGS:"
+        cd "${custrings_output['project']}"
+        cudf_commit=$(git log | head -n 1)
+        echo '      '$cudf_commit
+        echo '      '"branch ${custrings_output['branch_name']}"
+    fi
+fi
 
 if [ $cudf_enable == true ]; then
     echo "CUDF: "

@@ -27,22 +27,17 @@ function package_initialize() {
     output['package']="${input['package']}"
 
     # assign repository
-    if [ -n "${input['repository']}" ]; then
+    if [ "${input['repository']}" ]; then
         output['repository']="${input['repository']}"
+    else
+        echo "Error | PWD:$PWD | Command:repository not defined"
     fi
 
     # assign branch or commit
     if [ -z "${input['branch']}" ]; then
-        echo "Error | ${input['package']} | branch not initialize"
-        exit 1
-    fi
-    output['branch']="${input['branch']}"
-
-    # enable build of package , default is true
-    if [ -z "${input['enable']}" ]; then
-        output['enable']=true
+        output['branch']="master"
     else
-        output['enable']="${input['enable']}"
+        output['branch']="${input['branch']}"
     fi
 
     # select build type, default is Release

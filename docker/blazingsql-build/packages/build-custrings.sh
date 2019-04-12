@@ -5,7 +5,7 @@
 # functions: normalize_branch_name
 function package_custrings() {
     ### verify whether package is enabled
-    if [ "${custring_enable}" == false ]; then
+    if [ "${custrings_enable}" == false ]; then
         return
     fi
 
@@ -17,12 +17,12 @@ function package_custrings() {
     ### initialization of the parameters
     custrings_inputs=(
         ['package']="custrings"
-        ['repository']="$custring_repository"
-        ['branch']="$custring_branch"
-        ['build']="$custring_build_type"
-        ['parallel']="$custring_parallel"
-        ['tests']="$custring_tests"
-        ['clean']="$custring_clean_before_build"
+        ['repository']="$custrings_repository"
+        ['branch']="$custrings_branch"
+        ['build']="$custrings_build_type"
+        ['parallel']="$custrings_parallel"
+        ['tests']="$custrings_tests"
+        ['clean']="$custrings_clean_before_build"
     )
 
     if [ -z "${custrings_inputs['repository']}" ]; then

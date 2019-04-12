@@ -1029,7 +1029,7 @@ cd $working_directory
 
 echo "######################## SUMMARY ########################"
 if [ ${source_build_util} == true ] && [ ${source_build_custrings} == true ]; then
-    if [ $custring_enable == true ]; then
+    if [ $custrings_enable == true ]; then
         echo "CUSTRINGS:"
         cd "${custrings_output['project']}"
         cudf_commit=$(git log | head -n 1)

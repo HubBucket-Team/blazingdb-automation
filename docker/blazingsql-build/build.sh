@@ -38,6 +38,14 @@ rm -rf FAILED
 # Load the build properties file
 source $blazingsql_build_properties
 
+# load build-utils
+source_build_util=true
+source "${working_directory}/build-util.sh"
+if [ $? -ne 0 ]; then
+    echo "Error | cannot load build-util.sh file"
+    source_build_util=false
+fi
+
 #BEGIN check mandatory arguments
 
 if [ -z "$blazingdb_toolchain_branch" ]; then
@@ -317,7 +325,7 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     
     mkdir -p build
     cd build
-    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DENABLE_CUSTRINGS=OFF -DCMAKE_INSTALL_PREFIX=$workspace_dir/dependencies/ ..
     make -j8 install
     
     if [ $? != 0 ]; then
@@ -325,27 +333,6 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     fi
 fi
 
-#TODO percy clear these hacks until we migrate to cudf 0.7 properly
-mkdir -p ${output}/nvstrings
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-src
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-build
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
-
-if [ $? != 0 ]; then
-  exit 1
-fi
 
 #BEGIN boost
 
@@ -438,6 +425,28 @@ aws_sdk_cpp_build_dir=$workspace_dir/dependencies/build/aws-sdk-cpp
 #END aws-sdk-cpp
 
 #END dependencies
+
+
+### build custrings package
+# load custrings builder file
+source_build_custrings=true
+source "${working_directory}/packages/build-custrings.sh"
+if [ $? -ne 0 ]; then
+    echo "Error | cannot load build-custrings.sh file"
+    source_build_custrings=false
+fi
+
+# execute building
+declare -A custrings_output
+if [ ${source_build_util} == true ] && [ ${source_build_custrings} == true ]; then
+    package_custrings custrings_output
+fi
+
+# update custrings install path
+if [ ${source_build_util} == true ] && [ ${source_build_custrings} == true ]; then
+    nvstrings_install_dir="${custrings_output['install_dir']}"
+fi
+
 
 if [ $cudf_enable == true ]; then
     #BEGIN cudf

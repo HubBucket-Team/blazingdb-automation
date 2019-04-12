@@ -444,7 +444,22 @@ fi
 
 # update custrings install path
 if [ ${source_build_util} == true ] && [ ${source_build_custrings} == true ]; then
+    # update custring variable - used in cudf
     nvstrings_install_dir="${custrings_output['install_dir']}"
+
+    # copy custring header folder into dependencies - used in ral
+    cp -r "${custrings_output['install_dir']}/include/nvstrings/" "$workspace_dir/dependencies/include/"
+    if [ $? -ne 0 ]; then
+        echo "Error | cannot copy custrings header folder"
+        exit 1
+    fi
+
+    # copy custring library files into dependencies - used in ral
+    cp -a "${custrings_output['install_dir']}/lib/." "$workspace_dir/dependencies/lib/"
+    if [ $? -ne 0 ]; then
+        echo "Error | cannot copy custrings library files"
+        exit 1
+    fi
 fi
 
 

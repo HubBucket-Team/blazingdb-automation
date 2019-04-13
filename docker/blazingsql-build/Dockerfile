@@ -65,6 +65,17 @@ COPY build.sh /home/builder/
 RUN  chmod +x /home/builder/build.sh
 RUN  chown builder:builder /home/builder/build.sh
 
+COPY build-util.sh /home/builder/
+RUN  chmod +x /home/builder/build-util.sh
+RUN  chown builder:builder /home/builder/build-util.sh
+
+RUN  mkdir /home/builder/packages
+RUN  chmod 777 -R /home/builder/packages/
+
+COPY packages/build-custrings.sh /home/builder/packages/
+RUN  chmod +x /home/builder/packages/build-custrings.sh
+RUN  chown builder:builder /home/builder/packages/build-custrings.sh
+
 #USER builder
 WORKDIR /home/builder
 RUN mkdir workspace && mkdir output && mkdir .ssh

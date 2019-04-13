@@ -15,6 +15,11 @@ if [ $# -eq 3 ]; then
     BUILD_TYPE=$3
 fi
 
+# define folder where the scripts are located
+scripts_dir="$PWD"
+if [ -z $1 ] && [ -z $2 ]; then
+    scripts_dir="/home/builder"
+fi
 
 # Expand args to absolute/full paths (if the user pass relative paths as args)
 workspace_dir=$(readlink -f $workspace_dir)
@@ -40,7 +45,7 @@ source $blazingsql_build_properties
 
 # load build-utils
 source_build_util=true
-source "${working_directory}/build-util.sh"
+source "${scripts_dir}/build-util.sh"
 if [ $? -ne 0 ]; then
     echo "Error | cannot load build-util.sh file"
     source_build_util=false
@@ -430,7 +435,7 @@ aws_sdk_cpp_build_dir=$workspace_dir/dependencies/build/aws-sdk-cpp
 ### build custrings package
 # load custrings builder file
 source_build_custrings=true
-source "${working_directory}/packages/build-custrings.sh"
+source "${scripts_dir}/packages/build-custrings.sh"
 if [ $? -ne 0 ]; then
     echo "Error | cannot load build-custrings.sh file"
     source_build_custrings=false

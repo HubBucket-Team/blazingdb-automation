@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: tag_deploy blazingdb_toolchain_branch cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch blazingdb_toolchain_clean_before_build cudf_clean_before_build blazingdb_protocol_clean_before_build blazingdb_io_clean_before_build blazingdb_communication_clean_before_build blazingdb_ral_clean_before_build blazingdb_orchestrator_clean_before_build blazingdb_calcite_clean_before_build pyblazing_clean_before_build
+# Usage: tag_deploy blazingdb_toolchain_branch cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch custrings_branch blazingdb_toolchain_clean_before_build cudf_clean_before_build blazingdb_protocol_clean_before_build blazingdb_io_clean_before_build blazingdb_communication_clean_before_build blazingdb_ral_clean_before_build blazingdb_orchestrator_clean_before_build blazingdb_calcite_clean_before_build pyblazing_clean_before_build
 
 #BUILD
 WORKSPACE=$PWD
@@ -34,19 +34,20 @@ blazingdb_ral_branch=$7
 blazingdb_orchestrator_branch=$8
 blazingdb_calcite_branch=$9
 pyblazing_branch=${10}
+custrings_branch=${11}
 
 # Parametrize clean before build options
-blazingdb_toolchain_clean_before_build=${11}
-cudf_clean_before_build=${12}
-blazingdb_protocol_clean_before_build=${13}
-blazingdb_io_clean_before_build=${14}
-blazingdb_communication_clean_before_build=${15}
-blazingdb_ral_clean_before_build=${16}
-blazingdb_orchestrator_clean_before_build=${17}
-blazingdb_calcite_clean_before_build=${18}
-pyblazing_clean_before_build=${19}
+blazingdb_toolchain_clean_before_build=${12}
+cudf_clean_before_build=${13}
+blazingdb_protocol_clean_before_build=${14}
+blazingdb_io_clean_before_build=${15}
+blazingdb_communication_clean_before_build=${16}
+blazingdb_ral_clean_before_build=${17}
+blazingdb_orchestrator_clean_before_build=${18}
+blazingdb_calcite_clean_before_build=${19}
+pyblazing_clean_before_build=${20}
 
-workspace_maven_repository=${20}
+workspace_maven_repository=${21}
 
 if [ $workspace_maven_repository == true ]; then
       echo "clean maven-repository "
@@ -93,6 +94,14 @@ if [ -z "$pyblazing_branch" ]; then
     pyblazing_branch=develop
 fi
 
+if [ -z "$custrings_branch" ]; then
+    custrings_branch=develop
+fi
+
+# custrings repository
+# the custrings repository in blazing has not been created
+custrings_repository='git@github.com:rommelDB/custrings.git'
+
 mkdir -p $workspace $output
 
 #sudo chown 1000:1000 -R $workspace
@@ -114,6 +123,7 @@ echo "blazingdb_ral_branch: $blazingdb_ral_branch"
 echo "blazingdb_orchestrator_branch: $blazingdb_orchestrator_branch"
 echo "blazingdb_calcite_branch: $blazingdb_calcite_branch"
 echo "pyblazing_branch: $pyblazing_branch"
+echo "custrings_branch: $custrings_branch"
 
 # define the properties template
 cat << EOF > $workspace/blazingsql-build.properties
@@ -127,6 +137,10 @@ blazingdb_ral_branch=$blazingdb_ral_branch
 blazingdb_orchestrator_branch=$blazingdb_orchestrator_branch
 blazingdb_calcite_branch=$blazingdb_calcite_branch
 pyblazing_branch=$pyblazing_branch
+
+# custrings
+custrings_repository=$custrings_repository
+custrings_branch=$custrings_branch
 
 #optional: enable build (default is true)
 blazingdb_toolchain_enable=true

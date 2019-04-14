@@ -457,46 +457,29 @@ if [ $custrings_enable == true ]; then
     #END custrings
     
     # Package custrings
-    cd $workspace_dir
-    mkdir -p ${output}/custrings/$custrings_dir/install
-
-    cp -r $custrings_current_dir/custrings/* ${output}/custrings/
+    #TODO percy clear these hacks until we migrate to cudf 0.7 properly
+    mkdir -p ${output}/nvstrings
+    cp -r $custrings_install_dir/* ${output}/nvstrings
+    
     if [ $? != 0 ]; then
       exit 1
     fi
-
-    cp -r $custrings_install_dir/* ${output}/custrings/$custrings_dir/install
+    
+    mkdir -p ${output}/nvstrings-src
+    cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
+    
     if [ $? != 0 ]; then
       exit 1
     fi
-
-    rm -rf ${output}/custrings/.git/
-    rm -rf ${output}/custrings/$custrings_dir/build/
+    
+    mkdir -p ${output}/nvstrings-build
+    cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     echo "### Custrings - end ###"
-fi
-
-# Packaging custrings for deploy docker image ...
-#TODO percy clear these hacks until we migrate to cudf 0.7 properly
-mkdir -p ${output}/nvstrings
-cp -r $custrings_install_dir/* ${output}/nvstrings
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-src
-cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-build
-cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
-
-if [ $? != 0 ]; then
-  exit 1
 fi
 
 #END nvstrings

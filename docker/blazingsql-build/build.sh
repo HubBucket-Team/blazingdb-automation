@@ -363,15 +363,15 @@ if [ $custrings_enable == true ]; then
     custrings_build_dir=$custrings_current_dir/custrings/$custrings_dir/build/
     custrings_install_dir=$custrings_current_dir/install
     
+    #TODO percy use this path when custrings is part of toolchain dependencies
+    #nvstrings_install_dir=$workspace_dir/dependencies/
+    nvstrings_install_dir=$custrings_install_dir
+    
     rmm_src_dir=$custrings_project_dir/$custrings_branch_name/custrings/thirdparty/rmm
     rmm_build_dir=$rmm_src_dir/build
     rmm_install_dir=$rmm_src_dir/install
     
     if [ ! -f $custrings_install_dir/include/NVStrings.h ]; then
-        #TODO percy use this path when custrings is part of toolchain dependencies
-        #nvstrings_install_dir=$workspace_dir/dependencies/
-        nvstrings_install_dir=$custrings_install_dir
-        
         #BEGIN custrings
         echo "### Custrings - start ###"
         
@@ -481,6 +481,13 @@ if [ $custrings_enable == true ]; then
     
     mkdir -p ${output}/nvstrings-build
     cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    mkdir -p ${output}/nvstrings-build/rmm
+    cp -r $rmm_install_dir/lib/* ${output}/nvstrings-build/rmm
     
     if [ $? != 0 ]; then
       exit 1
@@ -906,10 +913,12 @@ if [ $blazingdb_ral_enable == true ]; then
     fi
     
     echo "### Ral - cmake ###"
+    
     # Configure blazingdb-ral with dependencies
     CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DBUILD_TESTING=$build_testing_ral \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
+          -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir/ \
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \

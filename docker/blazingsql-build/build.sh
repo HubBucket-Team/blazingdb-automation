@@ -46,6 +46,12 @@ if [ -z "$blazingdb_toolchain_branch" ]; then
     exit 1
 fi
 
+if [ -z "$custrings_branch" ]; then
+    echo "Error: Need the 'custrings_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
 if [ -z "$cudf_branch" ]; then
     echo "Error: Need the 'cudf_branch' argument in order to run the build process."
     touch FAILED
@@ -102,6 +108,10 @@ if [ -z "$blazingdb_toolchain_enable" ]; then
     blazingdb_toolchain_enable=true
 fi
 
+if [ -z "$custrings_enable" ]; then
+    custrings_enable=true
+fi
+
 if [ -z "$cudf_enable" ]; then
     cudf_enable=true
 fi
@@ -142,6 +152,10 @@ if [ -z "$blazingdb_toolchain_parallel" ]; then
     blazingdb_toolchain_parallel=4
 fi
 
+if [ -z "$custrings_parallel" ]; then
+    custrings_parallel=4
+fi
+
 if [ -z "$cudf_parallel" ]; then
     cudf_parallel=4
 fi
@@ -176,6 +190,10 @@ fi
 
 if [ -z "$blazingdb_toolchain_tests" ]; then
     blazingdb_toolchain_tests=false
+fi
+
+if [ -z "$custrings_tests" ]; then
+    custrings_tests=false
 fi
 
 if [ -z "$cudf_tests" ]; then
@@ -224,6 +242,10 @@ fi
 
 if [ -z "$blazingdb_toolchain_clean_before_build" ]; then
     blazingdb_toolchain_clean_before_build=false
+fi
+
+if [ -z "$custrings_clean_before_build" ]; then
+    custrings_clean_before_build=false
 fi
 
 if [ -z "$cudf_clean_before_build" ]; then
@@ -283,6 +305,7 @@ function normalize_branch_name() {
 #BEGIN main
 
 blazingdb_toolchain_branch_name=$(normalize_branch_name $blazingdb_toolchain_branch)
+custrings_branch_name=$(normalize_branch_name $custrings_branch)
 cudf_branch_name=$(normalize_branch_name $cudf_branch)
 blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
 blazingdb_io_branch_name=$(normalize_branch_name $blazingdb_io_branch)
@@ -325,28 +348,6 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     fi
 fi
 
-#TODO percy clear these hacks until we migrate to cudf 0.7 properly
-mkdir -p ${output}/nvstrings
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-src
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-build
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
 #BEGIN boost
 
 boost_install_dir=$workspace_dir/dependencies/
@@ -355,7 +356,148 @@ boost_install_dir=$workspace_dir/dependencies/
 
 #BEGIN nvstrings
 
-nvstrings_install_dir=$workspace_dir/dependencies/
+if [ $custrings_enable == true ]; then
+    #BEGIN custrings
+    echo "### Custrings - start ###"
+    
+    cd $workspace_dir
+    
+    if [ ! -d custrings_project ]; then
+        mkdir custrings_project
+    fi
+    
+    custrings_project_dir=$workspace_dir/custrings_project
+    custrings_current_dir=$custrings_project_dir/$custrings_branch_name/
+    custrings_dir=cpp
+    custrings_build_dir=$custrings_current_dir/custrings/$custrings_dir/build/
+    custrings_install_dir=$custrings_current_dir/install
+    
+    rmm_src_dir=$custrings_project_dir/$custrings_branch_name/custrings/thirdparty/rmm
+    rmm_build_dir=$rmm_src_dir/build
+    rmm_install_dir=$rmm_src_dir/install
+
+    #TODO percy use this path when custrings is part of toolchain dependencies
+    #nvstrings_install_dir=$workspace_dir/dependencies/
+    nvstrings_install_dir=$custrings_install_dir
+    
+    build_testing_custrings="OFF"
+    if [ $custrings_tests == true ]; then
+        build_testing_custrings="ON"
+    fi
+    
+    echo "build_testing_custrings: $build_testing_custrings"
+    
+    cd $custrings_project_dir
+    
+    # NOTE only for custrings run the cmake command only once so we avoid rebuild everytime 
+    if [ ! -d $custrings_branch_name ]; then
+        mkdir $custrings_branch_name
+        cd $custrings_branch_name
+        git clone git@github.com:BlazingDB/custrings.git
+        cd $custrings_current_dir/custrings
+        git checkout $custrings_branch
+        git pull
+        git submodule update --init --recursive
+        
+        #BEGIN build rmm
+        mkdir -p $rmm_build_dir
+        cd $rmm_build_dir
+        CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=$build_testing_custrings \
+            -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
+            ..
+        make -j$custrings_parallel install
+        #END build rmm
+        
+        echo "### CUSTRINGS - cmake ###"
+        mkdir -p $custrings_build_dir
+        cd $custrings_build_dir
+        CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=$build_testing_custrings \
+            -DCMAKE_INSTALL_PREFIX:PATH=$custrings_install_dir \
+            ..
+    fi
+    
+    cd $custrings_current_dir/custrings
+    git checkout $custrings_branch
+    git pull
+    git submodule update --init --recursive
+    
+    #BEGIN build rmm
+    mkdir -p $rmm_build_dir
+    cd $rmm_build_dir
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_TESTS=$build_testing_custrings \
+        -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
+        ..
+    make -j$custrings_parallel install
+    #END build rmm
+    
+    echo "### CUSTRINGS - clean before build: $custrings_clean_before_build ###"
+    
+    if [ $custrings_clean_before_build == true ]; then
+        rm -rf $custrings_build_dir
+        
+        echo "### CUSTRINGS - cmake ###"
+        mkdir -p $custrings_build_dir
+        cd $custrings_build_dir
+        CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=$build_testing_custrings \
+            -DCMAKE_INSTALL_PREFIX:PATH=$custrings_install_dir \
+            ..
+    fi
+    
+    echo "### CUSTRINGS - make install ###"
+    cd $custrings_build_dir
+    make -j$custrings_parallel install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    #END custrings
+    
+    # Package custrings
+    cd $workspace_dir
+    mkdir -p ${output}/custrings/$custrings_dir/install
+
+    cp -r $custrings_current_dir/custrings/* ${output}/custrings/
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    cp -r $custrings_install_dir/* ${output}/custrings/$custrings_dir/install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    rm -rf ${output}/custrings/.git/
+    rm -rf ${output}/custrings/$custrings_dir/build/
+
+    echo "### Custrings - end ###"
+fi
+
+# Packaging custrings for deploy docker image ...
+#TODO percy clear these hacks until we migrate to cudf 0.7 properly
+mkdir -p ${output}/nvstrings
+cp -r $custrings_install_dir/* ${output}/nvstrings
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+mkdir -p ${output}/nvstrings-src
+cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+mkdir -p ${output}/nvstrings-build
+cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
+
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 #END nvstrings
 

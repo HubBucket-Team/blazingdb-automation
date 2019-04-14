@@ -82,6 +82,9 @@ RUN source activate cudf && pip install cython
 RUN source activate cudf && pip install xgboost
 RUN source activate cudf && pip install sklearn
 
+#extra dependencies (from cudf 0.7)
+RUN source activate cudf && pip install cmake_setuptools
+
 USER root
 
 # Install hdfs stuff

@@ -456,6 +456,9 @@ if [ $custrings_enable == true ]; then
     
     #END custrings
     
+    #TODO percy delete this hack once custrings is installed properly for cudf 0.7
+    cp $custrings_install_dir/include/nvstrings/*.h $custrings_install_dir/include/
+    
     # Package custrings
     #TODO percy clear these hacks until we migrate to cudf 0.7 properly
     mkdir -p ${output}/nvstrings

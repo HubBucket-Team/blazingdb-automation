@@ -10,12 +10,6 @@ if [ ! -z $2 ]; then
   output_dir=$2
 fi
 
-BUILD_TYPE='Release'
-if [ $# -eq 3 ]; then
-    BUILD_TYPE=$3
-fi
-
-
 # Expand args to absolute/full paths (if the user pass relative paths as args)
 workspace_dir=$(readlink -f $workspace_dir)
 output_dir=$(readlink -f $output_dir)
@@ -146,45 +140,38 @@ fi
 
 #END set default optional arguments for active/enable the build
 
-#BEGIN set default optional arguments for parallel build
+#BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
+# for more info check https://cmake.org/cmake/help/v3.12/variable/CMAKE_BUILD_TYPE.html#variable:CMAKE_BUILD_TYPE 
 
-if [ -z "$blazingdb_toolchain_parallel" ]; then
-    blazingdb_toolchain_parallel=4
+if [ -z "$custrings_build_type" ]; then
+    custrings_build_type=Release
 fi
 
-if [ -z "$custrings_parallel" ]; then
-    custrings_parallel=4
+if [ -z "$cudf_build_type" ]; then
+    cudf_build_type=Release
 fi
 
-if [ -z "$cudf_parallel" ]; then
-    cudf_parallel=4
+if [ -z "$blazingdb_protocol_build_type" ]; then
+    blazingdb_protocol_build_type=Release
 fi
 
-if [ -z "$blazingdb_protocol_parallel" ]; then
-    blazingdb_protocol_parallel=4
+if [ -z "$blazingdb_io_build_type" ]; then
+    blazingdb_io_build_type=Release
 fi
 
-if [ -z "$blazingdb_io_parallel" ]; then
-    blazingdb_io_parallel=4
+if [ -z "$blazingdb_communication_build_type" ]; then
+    blazingdb_communication_build_type=Release
 fi
 
-if [ -z "$blazingdb_communication_parallel" ]; then
-    blazingdb_communication_parallel=4
+if [ -z "$blazingdb_ral_build_type" ]; then
+    blazingdb_ral_build_type=Release
 fi
 
-if [ -z "$blazingdb_ral_parallel" ]; then
-    blazingdb_ral_parallel=4
+if [ -z "$blazingdb_orchestrator_build_type" ]; then
+    blazingdb_orchestrator_build_type=Release
 fi
 
-if [ -z "$blazingdb_orchestrator_parallel" ]; then
-    blazingdb_orchestrator_parallel=4
-fi
-
-if [ -z "$blazingdb_calcite_parallel" ]; then
-    blazingdb_calcite_parallel=4
-fi
-
-#END set default optional arguments for parallel build
+#BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
 
 #BEGIN set default optional arguments for tests
 
@@ -229,6 +216,46 @@ if [ -z "$pyblazing_tests" ]; then
 fi
 
 #END set default optional arguments for tests
+
+#BEGIN set default optional arguments for parallel build
+
+if [ -z "$blazingdb_toolchain_parallel" ]; then
+    blazingdb_toolchain_parallel=4
+fi
+
+if [ -z "$custrings_parallel" ]; then
+    custrings_parallel=4
+fi
+
+if [ -z "$cudf_parallel" ]; then
+    cudf_parallel=4
+fi
+
+if [ -z "$blazingdb_protocol_parallel" ]; then
+    blazingdb_protocol_parallel=4
+fi
+
+if [ -z "$blazingdb_io_parallel" ]; then
+    blazingdb_io_parallel=4
+fi
+
+if [ -z "$blazingdb_communication_parallel" ]; then
+    blazingdb_communication_parallel=4
+fi
+
+if [ -z "$blazingdb_ral_parallel" ]; then
+    blazingdb_ral_parallel=4
+fi
+
+if [ -z "$blazingdb_orchestrator_parallel" ]; then
+    blazingdb_orchestrator_parallel=4
+fi
+
+if [ -z "$blazingdb_calcite_parallel" ]; then
+    blazingdb_calcite_parallel=4
+fi
+
+#END set default optional arguments for parallel build
 
 #BEGIN set default optional arguments for build options (precompiler definitions, etc.)
 
@@ -403,7 +430,7 @@ if [ $custrings_enable == true ]; then
             #BEGIN build rmm
             mkdir -p $rmm_build_dir
             cd $rmm_build_dir
-            CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
+            CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
                 -DBUILD_TESTS=$build_testing_custrings \
                 -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
                 ..
@@ -413,7 +440,7 @@ if [ $custrings_enable == true ]; then
             echo "### CUSTRINGS - cmake ###"
             mkdir -p $custrings_build_dir
             cd $custrings_build_dir
-            CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=Release \
+            CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
                 -DBUILD_TESTS=$build_testing_custrings \
                 -DCMAKE_INSTALL_PREFIX:PATH=$custrings_install_dir \
                 ..
@@ -427,7 +454,7 @@ if [ $custrings_enable == true ]; then
         #BEGIN build rmm
         mkdir -p $rmm_build_dir
         cd $rmm_build_dir
-        CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=Release \
+        CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
             -DBUILD_TESTS=$build_testing_custrings \
             -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
             ..
@@ -442,7 +469,7 @@ if [ $custrings_enable == true ]; then
             echo "### CUSTRINGS - cmake ###"
             mkdir -p $custrings_build_dir
             cd $custrings_build_dir
-            CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=Release \
+            CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
                 -DBUILD_TESTS=$build_testing_custrings \
                 -DCMAKE_INSTALL_PREFIX:PATH=$custrings_install_dir \
                 ..
@@ -615,7 +642,7 @@ if [ $cudf_enable == true ]; then
         mkdir -p $libgdf_build_dir
         cd $libgdf_build_dir
         BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
-            -DCMAKE_BUILD_TYPE=Release  \
+            -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
             ..
@@ -635,7 +662,7 @@ if [ $cudf_enable == true ]; then
         mkdir -p $libgdf_build_dir
         cd $libgdf_build_dir
         BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
-            -DCMAKE_BUILD_TYPE=Release  \
+            -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
             ..
@@ -714,7 +741,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     rm -rf lib/$blazingdb_protocol_artifact_name
     
     echo "### Protocol - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_protocol_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
           ..
@@ -788,7 +815,7 @@ if [ $blazingdb_io_enable == true ]; then
     rm -rf $blazingdb_io_artifact_name
     
     echo "### Blazingdb IO - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_io_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
           ..
@@ -847,7 +874,7 @@ if [ $blazingdb_communication_enable == true ]; then
     rm -rf $blazingdb_communication_artifact_name
     
     echo "### Blazingdb communication - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_communication_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_communication_install_dir \
           ..
@@ -915,7 +942,7 @@ if [ $blazingdb_ral_enable == true ]; then
     echo "### Ral - cmake ###"
     
     # Configure blazingdb-ral with dependencies
-    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$blazingdb_ral_build_type \
           -DBUILD_TESTING=$build_testing_ral \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir/ \
@@ -994,7 +1021,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
     echo "### Orchestrator - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_orchestrator_build_type  \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \

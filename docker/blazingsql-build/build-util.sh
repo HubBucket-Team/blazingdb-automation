@@ -218,6 +218,9 @@ function execute_cmake() {
     [[ -v map_cmake['tests'] ]] && 
     cmake_params="${cmake_params} ${map_cmake['tests']}"
 
+    [[ -v map_cmake['cmake_prefix_path'] ]] &&
+    cmake_params="${cmake_params} -DCMAKE_PREFIX_PATH=${map_cmake['cmake_prefix_path']}"
+
     [[ -v map_cmake['dependencies'] ]] &&
     cmake_params="${cmake_params} -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=${map_cmake['dependencies']}"
 

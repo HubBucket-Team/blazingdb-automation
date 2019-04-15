@@ -444,7 +444,10 @@ fi
 # execute building
 declare -A custrings_output
 if [ ${source_build_util} == true ] && [ ${source_build_custrings} == true ]; then
-    package_custrings custrings_output
+    # TODO: Hardcoded code - fix it
+    # issue with python - libraries not found
+    custrings_python="$workspace_dir/dependencies/include/python3.6m/"
+    package_custrings custrings_output custrings_python
 fi
 
 # update custrings install path

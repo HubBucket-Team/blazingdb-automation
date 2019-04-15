@@ -218,11 +218,13 @@ function execute_cmake() {
     [[ -v map_cmake['tests'] ]] && 
     cmake_params="${cmake_params} ${map_cmake['tests']}"
 
-    [[ -v map_cmake['cmake_prefix_path'] ]] &&
-    cmake_params="${cmake_params} -DCMAKE_PREFIX_PATH=${map_cmake['cmake_prefix_path']}"
-
     [[ -v map_cmake['dependencies'] ]] &&
     cmake_params="${cmake_params} -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=${map_cmake['dependencies']}"
+
+    [[ -v map_cmake['python_include'] ]] &&
+    cmake_params="${cmake_params} -DPYTHON_INCLUDE_DIR=${map_cmake['python_include']}"
+    [[ -v map_cmake['python_library'] ]] &&
+    cmake_params="${cmake_params} -DPYTHON_LIBRARY=${map_cmake['python_library']}"
 
     # generate environment variables
     env_params=""

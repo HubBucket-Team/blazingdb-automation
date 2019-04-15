@@ -15,7 +15,8 @@ function package_custrings() {
     declare -A custrings_inputs
 
     ### TODO: Hardcoded python path - fix it
-    package_custrings_python=$2
+    custrings_python_include="$2"
+    custrings_python_library="$3"
 
     ### initialization of the parameters
     custrings_inputs=(
@@ -57,7 +58,8 @@ function package_custrings() {
     custrings_cmake=(
         ['package']="${custrings_data['package']}"
         ['build_type']="${custrings_data['build']}"
-        ['cmake_prefix_path']="${package_custrings_python}"
+        ['python_include']="${custrings_python_include}"
+        ['python_library']="${custrings_python_library}"
     )
 
     if [ "${custrings_data['tests']}" == true ]; then

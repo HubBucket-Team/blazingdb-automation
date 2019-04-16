@@ -8,7 +8,8 @@ COPY blazingdb_orchestator_service /usr/bin/
 VOLUME /tmp
 
 # 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
-EXPOSE 8890
+EXPOSE 9000
+#EXPOSE 8890
 #EXPOSE 8891
 #EXPOSE 8892
 

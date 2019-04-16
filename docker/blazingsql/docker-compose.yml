@@ -1,0 +1,38 @@
+version: '2.3'
+
+services:
+
+  calcite:
+    image: blazingdb/calcite:latest
+    volumes:
+      - sockets:/tmp/
+
+  orchestrator:
+    image: blazingdb/orchestator:latest
+    volumes:
+      - sockets:/tmp/
+    ports:
+      - 9000:9000
+
+  ral1:
+    image: blazingdb/blazingsql:multi-ral
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - data:/blazingdb/data/demo/
+      - sockets:/tmp/
+    ports:
+      - 80:80
+      - 8888:8888
+
+
+volumes:
+  data:
+  sockets:
+
+
+networks:
+  front-tier:
+  back-tier:
+

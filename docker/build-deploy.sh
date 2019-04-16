@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: tag_deploy cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch
+# Usage: tag_deploy blazingdb_toolchain_branch cudf_branch protocol_branch io_branch blazingdb_communication_branch ral_branch orchestrator_branch calcite_branch pyblazing_branch blazingdb_toolchain_clean_before_build cudf_clean_before_build blazingdb_protocol_clean_before_build blazingdb_io_clean_before_build blazingdb_communication_clean_before_build blazingdb_ral_clean_before_build blazingdb_orchestrator_clean_before_build blazingdb_calcite_clean_before_build pyblazing_clean_before_build
 
 #BUILD
 WORKSPACE=$PWD
@@ -25,64 +25,43 @@ image_deploy="blazingdb/blazingsql:$1"
 
 
 # Parametrize branchs
+blazingdb_toolchain_branch=$2
+cudf_branch=$3
+blazingdb_protocol_branch=$4
+blazingdb_io_branch=$5
+blazingdb_communication_branch=$6
+blazingdb_ral_branch=$7
+blazingdb_orchestrator_branch=$8
+blazingdb_calcite_branch=$9
+pyblazing_branch=${10}
 
-cudf_branch=$2
-blazingdb_protocol_branch=$3
-blazingdb_io_branch=$4
-blazingdb_communication_branch=$5
-blazingdb_ral_branch=$6
-blazingdb_orchestrator_branch=$7
-blazingdb_calcite_branch=$8
-pyblazing_branch=$9
+# Parametrize clean before build options
+blazingdb_toolchain_clean_before_build=${11}
+cudf_clean_before_build=${12}
+blazingdb_protocol_clean_before_build=${13}
+blazingdb_io_clean_before_build=${14}
+blazingdb_communication_clean_before_build=${15}
+blazingdb_ral_clean_before_build=${16}
+blazingdb_orchestrator_clean_before_build=${17}
+blazingdb_calcite_clean_before_build=${18}
+pyblazing_clean_before_build=${19}
 
-workspace_blazingdb_calcite_project=${10}
-workspace_blazingdb_io_project=${11}
-workspace_blazingdb_orchestrator_project=${12}
-workspace_blazingdb_protocol_project=${13}
-workspace_blazingdb_ral_project=${14}
-workspace_cudf_project=${15}
-workspace_pyblazing_project=${16}
-workspace_dependencies=${17}
-workspace_maven_repository=${18}
+workspace_maven_repository=${20}
 
-if [ $workspace_blazingdb_calcite_project == true ]; then
-      echo "clean blazingdb-calcite_project "
-      sudo rm -r $workspace/blazingdb-calcite_project
-fi
-if [ $workspace_blazingdb_io_project == true ]; then
-      echo "clean blazingdb-io_project"
-      sudo rm -r $workspace/blazingdb-io_project
-fi
-if [ $workspace_blazingdb_orchestrator_project == true ]; then
-      echo "clean blazingdb-orchestrator_project "
-      sudo rm -r $workspace/blazingdb-orchestrator_project
-fi
-if [ $workspace_blazingdb_protocol_project == true ]; then
-      echo "clean blazingdb-protocol_project"
-      sudo rm -r $workspace/blazingdb-protocol_project
-fi
-if [ $workspace_blazingdb_ral_project == true ]; then
-      echo "clean blazingdb-ral_project"
-      sudo rm -r $workspace/blazingdb-ral_project
-fi
-if [ $workspace_cudf_project == true ]; then
-      echo "clean cudf_project "
-      sudo rm -r $workspace/cudf_project
-fi
-if [ $workspace_pyblazing_project == true ]; then
-      echo "clean pyblazing_project "
-      sudo rm -r $workspace/pyblazing_project
-fi
-if [ $workspace_dependencies == true ]; then
-      echo "clean dependencies "
-      sudo rm -r $workspace/dependencies
-fi
 if [ $workspace_maven_repository == true ]; then
       echo "clean maven-repository "
       sudo rm -r $workspace/maven-repository
 fi
 
 # set default branches
+
+echo "Forcing build dependencies: $blazingdb_toolchain_clean_before_build"
+
+# Mandatory args
+
+if [ -z "$blazingdb_toolchain_branch" ]; then
+    blazingdb_toolchain_branch=develop
+fi
 
 if [ -z "$cudf_branch" ]; then
     cudf_branch=develop
@@ -128,6 +107,7 @@ cp blazingsql-build.properties $workspace
 
 echo "Branches:"
 
+echo "blazingdb_toolchain_branch: $blazingdb_toolchain_branch"
 echo "cudf_branch: $cudf_branch"
 echo "blazingdb_protocol_branch: $blazingdb_protocol_branch"
 echo "blazingdb_io_branch: $blazingdb_io_branch"
@@ -140,6 +120,7 @@ echo "pyblazing_branch: $pyblazing_branch"
 # define the properties template
 cat << EOF > $workspace/blazingsql-build.properties
 #mandatory: branches
+blazingdb_toolchain_branch=$blazingdb_toolchain_branch
 cudf_branch=$cudf_branch
 blazingdb_protocol_branch=$blazingdb_protocol_branch
 blazingdb_io_branch=$blazingdb_io_branch
@@ -150,6 +131,7 @@ blazingdb_calcite_branch=$blazingdb_calcite_branch
 pyblazing_branch=$pyblazing_branch
 
 #optional: enable build (default is true)
+blazingdb_toolchain_enable=true
 cudf_enable=true
 blazingdb_protocol_enable=true
 blazingdb_io_enable=true
@@ -160,6 +142,7 @@ blazingdb_calcite_enable=true
 pyblazing_enable=true
 
 #optional: parallel builds for make -jX and mvn -T XC (default is 4)
+blazingdb_toolchain_parallel=4
 cudf_parallel=4
 blazingdb_protocol_parallel=4
 blazingdb_io_parallel=4
@@ -169,6 +152,7 @@ blazingdb_orchestrator_parallel=4
 blazingdb_calcite_parallel=4
 
 #optional: tests build & run (default is false)
+blazingdb_toolchain_tests=false
 cudf_tests=false
 blazingdb_protocol_tests=false
 blazingdb_io_tests=false
@@ -180,6 +164,17 @@ pyblazing_tests=false
 
 #optional: build options (precompiler definitions, etc.)
 blazingdb_ral_definitions="-DLOG_PERFORMANCE"
+
+#optional: clean options for selected branch (will delete the build folder before build)
+blazingdb_toolchain_clean_before_build=$blazingdb_toolchain_clean_before_build
+cudf_clean_before_build=$cudf_clean_before_build
+blazingdb_protocol_clean_before_build=$blazingdb_protocol_clean_before_build
+blazingdb_io_clean_before_build=$blazingdb_io_clean_before_build
+blazingdb_communication_clean_before_build=$blazingdb_communication_clean_before_build
+blazingdb_ral_clean_before_build=$blazingdb_ral_clean_before_build
+blazingdb_orchestrator_clean_before_build=$blazingdb_orchestrator_clean_before_build
+blazingdb_calcite_clean_before_build=$blazingdb_calcite_clean_before_build
+pyblazing_clean_before_build=$pyblazing_clean_before_build
 
 EOF
 

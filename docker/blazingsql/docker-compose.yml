@@ -4,11 +4,13 @@ services:
 
   calcite:
     image: blazingdb/calcite:latest
+    build: ./calcite
     volumes:
       - sockets:/tmp/
 
   orchestrator:
     image: blazingdb/orchestator:latest
+    build: ./orchestator
     volumes:
       - sockets:/tmp/
     ports:
@@ -23,8 +25,18 @@ services:
       - data:/blazingdb/data/demo/
       - sockets:/tmp/
     ports:
-      - 80:80
-      - 8888:8888
+      - 80:8888
+
+  ral2:
+    image: blazingdb/ral:latest
+    runtime: nvidia
+    build: ./ral
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - data:/blazingdb/data/demo/
+      - sockets:/tmp/
+    command: sleep 3600
 
 
 volumes:

@@ -4,6 +4,7 @@ services:
 
   jupyter:
     image: blazingdb/pyblazing:latest
+    build: ./pyblazing
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -30,6 +31,7 @@ services:
   ral1:
     #image: blazingdb/blazingsql:multi-ral
     image: blazingdb/ral:latest
+    build: ./ral
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -45,8 +47,8 @@ services:
 
   ral2:
     image: blazingdb/ral:latest
-    runtime: nvidia
     build: ./ral
+    runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:

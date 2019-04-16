@@ -2,6 +2,17 @@ version: '2.3'
 
 services:
 
+  jupyter:
+    image: blazingdb/pyblazing:latest
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - data:/blazingdb/data/demo/
+      - sockets:/tmp/
+    ports:
+      - 80:80
+
   calcite:
     image: blazingdb/calcite:latest
     build: ./calcite
@@ -17,15 +28,20 @@ services:
       - 9000:9000
 
   ral1:
-    image: blazingdb/blazingsql:multi-ral
+    #image: blazingdb/blazingsql:multi-ral
+    image: blazingdb/ral:latest
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - data:/blazingdb/data/demo/
       - sockets:/tmp/
-    ports:
-      - 80:8888
+    depends_on:
+      - orchestrator
+    #command: sleep 3600
+    command: testing-libgdf 1 orchestrator 9000 ral1 8001
+    #ports:
+    #  - 80:8888
 
   ral2:
     image: blazingdb/ral:latest
@@ -36,7 +52,10 @@ services:
     volumes:
       - data:/blazingdb/data/demo/
       - sockets:/tmp/
-    command: sleep 3600
+    depends_on:
+      - orchestrator
+    #command: sleep 3600
+    command: testing-libgdf 2 orchestrator 9000 ral2 8001
 
 
 volumes:

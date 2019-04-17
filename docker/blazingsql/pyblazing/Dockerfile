@@ -1,5 +1,4 @@
 FROM nvidia/cuda:9.2-devel-ubuntu16.04
-#FROM ubuntu:16.04
 MAINTAINER BlazingDB <percy@blazingdb.com>
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 

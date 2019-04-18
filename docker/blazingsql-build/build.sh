@@ -383,6 +383,13 @@ boost_install_dir=$workspace_dir/dependencies/
 
 #BEGIN nvstrings
 
+custrings_install_dir=$workspace_dir/custrings_project/$custrings_branch_name/install
+nvstrings_install_dir=$custrings_install_dir
+if [ ! -d $custrings_install_dir ]; then
+    custrings_install_dir=""   
+    nvstrings_install_dir="" 
+fi
+
 if [ $custrings_enable == true ]; then
     custrings_project_dir=$workspace_dir/custrings_project
     custrings_current_dir=$custrings_project_dir/$custrings_branch_name/
@@ -603,6 +610,11 @@ aws_sdk_cpp_build_dir=$workspace_dir/dependencies/build/aws-sdk-cpp
 
 #END dependencies
 
+libgdf_install_dir=$workspace_dir/cudf_project/$cudf_branch_name/install
+if [ ! -d $libgdf_install_dir ]; then
+    libgdf_install_dir=""    
+fi
+
 if [ $cudf_enable == true ]; then
     #BEGIN cudf
     echo "### Cudf - start ###"
@@ -697,6 +709,10 @@ if [ $cudf_enable == true ]; then
     echo "### Cudf - end ###"
 fi
 
+blazingdb_protocol_install_dir=$workspace_dir/blazingdb-protocol_project/$blazingdb_protocol_branch_name/install
+if [ ! -d $blazingdb_protocol_install_dir ]; then
+    blazingdb_protocol_install_dir=""    
+fi
 if [ $blazingdb_protocol_enable == true ]; then
     echo "### Protocol - start ###"
     #BEGIN blazingdb-protocol
@@ -774,6 +790,10 @@ if [ $blazingdb_protocol_enable == true ]; then
     echo "### Protocol - end ###"
 fi
 
+blazingdb_io_install_dir=$workspace_dir/blazingdb-io_project/$blazingdb_io_branch_name/install
+if [ ! -d $blazingdb_io_install_dir ]; then
+    blazingdb_io_install_dir=""    
+fi
 if [ $blazingdb_io_enable == true ]; then
     #BEGIN blazingdb-io
     echo "### Blazingdb IO - start ###"
@@ -833,6 +853,10 @@ if [ $blazingdb_io_enable == true ]; then
     #END blazingdb-io
 fi
 
+blazingdb_communication_install_dir=$workspace_dir/blazingdb-communication_project/$blazingdb_communication_branch_name/install
+if [ ! -d $blazingdb_communication_install_dir ]; then
+    blazingdb_communication_install_dir=""    
+fi
 if [ $blazingdb_communication_enable == true ]; then
     #BEGIN blazingdb-communication
     echo "### Blazingdb communication - start ###"

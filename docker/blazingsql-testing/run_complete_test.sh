@@ -53,7 +53,8 @@ fi
 
 #TO DO: Replace file configurationfile
 if [ ! -f $workdir/configurationFile.json ]; then
-    gsutil cp gs://blazingdbstorage/configurationFile.json  .
+    gsutil cp gs://blazingdbstorage/configurationFileTrue.json  .
+    gsutil cp gs://blazingdbstorage/configurationFileFalse.json  .
 fi
 
 echo "Updating creation logtest directory"
@@ -71,9 +72,11 @@ echo "USERRRRRRRRR" $user
 nvidia-docker exec --user root bzsqlcontainer chown -R tester:tester /blazingsql/
 
 echo "Init services"
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
-nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
+#nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer java -jar /home/jupyter/BlazingCalcite.jar
+#nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/blazingdb_orchestator_service
+#nvidia-docker exec --user $(id -u):$(id -g) -d bzsqlcontainer /home/jupyter/testing-libgdf
+
+nvidia-docker exec -d bzsqlcontainer /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 echo "Init apache Drill"
 nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embedded
@@ -84,5 +87,5 @@ echo "Init e2e test"
 echo "============================First execution==============================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 
-echo "=========================== Second execution ==========================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+#echo "=========================== Second execution ==========================================="
+#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

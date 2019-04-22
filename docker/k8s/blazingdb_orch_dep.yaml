@@ -18,7 +18,9 @@ spec:
             claimName: myclaim
       containers:
       - name: blazingdb-orch
-        image: "blazingdb/blazingsql:test"
+        #image: "blazingdb/blazingsql:test"
+        #image: "blazingdb/orchestator:latest"
+        image: "blazingdb/blazingsql:orchestator"
         volumeMounts:
         - mountPath: /tmp
           name: mi-volume

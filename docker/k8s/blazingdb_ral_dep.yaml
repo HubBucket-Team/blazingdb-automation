@@ -18,7 +18,10 @@ spec:
             claimName: myclaim
       containers:
       - name: blazingdb
-        image: "blazingdb/blazingsql:test"
+        #image: "blazingdb/blazingsql:test"
+        image: "blazingdb/blazingsql:ral"
+        command: ["/usr/bin/testing-libgdf"]
+        args: ["1", "blazingdb-orchestrator-svc", "9000", "127.0.0.1", "8001"]
         volumeMounts:
         - mountPath: /tmp
           name: mi-volume

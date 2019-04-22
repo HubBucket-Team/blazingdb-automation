@@ -19,11 +19,14 @@ spec:
       containers:
       - name: blazingdb-calcite
         image: "blazingdb/blazingsql:test"
+        #image: "blazingdb/blazingsql:calcite"
+        #command: ["sleep"]
+        #args: ["36000"]
         volumeMounts:
         - mountPath: /tmp
           name: mi-volume
-        ports:
-        - containerPort: 80
+        #ports:
+        #- containerPort: 80
         #readinessProbe:
         #  httpGet:
         #    path: /login

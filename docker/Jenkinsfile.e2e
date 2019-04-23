@@ -12,6 +12,7 @@ pipeline {
     booleanParam(name: 'CALL_JOB_BUILD', defaultValue: false, description: 'Call to job build-deploy')
     string(name: 'DOCKER_IMAGE_TAG', defaultValue: 'latest', description: 'The image base will be blazingdb/blazingsql:latest')
     string(name: 'BLAZINGDB_TOOLCHAIN_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'CUSTRINGS_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
@@ -27,6 +28,7 @@ pipeline {
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
     booleanParam(name: 'BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build all dependencies')
+    booleanParam(name: 'CUSTRINGS_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'CUDF_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'BLAZINGDB_PROTOCOL_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'BLAZINGDB_IO_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
@@ -60,6 +62,7 @@ pipeline {
           [$class: 'StringParameterValue', name: 'CALL_JOB_E2E', value: "false"],
           [$class: 'StringParameterValue', name: 'DOCKERHUB_TAG_DEPLOY', value: "${params.DOCKER_IMAGE_TAG}"],
           [$class: 'StringParameterValue', name: 'BLAZINGDB_TOOLCHAIN_BRANCH', value: "${params.BLAZINGDB_TOOLCHAIN_BRANCH}"],
+          [$class: 'StringParameterValue', name: 'CUSTRINGS_BRANCH', value: "${params.CUSTRINGS}"],
           [$class: 'StringParameterValue', name: 'CUDF_BRANCH', value: "${params.CUDF_BRANCH}"],
           [$class: 'StringParameterValue', name: 'BLAZINGDB_PROTOCOL_BRANCH', value: "${params.BLAZINGDB_PROTOCOL_BRANCH}"],  
           [$class: 'StringParameterValue', name: 'BLAZINGDB_IO_BRANCH', value: "${params.BLAZINGDB_IO_BRANCH}"],
@@ -70,6 +73,7 @@ pipeline {
           [$class: 'StringParameterValue', name: 'PYBLAZING_BRANCH', value: "${params.PYBLAZING_BRANCH}"],
           [$class: 'StringParameterValue', name: 'BRANCH_BLAZINGDB_AUTOMATION', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"],
           [$class: 'BooleanParameterValue', name: 'BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD', value: "${params.BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD}"],
+          [$class: 'BooleanParameterValue', name: 'CUSTRINGS_CLEAN_BEFORE_BUILD', value: "${params.CUSTRINGS_CLEAN_BEFORE_BUILD}"],
           [$class: 'BooleanParameterValue', name: 'CUDF_CLEAN_BEFORE_BUILD', value: "${params.CUDF_CLEAN_BEFORE_BUILD}"],
           [$class: 'BooleanParameterValue', name: 'BLAZINGDB_PROTOCOL_CLEAN_BEFORE_BUILD', value: "${params.BLAZINGDB_PROTOCOL_CLEAN_BEFORE_BUILD}"],
           [$class: 'BooleanParameterValue', name: 'BLAZINGDB_IO_CLEAN_BEFORE_BUILD', value: "${params.BLAZINGDB_IO_CLEAN_BEFORE_BUILD}"],

@@ -709,6 +709,7 @@ if [ $cudf_enable == true ]; then
     echo "### Cudf - end ###"
 fi
 
+
 blazingdb_protocol_install_dir=$workspace_dir/blazingdb-protocol_project/$blazingdb_protocol_branch_name/install
 if [ ! -d $blazingdb_protocol_install_dir ]; then
     blazingdb_protocol_install_dir=""    

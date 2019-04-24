@@ -47,21 +47,21 @@ SHELL ["/bin/bash", "-c"]
 
 # Create the conda env called 'cudf'
 # Build 'cudf' conda env
-ARG PYTHON_VERSION=3.6
+ARG PYTHON_VERSION=3.7
 RUN conda create -n cudf python=${PYTHON_VERSION}
 
-ARG NUMBA_VERSION=0.40.0
-ARG NUMPY_VERSION=1.14.3
+ARG NUMBA_VERSION=0.43.0
+ARG NUMPY_VERSION=1.16.2
 # Locked to Pandas 0.20.3 by https://github.com/rapidsai/cudf/issues/118
-ARG PANDAS_VERSION=0.20.3
-ARG PYARROW_VERSION=0.10.0
+ARG PANDAS_VERSION=0.24.2
+ARG PYARROW_VERSION=0.12.1
 
 # Install default packages for the user env
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numba=${NUMBA_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
-RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.12
+RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.14
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults gtest=1.8.0
 
 # libgdf dependencies
@@ -81,6 +81,9 @@ RUN source activate cudf && pip install cython
 # Demo dependencies
 RUN source activate cudf && pip install xgboost
 RUN source activate cudf && pip install sklearn
+
+#extra dependencies (from cudf 0.7)
+RUN source activate cudf && pip install cmake_setuptools
 
 USER root
 

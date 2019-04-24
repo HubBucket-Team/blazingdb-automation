@@ -10,12 +10,6 @@ if [ ! -z $2 ]; then
   output_dir=$2
 fi
 
-BUILD_TYPE='Release'
-if [ $# -eq 3 ]; then
-    BUILD_TYPE=$3
-fi
-
-
 # Expand args to absolute/full paths (if the user pass relative paths as args)
 workspace_dir=$(readlink -f $workspace_dir)
 output_dir=$(readlink -f $output_dir)
@@ -42,6 +36,12 @@ source $blazingsql_build_properties
 
 if [ -z "$blazingdb_toolchain_branch" ]; then
     echo "Error: Need the 'blazingdb_toolchain_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+if [ -z "$custrings_branch" ]; then
+    echo "Error: Need the 'custrings_branch' argument in order to run the build process."
     touch FAILED
     exit 1
 fi
@@ -109,6 +109,10 @@ if [ -z "$blazingdb_toolchain_enable" ]; then
     blazingdb_toolchain_enable=true
 fi
 
+if [ -z "$custrings_enable" ]; then
+    custrings_enable=true
+fi
+
 if [ -z "$cudf_enable" ]; then
     cudf_enable=true
 fi
@@ -147,50 +151,45 @@ fi
 
 #END set default optional arguments for active/enable the build
 
-#BEGIN set default optional arguments for parallel build
+#BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
+# for more info check https://cmake.org/cmake/help/v3.12/variable/CMAKE_BUILD_TYPE.html#variable:CMAKE_BUILD_TYPE 
 
-if [ -z "$blazingdb_toolchain_parallel" ]; then
-    blazingdb_toolchain_parallel=4
+if [ -z "$custrings_build_type" ]; then
+    custrings_build_type=Release
 fi
 
-if [ -z "$cudf_parallel" ]; then
-    cudf_parallel=4
+if [ -z "$cudf_build_type" ]; then
+    cudf_build_type=Release
 fi
 
-if [ -z "$blazingdb_protocol_parallel" ]; then
-    blazingdb_protocol_parallel=4
+if [ -z "$blazingdb_protocol_build_type" ]; then
+    blazingdb_protocol_build_type=Release
 fi
 
-if [ -z "$blazingdb_io_parallel" ]; then
-    blazingdb_io_parallel=4
+if [ -z "$blazingdb_io_build_type" ]; then
+    blazingdb_io_build_type=Release
 fi
 
-if [ -z "$blazingdb_communication_parallel" ]; then
-    blazingdb_communication_parallel=4
+if [ -z "$blazingdb_communication_build_type" ]; then
+    blazingdb_communication_build_type=Release
 fi
 
-if [ -z "$blazingdb_ral_parallel" ]; then
-    blazingdb_ral_parallel=4
+if [ -z "$blazingdb_ral_build_type" ]; then
+    blazingdb_ral_build_type=Release
 fi
 
-if [ -z "$blazingdb_orchestrator_parallel" ]; then
-    blazingdb_orchestrator_parallel=4
+if [ -z "$blazingdb_orchestrator_build_type" ]; then
+    blazingdb_orchestrator_build_type=Release
 fi
-
-if [ -z "$blazingdb_calcite_parallel" ]; then
-    blazingdb_calcite_parallel=4
-fi
-
-if [ -z "$blazingdb_communication_parallel" ]; then
-    blazingdb_communication_parallel=4
-fi
-
-#END set default optional arguments for parallel build
 
 #BEGIN set default optional arguments for tests
 
 if [ -z "$blazingdb_toolchain_tests" ]; then
     blazingdb_toolchain_tests=false
+fi
+
+if [ -z "$custrings_tests" ]; then
+    custrings_tests=false
 fi
 
 if [ -z "$cudf_tests" ]; then
@@ -231,6 +230,46 @@ fi
 
 #END set default optional arguments for tests
 
+#BEGIN set default optional arguments for parallel build
+
+if [ -z "$blazingdb_toolchain_parallel" ]; then
+    blazingdb_toolchain_parallel=4
+fi
+
+if [ -z "$custrings_parallel" ]; then
+    custrings_parallel=4
+fi
+
+if [ -z "$cudf_parallel" ]; then
+    cudf_parallel=4
+fi
+
+if [ -z "$blazingdb_protocol_parallel" ]; then
+    blazingdb_protocol_parallel=4
+fi
+
+if [ -z "$blazingdb_io_parallel" ]; then
+    blazingdb_io_parallel=4
+fi
+
+if [ -z "$blazingdb_communication_parallel" ]; then
+    blazingdb_communication_parallel=4
+fi
+
+if [ -z "$blazingdb_ral_parallel" ]; then
+    blazingdb_ral_parallel=4
+fi
+
+if [ -z "$blazingdb_orchestrator_parallel" ]; then
+    blazingdb_orchestrator_parallel=4
+fi
+
+if [ -z "$blazingdb_calcite_parallel" ]; then
+    blazingdb_calcite_parallel=4
+fi
+
+#END set default optional arguments for parallel build
+
 #BEGIN set default optional arguments for build options (precompiler definitions, etc.)
 
 if [ -z "$blazingdb_ral_definitions" ]; then
@@ -243,6 +282,10 @@ fi
 
 if [ -z "$blazingdb_toolchain_clean_before_build" ]; then
     blazingdb_toolchain_clean_before_build=false
+fi
+
+if [ -z "$custrings_clean_before_build" ]; then
+    custrings_clean_before_build=false
 fi
 
 if [ -z "$cudf_clean_before_build" ]; then
@@ -302,6 +345,7 @@ function normalize_branch_name() {
 #BEGIN main
 
 blazingdb_toolchain_branch_name=$(normalize_branch_name $blazingdb_toolchain_branch)
+custrings_branch_name=$(normalize_branch_name $custrings_branch)
 cudf_branch_name=$(normalize_branch_name $cudf_branch)
 blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
 blazingdb_io_branch_name=$(normalize_branch_name $blazingdb_io_branch)
@@ -345,28 +389,6 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     fi
 fi
 
-#TODO percy clear these hacks until we migrate to cudf 0.7 properly
-mkdir -p ${output}/nvstrings
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-install/* ${output}/nvstrings
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-src
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-src/* ${output}/nvstrings-src
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-build
-cp -r $workspace_dir/blazingdb-toolchain/build/CMakeFiles/thirdparty/nvstrings-build/* ${output}/nvstrings-build
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
 #BEGIN boost
 
 boost_install_dir=$workspace_dir/dependencies/
@@ -375,7 +397,150 @@ boost_install_dir=$workspace_dir/dependencies/
 
 #BEGIN nvstrings
 
-nvstrings_install_dir=$workspace_dir/dependencies/
+custrings_install_dir=$workspace_dir/custrings_project/$custrings_branch_name/install
+nvstrings_install_dir=$custrings_install_dir
+if [ ! -d $custrings_install_dir ]; then
+    custrings_install_dir=""   
+    nvstrings_install_dir="" 
+fi
+
+if [ $custrings_enable == true ]; then
+    custrings_project_dir=$workspace_dir/custrings_project
+    custrings_current_dir=$custrings_project_dir/$custrings_branch_name/
+    custrings_dir=cpp
+    custrings_build_dir=$custrings_current_dir/custrings/$custrings_dir/build/
+    custrings_install_dir=$custrings_current_dir/install
+    
+    #TODO percy use this path when custrings is part of toolchain dependencies
+    #nvstrings_install_dir=$workspace_dir/dependencies/
+    nvstrings_install_dir=$custrings_install_dir
+    
+    rmm_src_dir=$custrings_project_dir/$custrings_branch_name/custrings/thirdparty/rmm
+    rmm_build_dir=$rmm_src_dir/build
+    rmm_install_dir=$rmm_src_dir/install
+    
+    if [ ! -f $custrings_install_dir/include/NVStrings.h ]; then
+        #BEGIN custrings
+        echo "### Custrings - start ###"
+        
+        cd $workspace_dir
+        
+        if [ ! -d custrings_project ]; then
+            mkdir custrings_project
+        fi
+        
+        build_testing_custrings="OFF"
+        if [ $custrings_tests == true ]; then
+            build_testing_custrings="ON"
+        fi
+        
+        echo "build_testing_custrings: $build_testing_custrings"
+        
+        cd $custrings_project_dir
+        
+        # NOTE only for custrings run the cmake command only once so we avoid rebuild everytime 
+        if [ ! -d $custrings_branch_name ]; then
+            mkdir $custrings_branch_name
+            cd $custrings_branch_name
+            git clone git@github.com:BlazingDB/custrings.git
+            cd $custrings_current_dir/custrings
+            git checkout $custrings_branch
+            git pull
+            git submodule update --init --recursive
+            
+            #BEGIN build rmm
+            mkdir -p $rmm_build_dir
+            cd $rmm_build_dir
+            CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
+                -DBUILD_TESTS=$build_testing_custrings \
+                -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
+                ..
+            make -j$custrings_parallel install
+            #END build rmm
+            
+            echo "### CUSTRINGS - cmake ###"
+            mkdir -p $custrings_build_dir
+            cd $custrings_build_dir
+            CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
+                -DBUILD_TESTS=$build_testing_custrings \
+                -DCMAKE_INSTALL_PREFIX:PATH=$custrings_install_dir \
+                ..
+        fi
+        
+        cd $custrings_current_dir/custrings
+        git checkout $custrings_branch
+        git pull
+        git submodule update --init --recursive
+        
+        #BEGIN build rmm
+        mkdir -p $rmm_build_dir
+        cd $rmm_build_dir
+        CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
+            -DBUILD_TESTS=$build_testing_custrings \
+            -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
+            ..
+        make -j$custrings_parallel install
+        #END build rmm
+        
+        echo "### CUSTRINGS - clean before build: $custrings_clean_before_build ###"
+        
+        if [ $custrings_clean_before_build == true ]; then
+            rm -rf $custrings_build_dir
+            
+            echo "### CUSTRINGS - cmake ###"
+            mkdir -p $custrings_build_dir
+            cd $custrings_build_dir
+            CUDACXX=/usr/local/cuda/bin/nvcc RMM_ROOT=$rmm_install_dir cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
+                -DBUILD_TESTS=$build_testing_custrings \
+                -DCMAKE_INSTALL_PREFIX:PATH=$custrings_install_dir \
+                ..
+        fi
+        
+        echo "### CUSTRINGS - make install ###"
+        cd $custrings_build_dir
+        make -j$custrings_parallel install
+        if [ $? != 0 ]; then
+          exit 1
+        fi
+        
+        #END custrings
+        
+        #TODO percy delete this hack once custrings is installed properly for cudf 0.7
+        cp $custrings_install_dir/include/nvstrings/*.h $custrings_install_dir/include/
+        
+        echo "### Custrings - end ###"
+    fi
+    
+    # Package custrings
+    #TODO percy clear these hacks until we migrate to cudf 0.7 properly
+    mkdir -p ${output}/nvstrings
+    cp -r $custrings_install_dir/* ${output}/nvstrings
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    mkdir -p ${output}/nvstrings-src
+    cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    mkdir -p ${output}/nvstrings-build
+    cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+    
+    mkdir -p ${output}/nvstrings-build/rmm
+    cp -r $rmm_install_dir/lib/* ${output}/nvstrings-build/rmm
+    
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+fi
 
 #END nvstrings
 
@@ -503,7 +668,7 @@ if [ $cudf_enable == true ]; then
         mkdir -p $libgdf_build_dir
         cd $libgdf_build_dir
         BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
-            -DCMAKE_BUILD_TYPE=Release  \
+            -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
             ..
@@ -523,7 +688,7 @@ if [ $cudf_enable == true ]; then
         mkdir -p $libgdf_build_dir
         cd $libgdf_build_dir
         BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
-            -DCMAKE_BUILD_TYPE=Release  \
+            -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
             ..
@@ -607,7 +772,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     rm -rf lib/$blazingdb_protocol_artifact_name
     
     echo "### Protocol - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_protocol_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
           ..
@@ -685,7 +850,7 @@ if [ $blazingdb_io_enable == true ]; then
     rm -rf $blazingdb_io_artifact_name
     
     echo "### Blazingdb IO - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_io_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
           ..
@@ -748,7 +913,7 @@ if [ $blazingdb_communication_enable == true ]; then
     rm -rf $blazingdb_communication_artifact_name
     
     echo "### Blazingdb communication - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_communication_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_communication_install_dir \
           ..
@@ -814,10 +979,12 @@ if [ $blazingdb_ral_enable == true ]; then
     fi
     
     echo "### Ral - cmake ###"
+    
     # Configure blazingdb-ral with dependencies
-    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$blazingdb_ral_build_type \
           -DBUILD_TESTING=$build_testing_ral \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
+          -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir/ \
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_IO_INSTALL_DIR=$blazingdb_io_install_dir \
@@ -893,7 +1060,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
     echo "### Orchestrator - cmake ###"
-    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE  \
+    cmake -DCMAKE_BUILD_TYPE=$blazingdb_orchestrator_build_type  \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \

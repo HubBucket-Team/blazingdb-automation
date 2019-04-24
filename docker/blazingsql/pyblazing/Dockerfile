@@ -2,15 +2,10 @@ FROM nvidia/cuda:9.2-devel-ubuntu16.04
 MAINTAINER BlazingDB <percy@blazingdb.com>
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 
-RUN apt-get update
-
-# Install tools & utils
-RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
-
-# Install blazingdb-io runtime dependencies
-RUN apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
-
-RUN apt-get clean
+RUN apt-get update && \
+    apt-get install -y sudo bzip2 wget curl nano vim-tiny lsof htop net-tools && \
+    apt-get install -y libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1 && \
+    apt-get clean
 
 # Create the container user
 RUN useradd -ms /bin/bash jupyter

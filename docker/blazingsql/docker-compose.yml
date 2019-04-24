@@ -3,7 +3,7 @@ version: '2.3'
 services:
 
   jupyter:
-    image: blazingdb/pyblazing:latest
+    image: blazingdb/blazingsql:pyblazing
     build: ./pyblazing
     runtime: nvidia
     environment:
@@ -15,13 +15,13 @@ services:
       - 80:80
 
   calcite:
-    image: blazingdb/calcite:latest
+    image: blazingdb/blazingsql:calcite
     build: ./calcite
     volumes:
       - sockets:/tmp/
 
   orchestrator:
-    image: blazingdb/orchestator:latest
+    image: blazingdb/blazingsql:orchestator
     build: ./orchestator
     volumes:
       - sockets:/tmp/
@@ -29,8 +29,7 @@ services:
       - 9000:9000
 
   ral1:
-    #image: blazingdb/blazingsql:multi-ral
-    image: blazingdb/ral:latest
+    image: blazingdb/blazingsql:ral
     build: ./ral
     runtime: nvidia
     environment:
@@ -46,7 +45,7 @@ services:
     #  - 80:8888
 
   ral2:
-    image: blazingdb/ral:latest
+    image: blazingdb/blazingsql:ral
     build: ./ral
     runtime: nvidia
     environment:

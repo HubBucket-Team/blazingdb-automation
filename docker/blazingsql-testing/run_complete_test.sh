@@ -8,8 +8,6 @@ echo "Removing old containers"
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
-docker rm  -f blazingdb/blazingsql:$3
-
 # Set directories workspace
 # Parameters
 user=$1

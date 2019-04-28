@@ -23,7 +23,7 @@ pipeline {
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
     string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/blazingsql/workspace', description: '')
-    string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Mb', description: '')
+    string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Gb', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')

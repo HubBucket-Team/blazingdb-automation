@@ -67,7 +67,7 @@ if [ ! -d $logTest_name ]; then
 fi
 
 echo "Run end to end  test container"
-nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=1000 -e DEV_GID=1000 -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user $docker_image bash
+nvidia-docker run --name bzsqlcontainer -d -ti -e DEV_UID=$(id -u) -e DEV_GID=$(id -g) -p 8888:8888 -p 8887:8787 -p 8886:8786 -p 9002:9001  -v $ssh_key/:/home/$user/.ssh/ -v $local_workdir/run_e2e.sh:/tmp/run_e2e.sh -v $workdir/:$home_user $docker_image bash
 
 #echo "Changing permission"
 echo "USERRRRRRRRR" $user

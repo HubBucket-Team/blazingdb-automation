@@ -30,11 +30,14 @@ cp -f $blazingsql_files/nvstrings-build/rmm/*.so /conda/envs/cudf/lib/
 
 # Install nvstrings (custrings)
 cp -f $blazingsql_files/nvstrings-build/*.so /conda/envs/cudf/lib/
+cp -rf $blazingsql_files/nvstrings/include/* /conda/envs/cudf/include/
 
+echo "Installing custrings ..."
 working_directory_tmp=$PWD
 cd $blazingsql_files/nvstrings-src/python/
 python setup.py install
 cd $working_directory_tmp
+echo "custrings DONE"
 
 # Install libgdf_cffi
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $cudf_dir/$libgdf_dir/python/libgdf_cffi/libgdf_build.py

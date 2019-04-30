@@ -389,6 +389,10 @@ if [ ! -d $custrings_install_dir ]; then
     custrings_install_dir=""   
     nvstrings_install_dir="" 
 fi
+rmm_install_dir=$workspace_dir/custrings_project/$custrings_branch_name/custrings/thirdparty/rmm/install
+if [ ! -d $rmm_install_dir ]; then
+    rmm_install_dir=""       
+fi
 
 if [ $custrings_enable == true ]; then
     custrings_project_dir=$workspace_dir/custrings_project
@@ -499,33 +503,33 @@ if [ $custrings_enable == true ]; then
     
     # Package custrings
     #TODO percy clear these hacks until we migrate to cudf 0.7 properly
-    mkdir -p ${output}/nvstrings
-    cp -r $custrings_install_dir/* ${output}/nvstrings
+    # mkdir -p ${output}/nvstrings
+    # cp -r $custrings_install_dir/* ${output}/nvstrings
     
-    if [ $? != 0 ]; then
-      exit 1
-    fi
+    # if [ $? != 0 ]; then
+    #   exit 1
+    # fi
     
-    mkdir -p ${output}/nvstrings-src
-    cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
+    # mkdir -p ${output}/nvstrings-src
+    # cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
     
-    if [ $? != 0 ]; then
-      exit 1
-    fi
+    # if [ $? != 0 ]; then
+    #   exit 1
+    # fi
     
-    mkdir -p ${output}/nvstrings-build
-    cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
+    # mkdir -p ${output}/nvstrings-build
+    # cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
     
-    if [ $? != 0 ]; then
-      exit 1
-    fi
+    # if [ $? != 0 ]; then
+    #   exit 1
+    # fi
     
-    mkdir -p ${output}/nvstrings-build/rmm
-    cp -r $rmm_install_dir/lib/* ${output}/nvstrings-build/rmm
+    # mkdir -p ${output}/nvstrings-build/rmm
+    # cp -r $rmm_install_dir/lib/* ${output}/nvstrings-build/rmm
     
-    if [ $? != 0 ]; then
-      exit 1
-    fi
+    # if [ $? != 0 ]; then
+    #   exit 1
+    # fi
 fi
 
 #END nvstrings
@@ -653,7 +657,7 @@ if [ $cudf_enable == true ]; then
         echo "### CUDF - cmake ###"
         mkdir -p $libgdf_build_dir
         cd $libgdf_build_dir
-        BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
+        BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir RMM_ROOT=$rmm_install_dir  cmake \
             -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
@@ -673,7 +677,7 @@ if [ $cudf_enable == true ]; then
         echo "### CUDF - cmake ###"
         mkdir -p $libgdf_build_dir
         cd $libgdf_build_dir
-        BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir cmake \
+        BOOST_ROOT=$boost_install_dir CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$nvstrings_install_dir RMM_ROOT=$rmm_install_dir cmake \
             -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \

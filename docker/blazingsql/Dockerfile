@@ -1,4 +1,4 @@
-FROM nvidia/cuda:9.2-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
@@ -91,8 +91,8 @@ USER root
 RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
-ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
-ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
+ENV NUMBAPRO_NVVM /usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE /usr/local/cuda/nvvm/libdevice/
 
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor

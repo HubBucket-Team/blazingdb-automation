@@ -1,8 +1,7 @@
 pipeline {
   agent {
       label 'slave-gpu'
-  }
-  
+  }  
   options {
     ansiColor('xterm')
     timestamps()

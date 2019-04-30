@@ -76,7 +76,7 @@ RUN source activate user && conda install conda-build
 RUN source activate user && conda install conda-verify
 
 # NOTE Pre-install the conda dependencies for blazingsql package
-RUN source activate user && conda install -c rapidsai/label/cuda${CUDA_VERSION} cudf
+RUN source activate user && conda install -c rapidsai/label/cuda9.2 cudf
 RUN source activate user && conda install -c conda-forge flatbuffers 
 
 # NOTE Pre-install the conda dependencies for cudf package

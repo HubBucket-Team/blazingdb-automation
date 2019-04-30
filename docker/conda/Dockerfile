@@ -1,4 +1,5 @@
-FROM nvidia/cuda:9.2-devel-ubuntu16.04
+ARG  CUDA_VERSION=9.2
+FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
@@ -60,8 +61,8 @@ RUN conda install -n user -y -c numba -c conda-forge -c defaults pyarrow=${PYARR
 USER root
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
-ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
-ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
+ENV NUMBAPRO_NVVM /usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE /usr/local/cuda/nvvm/libdevice/
 
 # NOTE Expose 'user' runtime
 ENV LD_LIBRARY_PATH /conda/envs/user/lib/
@@ -75,7 +76,7 @@ RUN source activate user && conda install conda-build
 RUN source activate user && conda install conda-verify
 
 # NOTE Pre-install the conda dependencies for blazingsql package
-RUN source activate user && conda install -c rapidsai/label/cuda9.2 cudf
+RUN source activate user && conda install -c rapidsai/label/cuda${CUDA_VERSION} cudf
 RUN source activate user && conda install -c conda-forge flatbuffers 
 
 # NOTE Pre-install the conda dependencies for cudf package

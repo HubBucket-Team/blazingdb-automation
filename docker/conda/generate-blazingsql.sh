@@ -80,7 +80,7 @@ conda_build_tmp_dir=/tmp/"$blazingsql_files_dir_name$conda_build_tmp_dir_name"
 mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
 
-echo "Inciiando conda build"
+echo "Inciando conda build"
 # Va a hacer conda-build e imprimir ruta
 #PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
 

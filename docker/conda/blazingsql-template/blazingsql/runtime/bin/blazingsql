@@ -2,7 +2,7 @@
 
 action=$1
 
-blazingsql_dir=$CONDA_PREFIX/lib/python3.5/site-packages/blazingsql
+blazingsql_dir=$CONDA_PREFIX/lib/python3.7/site-packages/blazingsql
 supervisord_dir=$blazingsql_dir/runtime/supervisord
 supervisord_conf=$supervisord_dir/supervisord.conf
 supervisord_pid=$supervisord_dir/run/supervisord.pid

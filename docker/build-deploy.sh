@@ -228,8 +228,8 @@ echo "nvidia-docker rmi -f $image_build"
 nvidia-docker rmi -f $image_build
 
 echo "nvidia-docker build -t $image_build ."
-#nvidia-docker build --build-arg CUDA_VERSION=10.0 -t $image_build .
-nvidia-docker build -t $image_build .
+nvidia-docker build --build-arg CUDA_VERSION=10.0 -t $image_build .
+#nvidia-docker build -t $image_build .
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -269,6 +269,6 @@ echo "### Build de Image Deploy ###"
 echo "nvidia-docker rm -f $image_deploy"
 nvidia-docker rmi -f $image_deploy
 echo "nvidia-docker build -t $image_deploy ."
-#nvidia-docker build --build-arg CUDA_VERSION=10.0 -t $image_deploy .
-nvidia-docker build -t $image_deploy .
+nvidia-docker build --build-arg CUDA_VERSION=10.0 -t $image_deploy .
+#nvidia-docker build -t $image_deploy .
 

@@ -14,7 +14,7 @@ dependencies:
   - pandas=0.20.3
   - pyarrow=0.10.0
   - cython=0.28.*
-  - python=3.5.*
+  - python=3.7.*
   - jupyterlab
   - pytest
   - notebook>=0.5.0

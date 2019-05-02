@@ -14,4 +14,4 @@ tar -xvf blazingsql.tar.gz -C $WORKDIR/
 cd $WORKDIR/blazingsql/
 pip install .
 
-#python3.5 setup.py install --single-version-externally-managed --record=record.txt
+#python3.7 setup.py install --single-version-externally-managed --record=record.txt

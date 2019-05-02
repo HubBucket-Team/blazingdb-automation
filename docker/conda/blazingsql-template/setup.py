@@ -47,7 +47,7 @@ class cudf_installer(install):
 
         # TODO percy add ld path library del runtime/lib antes de buold insalarlo
 
-        runtime_dir = self.prefix + "/lib/python3.5/site-packages/blazingsql/runtime"
+        runtime_dir = self.prefix + "/lib/python3.7/site-packages/blazingsql/runtime"
         pypkg = blazingsql_dir + "/cudf/cpp/python/"
         # libgdf_install_cmd = "pip install --target=%s %s" % (runtime_dir, pypkg)
 
@@ -75,7 +75,7 @@ class cudf_installer(install):
         cudf_include_dir = blazingsql_dir + "/cudf/cpp/include"
         cudf_lib_dir = blazingsql_dir + "/cudf/cpp/install/lib"
         env_vars = 'CFLAGS="-I%s" CXXFLAGS="-I%s" LDFLAGS="-L%s"' % (cudf_include_dir, cudf_include_dir, cudf_lib_dir)
-        runtime_dir = self.prefix + "/lib/python3.5/site-packages/blazingsql/runtime"
+        runtime_dir = self.prefix + "/lib/python3.7/site-packages/blazingsql/runtime"
         pypkg = blazingsql_dir + "/cudf/python/"
         cudf_pip_cmd = "python %s/setup.py install --prefix=%s --single-version-externally-managed --record=record.txt" % (pypkg, runtime_dir)
         cudf_install_cmd = "%s %s" % (env_vars, cudf_pip_cmd)
@@ -98,7 +98,7 @@ def package_files(directory):
 
 
 # TODO percy when nvstrings can support more python distributions then try to improve this
-nvstrings_python_lib_dir = os.path.dirname(os.path.realpath(__file__)) + "/blazingsql/runtime/lib/python3.5"
+nvstrings_python_lib_dir = os.path.dirname(os.path.realpath(__file__)) + "/blazingsql/runtime/lib/python3.7"
 nvstrings_python_lib_files = package_files(nvstrings_python_lib_dir)
 
 # Add supervisord files
@@ -111,7 +111,8 @@ blazingsql_runtime_bin_lib_files = [
     'runtime/bin/testing-libgdf',
     'runtime/lib/libcudf.so',
     'runtime/lib/librmm.so',
-    'runtime/lib/libNVStrings.so'
+    'runtime/lib/libNVStrings.so',
+    'runtime/lib/libNVCategory.so'
 ]
 
 blazingsql_files = supervisord_conf_files + nvstrings_python_lib_files + blazingsql_runtime_bin_lib_files

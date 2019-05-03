@@ -22,6 +22,7 @@ local_workdir=$PWD
 docker_image="blazingsql/test"
 echo "PWD===>" $PWD
 ssh_key=$HOME/.ssh/
+mode_debug=$6
 
 
 echo "Using Blazingsql deploy image"
@@ -84,8 +85,11 @@ nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embe
 
 echo "Init e2e test"
 
+if [ $mode_debug == true ]; then
+ echo "Not run end to end "
+nvidia-docker exec  -it bzsqlcontainer /bin/bash
+fi
+
 echo "============================First execution==============================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
 
-#echo "=========================== Second execution ==========================================="
-#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user

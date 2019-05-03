@@ -22,7 +22,7 @@ mkdir -p $working_space
 
 echo "Decompressing blazingsql-files.tar.gz ..."
 # TODO percy uncomment this when finish this script
-tar xf $blazingsql_files_tar_gz_path -C $working_space
+tar -xf $blazingsql_files_tar_gz_path -C $working_space
 #echo "blazingsql-files.tar.gz was decompressed at $working_space"
 
 # Creating the blazingsql python package using the template
@@ -31,6 +31,8 @@ cp -r blazingsql-template/* $blazingsql_dir
 
 # Copy the BlazingSQL binaries
 mkdir -p $blazingsql_dir/cudf
+mkdir -p $blazingsql_dir/nvstrings-build/
+mkdir -p $blazingsql_dir/nvstrings-src/
 mkdir -p $blazingsql_pkg/blazingdb
 mkdir -p $blazingsql_pkg/pyblazing
 mkdir -p $blazingsql_pkg/runtime/bin
@@ -57,6 +59,10 @@ cp -r $blazingsql_files_dir/cudf/* $blazingsql_dir/cudf
 mkdir -p $blazingsql_dir/cudf/cpp/build/python
 cp -r $blazingsql_files_dir/cudf/cpp/python/* $blazingsql_dir/cudf/cpp/build/python
 
+# Copy nvstrings
+cp -r $blazingsql_files_dir/nvstrings-build/* $blazingsql_dir/nvstrings-build/
+cp -r $blazingsql_files_dir/nvstrings-src/* $blazingsql_dir/nvstrings-src/
+
 # Copy NVStrings lib into the runtime
 cp -r $blazingsql_files_dir/nvstrings/lib/* $blazingsql_pkg/runtime/lib
 
@@ -67,9 +73,9 @@ chmod +x $blazingsql_pkg/runtime/lib/*
 
 # Compress the python package
 cd $output_dir
-#echo "Compress the python package ..."
+echo "Compress the python package ..."
 tar zcf blazingsql.tar.gz blazingsql
-#echo "$output_dir/blazingsql.tar.gz python package is ready!"
+echo "$output_dir/blazingsql.tar.gz python package is ready!"
 
 #cd $blazingsql_dir
 #pip install -v .
@@ -80,7 +86,7 @@ conda_build_tmp_dir=/tmp/"$blazingsql_files_dir_name$conda_build_tmp_dir_name"
 mkdir -p $conda_build_tmp_dir
 cd $conda_recipes_dir
 
-echo "Inciando conda build"
+echo "Iniciando conda build"
 # Va a hacer conda-build e imprimir ruta
 #PKG=$(FILE_TAR=/home/jupyter/output/blazingsql.tar.gz conda build --output --no-test --output-folder $conda_build_tmp_dir blazingsql)
 

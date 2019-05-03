@@ -9,7 +9,7 @@ WORKDIR=/tmp/blazingsql
 rm -rf $WORKDIR/
 
 mkdir -p $WORKDIR/
-tar -xvf blazingsql.tar.gz -C $WORKDIR/
+tar -xf blazingsql.tar.gz -C $WORKDIR/
 
 cd $WORKDIR/blazingsql/
 pip install .

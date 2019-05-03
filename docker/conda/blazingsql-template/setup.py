@@ -26,10 +26,32 @@ import os
 class cudf_installer(install):
 
     def run(self):
+        print("RUN ###############################")
+        self._install_custrings()
         self._install_libgdf_cffi()
         self._install_cudf_python()
 
         install.run(self)
+
+    def _install_custrings(self):
+        print("CUSTRINGS ###############################")
+        blazingsql_dir = os.path.dirname(os.path.realpath(__file__))
+        os.system("ls -la " + blazingsql_dir)
+        pypkg = blazingsql_dir + "/nvstrings-src/python/"
+        print("pypkg:", pypkg)
+        os.chdir(pypkg)
+
+        #print("Install cmake_setuptools")
+        #os.system("pip install cmake_setuptools==0.1.3")
+
+        nvstrings_lib_dir = blazingsql_dir + "/nvstrings-build/"
+        nvstrings_include_dir = blazingsql_dir + "/nvstrings-src/cpp/include/"
+        env_vars = 'LD_LIBRARY_PATH=%s NVSTRINGS_INCLUDE=%s' % (nvstrings_lib_dir, nvstrings_include_dir)
+        print("### ENV_VARS: ", env_vars)
+        libnvstrings_install_cmd = "%s python %s/setup.py" % (env_vars, pypkg)
+        print("### CMD: ", libnvstrings_install_cmd)
+        print("CUSTRINGS Install ###############################")
+        os.system(libnvstrings_install_cmd)
 
     def _install_libgdf_cffi(self):
 
@@ -126,7 +148,9 @@ setup(
     packages = find_packages(include = ['blazingsql', 'blazingsql.*']),
     package_data = {'blazingsql': blazingsql_files},
     include_package_data = True,
-    install_requires = [],
+    install_requires = [
+        'cmake_setuptools'
+    ],
     cmdclass = {'install': cudf_installer},
     zip_safe = False,
     scripts = ['blazingsql/runtime/bin/blazingsql', 'blazingsql/runtime/bin/pyblazing']

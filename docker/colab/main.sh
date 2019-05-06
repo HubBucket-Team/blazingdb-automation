@@ -5,7 +5,7 @@
 apt-get update
 apt-get install -y python3.7 python3-pip git vim
 apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
-apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
+apt-get install -y --no-install-recommends libcurl3 libssl1.0.0 zlib1g libuuid1
 apt-get install -y supervisor openjdk-8-jre 
 
 wget https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh

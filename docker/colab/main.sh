@@ -3,7 +3,9 @@
 #docker run --runtime=nvidia -ti nvidia/cuda:10.0-devel-ubuntu18.04 bash
 
 apt-get update
-apt-get install -y python3.7 python3-pip git vim
+apt-get install -y python3.7 python3-pip
+#ln -s /usr/bin/python3 /usr/bin/python && ln -s /usr/bin/pip3 /usr/bin/pip
+apt-get install -y git vim
 apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
 apt-get install -y --no-install-recommends libcurl3 libssl1.0.0 zlib1g libuuid1
 apt-get install -y supervisor openjdk-8-jre 
@@ -23,7 +25,7 @@ pip3 install cython
 
 # Previamente copiar blazingsql-files.tar.gz a /tmp/
 mkdir /tmp/blazing/
-cd /tmp/blazing/ && wget https://s3.amazonaws.com/blazingsql-colab/blazingsql-files.tar.gz && tar -xvf /tmp/blazingsql-files.tar.gz 
+cd /tmp/blazing/ && wget https://s3.amazonaws.com/blazingsql-colab/blazingsql-files.tar.gz && tar -xvf /tmp/blazing/blazingsql-files.tar.gz 
 
 # libhdfs
 cp /tmp/blazing/blazingsql-files/libhdfs3/libhdfs3.so /usr/lib/

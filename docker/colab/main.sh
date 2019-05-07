@@ -13,6 +13,7 @@ apt-get install -y supervisor openjdk-8-jre
 echo "### Cmake ###"
 wget https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh
 bash cmake-3.12.4-Linux-x86_64.sh --skip-license --prefix=/usr
+rm -f cmake-3.12.4-Linux-x86_64.sh
 
 echo "### Pip ###"
 pip3 install wheel==0.32.1
@@ -63,7 +64,7 @@ cp /tmp/blazing/blazingsql-files/BlazingCalcite.jar /usr/bin/
 cp /tmp/blazing/blazingsql-files/blazingdb_orchestator_service /usr/bin/
 cp /tmp/blazing/blazingsql-files/testing-libgdf /usr/bin/
 
-mkdir /blazingsql && chmod 777 /blazingsql
+mkdir -p /blazingsql/data/ && chmod 777 /blazingsql
 
 echo "### supervisor ###"
 wget -O /etc/supervisor/conf.d/blazing-calcite.conf https://s3.amazonaws.com/blazingsql-colab/supervisor/blazing-calcite.conf
@@ -71,9 +72,22 @@ wget -O /etc/supervisor/conf.d/blazing-orchestrator.conf https://s3.amazonaws.co
 wget -O /etc/supervisor/conf.d/blazing-ral.conf https://s3.amazonaws.com/blazingsql-colab/supervisor/blazing-ral.conf
 service supervisor start
 service supervisor status
-
 wget -O /usr/bin/blazingsql https://s3.amazonaws.com/blazingsql-colab/blazingsql && chmod +x /usr/bin/blazingsql
 blazingsql status
 
+echo "### Demo ###"
+wget -O /blazingsql/data/nation.psv https://s3.amazonaws.com/blazingsql-colab/demo/data/nation.psv
+wget -O /blazingsql/data/gpu.arrow https://s3.amazonaws.com/blazingsql-colab/demo/data/gpu.arrow
+wget -O /blazingsql/demo1.py https://s3.amazonaws.com/blazingsql-colab/demo/demo1.py
+wget -O /blazingsql/demo2.py https://s3.amazonaws.com/blazingsql-colab/demo/demo2.py
+wget -O /blazingsql/demo3.py https://s3.amazonaws.com/blazingsql-colab/demo/demo3.py
+wget -O /blazingsql/demo4.py https://s3.amazonaws.com/blazingsql-colab/demo/demo4.py
+
 # Clean
 rm -rf /tmp/blazing/
+
+echo "### Installation finished ###"
+echo "You can run the command:"
+echo "blazingsql status"
+echo "Files demo on /blazingsql/"
+ls -la /blazingsql/

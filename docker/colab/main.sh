@@ -88,9 +88,10 @@ rm -rf /tmp/blazing/
 
 echo "### BlazingSQL installation finished ###"
 echo "You can run the command to view status:"
-echo "blazingsql status"
+echo "!blazingsql status"
 echo "Demo files are in /blazingsql/"
 ls -la /blazingsql/
 
-echo "Copy and execute the follow code:"
-echo $(cat /blazingsql/demo1.py)
+echo "Run command, copy content and execute:"
+#echo $(cat /blazingsql/demo1.py)
+echo "!cat /blazingsql/demo1.py"

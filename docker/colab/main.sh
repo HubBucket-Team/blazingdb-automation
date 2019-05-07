@@ -19,6 +19,11 @@ pip3 install pyarrow==0.12.1
 pip3 install pandas==0.24.2
 pip3 install numpy==1.16.2
 
+
+export NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
+export NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice/
+
+
 #CONTAINER_ID="a62a560bc8c6"
 #docker cp ./cudf/cpp/install/lib/librmm.so a62a560bc8c6:/tmp/
 #docker cp ./cudf/cpp/install/lib/libcudf.so a62a560bc8c6:/tmp/
@@ -29,4 +34,9 @@ pip3 install numpy==1.16.2
 #docker cp ./nvstrings/lib/libNVCategory.so a62a560bc8c6:/tmp/
 
 
+cp BlazingCalcite.jar /usr/bin/
+cp blazingdb_orchestator_service /usr/bin/
+cp testing-libgdf /usr/bin/
+
+#supervisord -c /etc/supervisor/supervisord.conf
 

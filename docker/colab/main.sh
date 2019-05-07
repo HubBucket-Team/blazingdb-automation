@@ -23,9 +23,15 @@ pip3 install numpy==1.16.2
 mkdir /tmp/blazing/
 cd /tmp/blazing/ && tar -xvf /tmp/blazingsql-files.tar.gz 
 
-# Install rmm 
+# Install librmm 
 export RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h
 pip3 install /tmp/blazing/blazingsql-files/nvstrings-src/thirdparty/rmm/python/
+pip3 list
+
+# Install custrings
+cp -rf /tmp/blazing/blazingsql-files/nvstrings/include/* /usr/include/
+#export NVSTRINGS_INCLUDE=/tmp/blazing/blazingsql-files/nvstrings/include/
+pip3 install /tmp/blazing/blazingsql-files/nvstrings-src/python
 pip3 list
 
 export NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so

@@ -23,7 +23,7 @@ pip3 install cython
 
 # Previamente copiar blazingsql-files.tar.gz a /tmp/
 mkdir /tmp/blazing/
-cd /tmp/blazing/ && tar -xvf /tmp/blazingsql-files.tar.gz 
+cd /tmp/blazing/ && wget https://s3.amazonaws.com/blazingsql-colab/blazingsql-files.tar.gz && tar -xvf /tmp/blazingsql-files.tar.gz 
 
 # libhdfs
 cp /tmp/blazing/blazingsql-files/libhdfs3/libhdfs3.so /usr/lib/

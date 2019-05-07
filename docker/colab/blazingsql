@@ -16,7 +16,8 @@ fi
 
 if [ ! -f $supervisord_pid ]; then
     echo "starting supervisord"
-    supervisord -c $supervisord_conf
+    #supervisord -c $supervisord_conf
+    service supervisor start
 fi
 
 supervisord_action="$action all"

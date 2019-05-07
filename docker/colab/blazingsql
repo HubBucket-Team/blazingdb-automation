@@ -1,0 +1,33 @@
+#!/bin/bash
+
+action=$1
+
+blazingsql_dir=/usr/bin/
+supervisord_dir=/etc/supervisor/
+supervisord_conf=$supervisord_dir/supervisord.conf
+supervisord_pid=/var/run/supervisord.pid
+
+cd $supervisord_dir
+
+if [ "$action" != "start" ] && [ "$action" != "stop" ] && [ "$action" != "restart" ] && [ "$action" != "status" ] ; then
+    echo "invalid argument, try start, stop or restart"
+    exit 1
+fi
+
+if [ ! -f $supervisord_pid ]; then
+    echo "starting supervisord"
+    supervisord -c $supervisord_conf
+fi
+
+supervisord_action="$action all"
+
+if [ "$action" == "status" ] ; then
+    supervisord_action="status"
+fi
+
+if [ "$action" == "stop" ] ; then
+    echo "kill supv"
+    kill -s SIGTERM $(cat $supervisord_pid)
+fi
+
+supervisorctl -c $supervisord_conf $supervisord_action

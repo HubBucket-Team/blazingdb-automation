@@ -29,10 +29,14 @@ pip3 install /tmp/blazing/blazingsql-files/nvstrings-src/thirdparty/rmm/python/
 pip3 list
 
 # Install custrings
+cp /tmp/blazing/blazingsql-files/nvstrings-build/libNV* /usr/lib/
 cp -rf /tmp/blazing/blazingsql-files/nvstrings/include/* /usr/include/
 #export NVSTRINGS_INCLUDE=/tmp/blazing/blazingsql-files/nvstrings/include/
 pip3 install /tmp/blazing/blazingsql-files/nvstrings-src/python
 pip3 list
+
+# Install pyblazing
+
 
 export NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 export NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice/

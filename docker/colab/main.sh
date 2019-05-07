@@ -19,6 +19,14 @@ pip3 install pyarrow==0.12.1
 pip3 install pandas==0.24.2
 pip3 install numpy==1.16.2
 
+# Previamente copiar blazingsql-files.tar.gz a /tmp/
+mkdir /tmp/blazing/
+cd /tmp/blazing/ && tar -xvf /tmp/blazingsql-files.tar.gz 
+
+# Install rmm 
+export RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h
+pip3 install /tmp/blazing/blazingsql-files/nvstrings-src/thirdparty/rmm/python/
+pip3 list
 
 export NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 export NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice/
@@ -33,10 +41,10 @@ export NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice/
 #docker cp ./nvstrings/lib/libNVStrings.so a62a560bc8c6:/tmp/
 #docker cp ./nvstrings/lib/libNVCategory.so a62a560bc8c6:/tmp/
 
-
-cp BlazingCalcite.jar /usr/bin/
-cp blazingdb_orchestator_service /usr/bin/
-cp testing-libgdf /usr/bin/
+# Copiar binarios
+#cp BlazingCalcite.jar /usr/bin/
+#cp blazingdb_orchestator_service /usr/bin/
+#cp testing-libgdf /usr/bin/
 
 #supervisord -c /etc/supervisor/supervisord.conf
 

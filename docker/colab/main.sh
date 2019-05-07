@@ -75,7 +75,7 @@ service supervisor status
 wget -O /usr/bin/blazingsql https://s3.amazonaws.com/blazingsql-colab/blazingsql && chmod +x /usr/bin/blazingsql
 blazingsql status
 
-echo "### Demo ###"
+echo "### downloading demo ###"
 wget -O /blazingsql/data/nation.psv https://s3.amazonaws.com/blazingsql-colab/demo/data/nation.psv
 wget -O /blazingsql/data/gpu.arrow https://s3.amazonaws.com/blazingsql-colab/demo/data/gpu.arrow
 wget -O /blazingsql/demo1.py https://s3.amazonaws.com/blazingsql-colab/demo/demo1.py
@@ -86,8 +86,11 @@ wget -O /blazingsql/demo4.py https://s3.amazonaws.com/blazingsql-colab/demo/demo
 # Clean
 rm -rf /tmp/blazing/
 
-echo "### Installation finished ###"
-echo "You can run the command:"
+echo "### BlazingSQL installation finished ###"
+echo "You can run the command to view status:"
 echo "blazingsql status"
-echo "Files demo on /blazingsql/"
+echo "Demo files are in /blazingsql/"
 ls -la /blazingsql/
+
+echo "Copy and execute the follow code:"
+echo $(cat /blazingsql/demo1.py)

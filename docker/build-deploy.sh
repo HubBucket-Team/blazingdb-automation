@@ -69,7 +69,7 @@ blazingdb_orchestrator_clean_before_build=${19}
 blazingdb_calcite_clean_before_build=${20}
 pyblazing_clean_before_build=${21}
 
-workspace_maven_repository=${20}
+workspace_maven_repository=${22}
 
 if [ $workspace_maven_repository == true ]; then
       echo "clean maven-repository "

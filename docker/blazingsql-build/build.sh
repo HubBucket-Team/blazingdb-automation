@@ -385,27 +385,6 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-mkdir -p ${output}/nvstrings-src
-cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-build
-cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-mkdir -p ${output}/nvstrings-build/rmm
-cp -r $rmm_install_dir/lib/* ${output}/nvstrings-build/rmm
-
-if [ $? != 0 ]; then
-  exit 1
-fi
-
 #BEGIN boost
 
 boost_install_dir=$workspace_dir/dependencies/

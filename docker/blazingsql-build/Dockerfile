@@ -27,6 +27,8 @@ RUN apt-get install -y libssl-dev libtool bison flex pkg-config
 # Install BlazingSQL Java build dependencies
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y maven
+# Required by Gdr and Ucx
+RUN apt-get install -y libnuma-dev
 
 RUN apt-get clean
 

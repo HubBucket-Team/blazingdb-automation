@@ -1,0 +1,39 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-jupyter-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-jupyter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-jupyter
+    spec:
+      volumes:
+        - name: mi-volume
+          persistentVolumeClaim:
+            claimName: myclaim
+      containers:
+      - name: blazingdb-jupyter
+        #image: "blazingdb/blazingsql:test"
+        image: "blazingdb/blazingsql:pyblazing"
+        volumeMounts:
+        - mountPath: /tmp
+          name: mi-volume
+        ports:
+        - containerPort: 80
+        #readinessProbe:
+        #  httpGet:
+        #    path: /login
+        #    port: 80
+        #  periodSeconds: 1
+        #  timeoutSeconds: 1
+        #  successThreshold: 1
+        #  failureThreshold: 10
+        resources:
+          limits:
+            nvidia.com/gpu: 1 # requesting 1 GPU
+

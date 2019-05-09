@@ -8,7 +8,7 @@ metadataTest:
       value: "/usr/local/cuda-9.2/nvvm/libdevice/"
     - key: "LD_LIBRARY_PATH"
       value: "/conda/envs/cudf/lib/"
-  exposedPorts: ["8884", "9001"]
+  exposedPorts: ["80", "9001"]
   volumes: ["/blazingsql", "/tmp"]
   cmd: ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
   workdir: "/home/jupyter"

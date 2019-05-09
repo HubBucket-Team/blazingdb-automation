@@ -1,0 +1,41 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-ral-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-ral
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-ral
+    spec:
+      volumes:
+        - name: mi-volume
+          persistentVolumeClaim:
+            claimName: myclaim
+      containers:
+      - name: blazingdb
+        #image: "blazingdb/blazingsql:test"
+        image: "blazingdb/blazingsql:ral"
+        command: ["/usr/bin/testing-libgdf"]
+        args: ["1", "blazingdb-orchestrator-svc", "9000", "127.0.0.1", "8001"]
+        volumeMounts:
+        - mountPath: /tmp
+          name: mi-volume
+        ports:
+        - containerPort: 80
+        #readinessProbe:
+        #  httpGet:
+        #    path: /login
+        #    port: 80
+        #  periodSeconds: 1
+        #  timeoutSeconds: 1
+        #  successThreshold: 1
+        #  failureThreshold: 10
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+

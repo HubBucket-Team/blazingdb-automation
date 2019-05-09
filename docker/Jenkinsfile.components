@@ -2,7 +2,7 @@ pipeline {
   agent {
       label 'slave-gpu'
   }
-
+  
   options {
     ansiColor('xterm')
     timestamps()
@@ -10,55 +10,60 @@ pipeline {
   }
 
   parameters {
+    booleanParam(name: 'DOCKERHUB_PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
     string(name: 'CREDENTIALS', defaultValue: 'dockerhub-editaxz', description: 'Your credentials on blazingdb docker hub organization')
-    string(name: 'IMAGE', defaultValue: 'blazingsql/deploy:5', description: 'change the default value to: blazingdb/blazingsql:tag')
-    booleanParam(name: 'DOCKERHUB_LATEST', defaultValue: false, description: 'Publish image as latest')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
   }
-
+  
   environment {
     SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 
   stages {
+
     stage("Repository") {
       steps {
         checkout scm
       }
     }
-
-    stage("Publish on docker hub") { 
+    
+    stage("Build") {
       steps {
-        script {
-          docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
-            //sh "docker push ${params.IMAGE}"
-            app = docker.image("${params.IMAGE}")
-            app.push()
-          }
+        dir("docker/blazingsql/") {
+          sh "cp $HOME/blazingsql/output3/blazingsql-files.tar.gz ./"
+          sh "./docker_build_components.sh"
+          sh "rm -rf ./blazingsql-files.tar.gz"
         }
       }
     }
 
-    stage("Publish as latest") {
+    stage("Publish to Docker Hub") {
       when {
         expression {
-          return params.DOCKERHUB_LATEST ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+          return params.DOCKERHUB_PUBLISH ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
         }
       }
       steps {
         script {
           docker.withRegistry('https://registry.hub.docker.com', "${params.CREDENTIALS}") {
-            //sh "docker tag ${params.IMAGE} blazingdb/blazingsql:latest"
-            //sh "docker push blazingdb/blazingsql:latest"
-            app = docker.image("${params.IMAGE}")
-            app.push("latest")
+            calcite = docker.image("blazingdb/blazingsql:calcite")
+            calcite.push()
+
+            orchestrator = docker.image("blazingdb/blazingsql:orchestator")
+            orchestator.push()
+
+            ral = docker.image("blazingdb/blazingsql:ral")
+            ral.push()
+
+            pyblazing = docker.image("blazingdb/blazingsql:pyblazing")
+            pyblazing.push()
           }
         }
-      }
+      }     
     }
   }
 
-  // Method to post jenkinsfile
+// Method to post jenkinsfile
   post {
    // always {
    //    notifySlack "Started"
@@ -73,6 +78,7 @@ pipeline {
           notifySlack "Warning"
     }
   }
+
 }
 
 // Method to send notifications for slack

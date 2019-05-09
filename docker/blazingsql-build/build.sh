@@ -375,6 +375,37 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     fi
 fi
 
+# Package UCX runtime
+#TODO percy clear these hacks until we migrate to static libs for UCX
+mkdir -p ${output}/ucx
+cp -r $workspace_dir/dependencies/lib/libuc*.so ${output}/ucx
+cp -r $workspace_dir/dependencies/lib64/* ${output}/ucx
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+mkdir -p ${output}/nvstrings-src
+cp -r $custrings_current_dir/custrings/* ${output}/nvstrings-src
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+mkdir -p ${output}/nvstrings-build
+cp -r $custrings_current_dir/custrings/cpp/build/* ${output}/nvstrings-build
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+mkdir -p ${output}/nvstrings-build/rmm
+cp -r $rmm_install_dir/lib/* ${output}/nvstrings-build/rmm
+
+if [ $? != 0 ]; then
+  exit 1
+fi
+
 #BEGIN boost
 
 boost_install_dir=$workspace_dir/dependencies/

@@ -1,0 +1,24 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update && sudo apt-get install -y htop python3 python3-pip",
+        "sudo pip3 install 'dask[complete]'",
+        "sudo pip3 install bokeh"
+      ]
+    }
+  ],
+  "builders": [{
+      "type": "vagrant",
+      "communicator": "ssh",
+      "source_path": "ubuntu/xenial64",
+      "skip_add": "true",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant"
+  }]
+}

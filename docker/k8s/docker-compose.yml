@@ -1,0 +1,13 @@
+version: '2.3'
+
+services:
+  blazingsql:
+    image: blazingdb/blazingsql:test
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    #command: nvidia-smi
+    ports:
+      #- 8888:8888
+      - 80:80
+      - 9001:9001

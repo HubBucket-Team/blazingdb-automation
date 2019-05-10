@@ -1,0 +1,25 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-svc
+spec:
+  type: LoadBalancer
+  selector:
+    #app: blazingdb
+    app: blazingdb-jupyter
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+#kind: Service
+#apiVersion: v1
+#metadata:
+#  name: blazingdb-calcite-svc
+#spec:
+#  selector:
+#    app: blazingdb-calcite
+#  ports:
+#    - protocol: TCP
+#      port: 9000
+#      targetPort: 9000

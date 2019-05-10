@@ -76,6 +76,8 @@ if [ $workspace_maven_repository == true ]; then
       sudo rm -r $workspace/maven-repository
 fi
 
+# set default branches
+
 echo "Forcing build dependencies: $blazingdb_toolchain_clean_before_build"
 
 # Mandatory args
@@ -268,4 +270,3 @@ echo "nvidia-docker rm -f $image_deploy"
 nvidia-docker rmi -f $image_deploy
 echo "nvidia-docker build -t $image_deploy ."
 nvidia-docker build -t $image_deploy .
-

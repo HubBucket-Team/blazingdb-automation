@@ -378,7 +378,7 @@ fi
 # Package UCX runtime
 #TODO percy clear these hacks until we migrate to static libs for UCX
 mkdir -p ${output}/ucx
-cp -r $workspace_dir/dependencies/lib/libuc*.so ${output}/ucx
+cp -r $workspace_dir/dependencies/lib/libuc*.so* ${output}/ucx
 cp -r $workspace_dir/dependencies/lib64/* ${output}/ucx
 
 if [ $? != 0 ]; then
@@ -1060,6 +1060,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     # -DFLATBUFFERS_INSTALL_DIR=$flatbuffers_install_dir \
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
     echo "### Orchestrator - cmake ###"
+    echo "cmake -DCMAKE_BUILD_TYPE=$blazingdb_orchestrator_build_type  -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir .."
     cmake -DCMAKE_BUILD_TYPE=$blazingdb_orchestrator_build_type  \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
@@ -1070,6 +1071,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     fi
 
     echo "### Orchestrator - make ###"
+    echo "make -j$blazingdb_orchestrator_parallel"
     make -j$blazingdb_orchestrator_parallel
     if [ $? != 0 ]; then
       exit 1

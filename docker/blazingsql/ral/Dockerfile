@@ -6,14 +6,20 @@ LABEL Description="blazingdb/blazingsql is the official BlazingDB environment fo
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1 && \
-    apt-get clean
+    apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
+    
+# UCX
+RUN apt-get install -y libnuma1
+
+RUN apt-get clean
 
 COPY ./blazingsql-files/cudf/cpp/install/lib/libcudf.so /usr/local/cuda/lib64/
 COPY ./blazingsql-files/cudf/cpp/install/lib/librmm.so /usr/local/cuda/lib64/
 
 COPY ./blazingsql-files/nvstrings/lib/libNVCategory.so /usr/local/cuda/lib64/
 COPY ./blazingsql-files/nvstrings/lib/libNVStrings.so /usr/local/cuda/lib64/
+
+COPY ucx/*.so* /usr/lib/
 
 COPY ./blazingsql-files/testing-libgdf /usr/bin/testing-libgdf
 

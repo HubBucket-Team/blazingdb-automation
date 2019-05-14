@@ -1061,7 +1061,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     # -DGOOGLETEST_INSTALL_DIR=$googletest_install_dir \
     echo "### Orchestrator - cmake ###"
     echo "cmake -DCMAKE_BUILD_TYPE=$blazingdb_orchestrator_build_type  -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir .."
-    cmake -DCMAKE_BUILD_TYPE=$blazingdb_orchestrator_build_type  \
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$blazingdb_orchestrator_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \

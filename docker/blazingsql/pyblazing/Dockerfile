@@ -3,7 +3,7 @@ MAINTAINER BlazingDB <percy@blazingdb.com>
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 
 RUN apt-get update && \
-    apt-get install -y sudo bzip2 wget curl nano vim-tiny lsof htop net-tools && \
+    apt-get install -y sudo bzip2 wget curl nano vim-tiny lsof htop net-tools iputils-ping && \
     apt-get install -y libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
 
 # UCX

@@ -2,7 +2,7 @@
 
 echo "### Ucx ###"
 tar -xvf blazingsql-files.tar.gz blazingsql-files/ucx/
-cp -rf blazingsql-files/ucx orchestator/
+#cp -rf blazingsql-files/ucx orchestator/
 cp -rf blazingsql-files/ucx ral/
 
 echo "### Calcite ###"

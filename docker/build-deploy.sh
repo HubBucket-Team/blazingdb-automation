@@ -76,6 +76,8 @@ if [ $workspace_maven_repository == true ]; then
       sudo rm -r $workspace/maven-repository
 fi
 
+# set default branches
+
 echo "Forcing build dependencies: $blazingdb_toolchain_clean_before_build"
 
 # Mandatory args

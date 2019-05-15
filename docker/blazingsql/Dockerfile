@@ -97,9 +97,9 @@ ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor
 COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
-COPY supervisord/blazing-calcite.conf /etc/supervisor/conf.d/blazing-calcite.conf
-COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
-COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
+COPY supervisord/blazing-calcite-tcp.conf /etc/supervisor/conf.d/blazing-calcite.conf
+COPY supervisord/blazing-orchestrator-tcp.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
+COPY supervisord/blazing-ral-tcp.conf /etc/supervisor/conf.d/blazing-ral.conf
 COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
 COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
 RUN mkdir -p /var/log/supervisor/

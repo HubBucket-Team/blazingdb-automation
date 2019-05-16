@@ -1,83 +1,55 @@
 #!/bin/bash
 # Usage: 
-# build-deploy.sh 
-# (arg 2) # blazingdb_toolchain_branch
-# (arg 3) # custrings_branch
-# (arg 4) # cudf_branch
-# (arg 5) # protocol_branch
-# (arg 6) # io_branch
-# (arg 7) # blazingdb_communication_branch
-# (arg 8) # ral_branch
-# (arg 9) # orchestrator_branch
-# (arg 10) # calcite_branch
-# (arg 11) # pyblazing_branch
-# (arg 12) # blazingdb_toolchain_clean_before_build
-# (arg 13) # custrings_clean_before_build
-# (arg 14) # cudf_clean_before_build
-# (arg 15) # blazingdb_protocol_clean_before_build
-# (arg 16) # blazingdb_io_clean_before_build
-# (arg 17) # blazingdb_communication_clean_before_build
-# (arg 18) # blazingdb_ral_clean_before_build
-# (arg 19) # blazingdb_orchestrator_clean_before_build
-# (arg 20) # blazingdb_calcite_clean_before_build
-# (arg 21) # pyblazing_clean_before_build
-
-#BUILD
-WORKSPACE=$PWD
-
-cd $WORKSPACE/blazingsql-build/
-
-workspace=$HOME/blazingsql/workspace/
-if [ ! -d "$workspace" ]; then
-  rm -rf $workspace
-  echo "mkdir -p $workspace"
-  mkdir -p $workspace
-fi
-
-output=$HOME/blazingsql/output3/
-if [ ! -d "$output" ]; then
-  rm -rf $output
-  echo "mkdir -p $output"
-  mkdir -p $output
-fi
-ssh_key=$HOME/.ssh/
-image_build="blazingsql/build:latest"
-image_deploy="blazingdb/blazingsql:$1"
-
+# config_write.sh
+# (arg 1) # blazingdb_toolchain_branch
+# (arg 2) # custrings_branch
+# (arg 3) # cudf_branch
+# (arg 4) # protocol_branch
+# (arg 5) # io_branch
+# (arg 6) # blazingdb_communication_branch
+# (arg 7) # ral_branch
+# (arg 8) # orchestrator_branch
+# (arg 9) # calcite_branch
+# (arg 10) # pyblazing_branch
+# (arg 11) # blazingdb_toolchain_clean_before_build
+# (arg 12) # custrings_clean_before_build
+# (arg 13) # cudf_clean_before_build
+# (arg 14) # blazingdb_protocol_clean_before_build
+# (arg 15) # blazingdb_io_clean_before_build
+# (arg 16) # blazingdb_communication_clean_before_build
+# (arg 17) # blazingdb_ral_clean_before_build
+# (arg 18) # blazingdb_orchestrator_clean_before_build
+# (arg 19) # blazingdb_calcite_clean_before_build
+# (arg 20) # pyblazing_clean_before_build
+# (arg 21) # workspace_maven_clean_repository
+# Example: ./config_write.sh develop develop develop develop develop develop develop develop develop develop false false false false false false false false false false false
 
 # Parametrize branchs
-blazingdb_toolchain_branch=$2
-custrings_branch=$3
-cudf_branch=$4
-blazingdb_protocol_branch=$5
-blazingdb_io_branch=$6
-blazingdb_communication_branch=$7
-blazingdb_ral_branch=$8
-blazingdb_orchestrator_branch=$9
-blazingdb_calcite_branch=${10}
-pyblazing_branch=${11}
+blazingdb_toolchain_branch=$1
+custrings_branch=$2
+cudf_branch=$3
+blazingdb_protocol_branch=$4
+blazingdb_io_branch=$5
+blazingdb_communication_branch=$6
+blazingdb_ral_branch=$7
+blazingdb_orchestrator_branch=$8
+blazingdb_calcite_branch=$9
+pyblazing_branch=${10}
 
 # Parametrize clean before build options
-blazingdb_toolchain_clean_before_build=${12}
-custrings_clean_before_build=${13}
-cudf_clean_before_build=${14}
-blazingdb_protocol_clean_before_build=${15}
-blazingdb_io_clean_before_build=${16}
-blazingdb_communication_clean_before_build=${17}
-blazingdb_ral_clean_before_build=${18}
-blazingdb_orchestrator_clean_before_build=${19}
-blazingdb_calcite_clean_before_build=${20}
-pyblazing_clean_before_build=${21}
-
-workspace_maven_repository=${22}
-
-if [ $workspace_maven_repository == true ]; then
-      echo "clean maven-repository "
-      sudo rm -r $workspace/maven-repository
-fi
+blazingdb_toolchain_clean_before_build=${11}
+custrings_clean_before_build=${12}
+cudf_clean_before_build=${13}
+blazingdb_protocol_clean_before_build=${14}
+blazingdb_io_clean_before_build=${15}
+blazingdb_communication_clean_before_build=${16}
+blazingdb_ral_clean_before_build=${17}
+blazingdb_orchestrator_clean_before_build=${18}
+blazingdb_calcite_clean_before_build=${19}
+pyblazing_clean_before_build=${20}
+workspace_maven_repository=${21}
 
 # set default branches
-
 echo "Forcing build dependencies: $blazingdb_toolchain_clean_before_build"
 
 # Mandatory args
@@ -117,19 +89,9 @@ fi
 if [ -z "$pyblazing_branch" ]; then
     pyblazing_branch=develop
 fi
-
-mkdir -p $workspace $output
-
-#sudo chown 1000:1000 -R $workspace
-#sudo chown 1000:1000 -R $output
-#sudo chown 1000:1000 -R $ssh_key
-
-
-echo "### Copy properties ###"
-cp blazingsql-build.properties $workspace
-
-echo "Branches:"
-
+echo "********************************"
+echo "Branches input:"
+echo "********************************"
 echo "blazingdb_toolchain_branch: $blazingdb_toolchain_branch"
 echo "custrings_branch: $cudf_branch"
 echo "cudf_branch: $cudf_branch"
@@ -142,7 +104,7 @@ echo "blazingdb_calcite_branch: $blazingdb_calcite_branch"
 echo "pyblazing_branch: $pyblazing_branch"
 
 # define the properties template
-cat << EOF > $workspace/blazingsql-build.properties
+cat << EOF > ./blazingsql-build.properties
 #mandatory: branches
 blazingdb_toolchain_branch=$blazingdb_toolchain_branch
 custrings_branch=$custrings_branch
@@ -220,57 +182,5 @@ EOF
 echo "********************************"
 echo "The blazingsql-build.properties:"
 echo "********************************"
-cat $workspace/blazingsql-build.properties
+cat blazingsql-build.properties
 echo "********************************"
-echo "********************************"
-
-
-echo "### Build de Build ###"
-echo "nvidia-docker rmi -f $image_build"
-nvidia-docker rmi -f $image_build
-
-echo "nvidia-docker build -t $image_build ."
-#nvidia-docker build --build-arg CUDA_VERSION=10.0 -t $image_build .
-nvidia-docker build -t $image_build .
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-echo "### Remove previous tar ###"
-echo "rm -f $output/blazingsql-files.tar.gz"
-
-# User builder uid=1000, but user jenkins uid=123
-echo "### Run de Build ###"
-#echo "nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
-#nvidia-docker run --user 1000:1000 --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
-echo "nvidia-docker run --rm -e NEW_UID=$(id -u) -e NEW_GID=$(id -g) --rm -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build"
-nvidia-docker run --rm -e NEW_UID=$(id -u) -e NEW_GID=$(id -g) -v $workspace:/home/builder/workspace/ -v $output:/home/builder/output -v $ssh_key:/home/builder/.ssh/ $image_build
-#echo "Resultado: $?"
-if [ $? != 0 ]; then
-  exit 1
-fi
-
-echo "### Copy tar ###"
-echo "cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/"
-cp $output/blazingsql-files.tar.gz $WORKSPACE/blazingsql/
-
-echo "WORKSPACE WHERE TAR IS ====> " $WORKSPACE/blazingsql/
-
-echo "workspace ------->> " $workspace
-echo "OUTPUT ------------>> " $output
-echo "HOME ------------>> " $HOME
-
-# BEFORE DEPLOY
-cd $WORKSPACE/blazingsql/
-
-#wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-#chmod +x Miniconda3-latest-Linux-x86_64.sh
-
-#DEPLOY
-echo "### Build de Image Deploy ###"
-echo "nvidia-docker rm -f $image_deploy"
-nvidia-docker rmi -f $image_deploy
-echo "nvidia-docker build -t $image_deploy ."
-nvidia-docker build --build-arg CUDA_VERSION=10.0 -t $image_deploy .
-#nvidia-docker build -t $image_deploy .
-

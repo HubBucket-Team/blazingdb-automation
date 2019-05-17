@@ -26,6 +26,7 @@ pipeline {
     string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Gb', description: '')
     string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
     string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
+    string(name: 'E2E_BLAZINGDB_TESTING_MODULE', defaultValue: 'allE2ETest', description: 'module of end to end test')
     string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
     booleanParam(name: 'BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build all dependencies')
     booleanParam(name: 'CUSTRINGS_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
@@ -89,7 +90,7 @@ pipeline {
     stage("Run end to end test") {
       steps {
         dir("docker/blazingsql-testing") {
-          sh "./run_complete_test.sh ${params.E2E_USER} ${params.E2E_WORKDIR} ${params.DOCKER_IMAGE_TAG} ${params.E2E_DATA_SET} ${params.E2E_BLAZINGDB_TESTING_BRANCH}"
+          sh "./run_complete_test.sh ${params.E2E_USER} ${params.E2E_WORKDIR} ${params.DOCKER_IMAGE_TAG} ${params.E2E_DATA_SET} ${params.E2E_BLAZINGDB_TESTING_BRANCH} ${params.E2E_BLAZINGDB_TESTING_MODULE}"
         }
       }
     }

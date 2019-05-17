@@ -15,6 +15,7 @@ workdir=$2
 image_tag="blazingdb/blazingsql:"$3
 data_set=$4
 branch_blazingdb_testing=$5
+module_blazingdb_testing=$6
 # Variables
 home_user=/home/$user/blazingdb
 workdir_drill=$home_user/apache-drill-1.12.0
@@ -85,7 +86,7 @@ nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embe
 echo "Init e2e test"
 
 echo "============================First execution==============================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing
 
 #echo "=========================== Second execution ==========================================="
-#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user
+nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing

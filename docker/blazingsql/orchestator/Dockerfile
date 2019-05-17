@@ -11,7 +11,9 @@ RUN apt-get update
 RUN apt-get install -y libnuma1
 
 COPY blazingdb_orchestator_service /usr/bin/
-#COPY ucx/*.so* /usr/lib/
+COPY ucx/*.so* /usr/lib/
+
+RUN ln -s /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so /usr/lib/libcuda.so.1
 
 # If the user wants to communicate by unix socket need to mount his /tmp folder
 VOLUME /tmp

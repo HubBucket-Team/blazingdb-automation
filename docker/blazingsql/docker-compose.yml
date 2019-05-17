@@ -39,8 +39,8 @@ services:
       - sockets:/tmp/
     depends_on:
       - orchestrator
-    #command: sleep 3600
-    command: testing-libgdf 1 orchestrator 9000 ral1 8001
+    command: sleep 36000
+    #command: testing-libgdf 1 orchestrator 9000 ral1 8001
     #ports:
     #  - 80:8888
 
@@ -55,8 +55,8 @@ services:
       - sockets:/tmp/
     depends_on:
       - orchestrator
-    #command: sleep 3600
-    command: testing-libgdf 2 orchestrator 9000 ral2 8001
+    command: sleep 36000
+    #command: testing-libgdf 2 orchestrator 9000 ral2 8001
 
 
 volumes:

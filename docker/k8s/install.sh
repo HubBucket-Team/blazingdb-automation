@@ -18,21 +18,24 @@ gcloud container clusters get-credentials $name --zone $zone --project $project
 
 
 echo "### install nvidia driver ###"
-path_relative=""
+cmd="kubectl"
 if ! [ -x "$(command -v kubectl)" ]; then
   echo 'Error: kubectl is not installed.' >&2
   echo 'Downloading kubectl'
   curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
   chmod +x kubectl
-  path_relative="./"
+  cmd="./kubectl"
 fi
-$path_relative/kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/stable/nvidia-driver-installer/cos/daemonset-preloaded.yaml
+$cmd apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/stable/nvidia-driver-installer/cos/daemonset-preloaded.yaml
 
 
 echo "### install blazingsql ###"
-$path_relative/kubectl apply -f blazingdb_calcite_dep.yaml
-$path_relative/kubectl apply -f blazingdb_orch_dep.yaml
-$path_relative/kubectl apply -f blazingdb_ral_dep.yaml
-$path_relative/kubectl apply -f blazingdb_jupyter_dep.yaml
+$cmd apply -f pv.yaml
+$cmd apply -f pvc.yaml
+$cmd apply -f blazingdb_calcite_dep.yaml
+$cmd apply -f blazingdb_orch_dep.yaml
+$cmd apply -f blazingdb_ral_dep.yaml
+$cmd apply -f blazingdb_jupyter_dep.yaml
 
-$path_relative/kubectl apply -f blazingdb_jupyter_svc.yaml
+$cmd apply -f blazingdb_orch_svc.yaml
+$cmd apply -f blazingdb_jupyter_svc.yaml

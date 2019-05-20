@@ -89,11 +89,12 @@ fi
 if [ -z "$pyblazing_branch" ]; then
     pyblazing_branch=develop
 fi
+
 echo "********************************"
 echo "Branches input:"
 echo "********************************"
 echo "blazingdb_toolchain_branch: $blazingdb_toolchain_branch"
-echo "custrings_branch: $cudf_branch"
+echo "custrings_branch: $custrings_branch"
 echo "cudf_branch: $cudf_branch"
 echo "blazingdb_protocol_branch: $blazingdb_protocol_branch"
 echo "blazingdb_io_branch: $blazingdb_io_branch"

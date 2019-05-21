@@ -40,7 +40,7 @@ pipeline {
     IMAGE_BUILD = "blazingsql/build:cuda10"
     BZSQL_WORKSPACE = "${env.WORKSPACE}/workspace_cuda10"
     BZSQL_OUTPUT = "${env.WORKSPACE}/output_cuda10"
-    ARTIFACT = "blazingsql-files.tar.gz"
+    ARTIFACT = "{env.BZSQL_OUTPUT}/blazingsql-files.tar.gz"
     SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 

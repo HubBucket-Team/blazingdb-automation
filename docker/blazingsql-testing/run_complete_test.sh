@@ -85,8 +85,8 @@ nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embe
 
 echo "Init e2e test"
 
-echo "============================First execution==============================================="
+echo "============================ RUN run_e2e.sh ==============================================="
 nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing
 
 #echo "=========================== Second execution ==========================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing
+#nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing

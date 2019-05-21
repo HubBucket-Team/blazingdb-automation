@@ -79,7 +79,7 @@ pipeline {
         sh "docker cp ${ARTIFACT} blzsql_colab_cuda10:/tmp/"
         sh "docker cp ./docker/colab/install.sh blzsql_colab_cuda10:/tmp/"
 
-        sh "docker exec blzsql_colab_cuda10 /tmp/install.sh /tmp/${ARTIFACT}"
+        sh "docker exec blzsql_colab_cuda10 /tmp/install.sh /tmp/blazingsql-files.tar.gz"
         sh "docker exec blzsql_colab_cuda10 python3 /blazingsql/demo1.py"
         sh "docker exec blzsql_colab_cuda10 python3 /blazingsql/demo2.py"
         sh "docker exec blzsql_colab_cuda10 python3 /blazingsql/demo3.py"

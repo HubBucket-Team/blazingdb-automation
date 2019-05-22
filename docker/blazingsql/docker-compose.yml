@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
 
-  fluentd: 
+  fluentd:
     image: blazingdb/fluentd:latest
     build: ./fluentd
     volumes:
@@ -26,14 +26,6 @@ services:
       - 80:80
     depends_on:
       - fluentd
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: '1s'
-        fluentd-max-retries: '30'
-        tag: "debug.{{.ID}}"
 
   calcite:
     image: blazingdb/blazingsql:calcite
@@ -42,14 +34,6 @@ services:
       - sockets:/tmp/
     depends_on:
       - fluentd
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: '1s'
-        fluentd-max-retries: '30'
-        tag: "debug.{{.ID}}"
 
   orchestrator:
     image: blazingdb/blazingsql:orchestator
@@ -60,14 +44,6 @@ services:
       - 9000:9000
     depends_on:
       - fluentd
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: '1s'
-        fluentd-max-retries: '30'
-        tag: "debug.{{.ID}}"
 
   ral1:
     image: blazingdb/blazingsql:ral
@@ -80,10 +56,8 @@ services:
       - sockets:/tmp/
     depends_on:
       - orchestrator
-    #command: sleep 3600
+    #command: sleep 36000
     command: testing-libgdf 1 orchestrator 9000 ral1 8001
-    #ports:
-    #  - 80:8888
     depends_on:
       - fluentd
     logging:
@@ -106,14 +80,13 @@ services:
       - sockets:/tmp/
     depends_on:
       - orchestrator
-    #command: sleep 3600
+    #command: sleep 36000
     command: testing-libgdf 2 orchestrator 9000 ral2 8001
     depends_on:
       - fluentd
     logging:
       driver: fluentd
       options:
-        #fluentd-address: fluentd:24224
         fluentd-address: localhost:24224
         fluentd-async-connect: 'true'
         fluentd-retry-wait: '1s'

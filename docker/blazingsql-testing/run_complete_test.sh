@@ -53,9 +53,11 @@ if [ ! -d $workdir/$data_set ]; then
 fi
 
 #TO DO: Replace file configurationfile
-if [ ! -f $workdir/configurationFile.json ]; then
-    gsutil cp gs://blazingdbstorage/configurationFileTrue.json  .
-    gsutil cp gs://blazingdbstorage/configurationFileFalse.json  .
+if [ ! -f $workdir/configurationFileTrue$data_set.json ]; then
+    gsutil cp gs://blazingdbstorage/configurationFileTrue$data_set.json  .
+fi
+if [ ! -f $workdir/configurationFileFalse$data_set.json ]; then
+    gsutil cp gs://blazingdbstorage/configurationFileFalse$data_set.json  .
 fi
 
 echo "Updating creation logtest directory"
@@ -86,7 +88,7 @@ nvidia-docker exec -ti -d bzsqlcontainer /etc/apache-drill-1.12.0/bin/drill-embe
 echo "Init e2e test"
 
 echo "============================First execution==============================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing
+nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing $data_set
 
-#echo "=========================== Second execution ==========================================="
-nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing
+echo "=========================== Second execution ==========================================="
+nvidia-docker  exec  bzsqlcontainer   /tmp/run_e2e.sh  $home_user $module_blazingdb_testing $data_set

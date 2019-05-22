@@ -2,17 +2,6 @@ version: '2.4'
 
 services:
 
-  fluentd:
-    image: blazingdb/fluentd:latest
-    build: ./fluentd
-    volumes:
-      - ./fluentd_in_docker.conf:/fluentd/etc/extra/fluent.conf 
-    ports:
-      - "9292:9292"
-      - "24224:24224"
-      - "24224:24224/udp"
-    #command: ["fluentd", "-c", "/fluentd/etc/extra/fluent.conf"]
-
   jupyter:
     image: blazingdb/blazingsql:pyblazing
     build: ./pyblazing
@@ -24,26 +13,28 @@ services:
       - sockets:/tmp/
     ports:
       - 80:80
-    depends_on:
-      - fluentd
+    networks:
+      - backend
 
   calcite:
     image: blazingdb/blazingsql:calcite
     build: ./calcite
     volumes:
       - sockets:/tmp/
-    depends_on:
-      - fluentd
+    networks:
+      - backend
 
   orchestrator:
     image: blazingdb/blazingsql:orchestator
     build: ./orchestator
     volumes:
+      - data:/blazingdb/data/demo/
       - sockets:/tmp/
     ports:
       - 9000:9000
-    depends_on:
-      - fluentd
+    #command: sleep 36000
+    networks:
+      - backend
 
   ral1:
     image: blazingdb/blazingsql:ral
@@ -57,17 +48,10 @@ services:
     depends_on:
       - orchestrator
     #command: sleep 36000
-    command: testing-libgdf 1 orchestrator 9000 ral1 8001
-    depends_on:
-      - fluentd
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: '1s'
-        fluentd-max-retries: '30'
-        tag: "debug.{{.ID}}"
+    command: testing-libgdf 1 orchestrator 9000 172.50.1.1 8001
+    networks:
+      backend:
+        ipv4_address: 172.50.1.1
 
   ral2:
     image: blazingdb/blazingsql:ral
@@ -81,17 +65,44 @@ services:
     depends_on:
       - orchestrator
     #command: sleep 36000
-    command: testing-libgdf 2 orchestrator 9000 ral2 8001
-    depends_on:
-      - fluentd
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        fluentd-async-connect: 'true'
-        fluentd-retry-wait: '1s'
-        fluentd-max-retries: '30'
-        tag: "debug.{{.ID}}"
+    command: testing-libgdf 2 orchestrator 9000 172.50.1.2 8001
+    networks:
+      backend:
+        ipv4_address: 172.50.1.2
+
+  # ral3:
+  #   image: blazingdb/blazingsql:ral
+  #   build: ./ral
+  #   runtime: nvidia
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all
+  #   volumes:
+  #     - data:/blazingdb/data/demo/
+  #     - sockets:/tmp/
+  #   depends_on:
+  #     - orchestrator
+  #   #command: sleep 36000
+  #   command: testing-libgdf 3 orchestrator 9000 172.50.1.3 8001
+  #   networks:
+  #     backend:
+  #       ipv4_address: 172.50.1.3
+
+  # ral4:
+  #   image: blazingdb/blazingsql:ral
+  #   build: ./ral
+  #   runtime: nvidia
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all
+  #   volumes:
+  #     - data:/blazingdb/data/demo/
+  #     - sockets:/tmp/
+  #   depends_on:
+  #     - orchestrator
+  #   #command: sleep 36000
+  #   command: testing-libgdf 4 orchestrator 9000 172.50.1.4 8001
+  #   networks:
+  #     backend:
+  #       ipv4_address: 172.50.1.4
 
 
 volumes:
@@ -100,6 +111,9 @@ volumes:
 
 
 networks:
-  front-tier:
-  back-tier:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.50.1.0/16
 

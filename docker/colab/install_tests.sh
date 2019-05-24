@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get install -y openjdk-8-jdk mysql-client git
+apt-get install -y openjdk-8-jdk mysql-client git netcat
 
 pip3 install pydrill
 pip3 install openpyxl

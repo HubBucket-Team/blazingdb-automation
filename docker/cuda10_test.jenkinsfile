@@ -54,7 +54,7 @@ pipeline {
 
     stage("Test") {
       steps {
-        sh "docker exec -ti ${CONTAINER_NAME} /tmp/run_test.sh"
+        sh "docker exec ${CONTAINER_NAME} /tmp/run_test.sh"
         sh "docker rm -f ${CONTAINER_NAME}"
       }
     }

@@ -38,7 +38,7 @@ pipeline {
         sh "gsutil cp gs://blazingdbstorage/configFileFalse.json blazingdb-testing/BlazingSQLTest/"
         sh "gsutil cp -R gs://blazingdbstorage/DataSet100Mb blazingdb-testing/BlazingSQLTest/"
 
-        sh "docker run --runtime=nvidia --name ${CONTAINER_NAME} -d -ti -v $PWD/docker/colab/install_tests.sh:/tmp/ -v $PWD/docker/colab/run_test.sh:/tmp/ -v $PWD/blazingdb-testing/BlazingSQLTest/:/tmp/blazingdb/ ${env.DOCKER_IMAGE} bash"
+        sh "docker run --runtime=nvidia --name ${CONTAINER_NAME} -d -ti -v $PWD/docker/colab/install_tests.sh:/tmp/install_tests.sh -v $PWD/docker/colab/run_test.sh:/tmp/run_test.sh -v $PWD/blazingdb-testing/BlazingSQLTest/:/tmp/blazingdb/ ${env.DOCKER_IMAGE} bash"
         sh "docker exec ${CONTAINER_NAME} service supervisor start"
         sh "docker exec ${CONTAINER_NAME} blazingsql status"
       }

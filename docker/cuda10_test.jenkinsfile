@@ -1,0 +1,107 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }  
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  parameters {
+    string(name: 'DOCKER_IMAGE', defaultValue: 'blazingdb/blazingsql:cuda10', description: 'The image to run tests e2e')
+    string(name: 'E2E_USER', defaultValue: 'mario21ic', description: '')
+    string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/blazingsql/workspace', description: '')
+    string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Gb', description: '')
+    string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
+    string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+  }
+
+  environment {
+    CONTAINER_NAME = "blzsql_test_cuda10"
+    SLACK_MESSAGE  = " - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
+  }
+  
+  stages {
+
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage("Config") {
+      steps {
+        // TODO: Clone the repo blazing testing and share with a volume
+        sh "docker run --runtime=nvidia --name ${CONTAINER_NAME} -d -ti ${env.DOCKER_IMAGE} bash"
+        sh "docker exec ${CONTAINER_NAME} service supervisor start"
+        sh "docker exec ${CONTAINER_NAME} blazingsql status"
+      }
+    }
+
+    stage("Build") {
+      steps {
+        // TODO: Install with a script
+        sh "docker exec ${CONTAINER_NAME} apt-get install -y openjdk-8-jdk mysql-client git"
+        sh "docker exec ${CONTAINER_NAME} pip3 install pydrill"
+        sh "docker exec ${CONTAINER_NAME} pip3 install openpyxl"
+        sh "docker exec ${CONTAINER_NAME} pip3 install pymysql"
+        sh "docker exec ${CONTAINER_NAME} pip3 install gitpython"
+        sh "docker exec ${CONTAINER_NAME} wget -O /tmp/apache_drill.tar.gz -nv http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz"
+        sh "docker exec ${CONTAINER_NAME} tar -xvzf /tmp/apache_drill.tar.gz -C /etc/"
+        // TODO: Config apache drill
+        //sh 'export DRILL_JAVA_OPTS="-Duser.timezone=UTC"'
+        //sh "/etc/apache-drill-1.12.0/conf/drill-env.sh"
+        sh "docker exec ${CONTAINER_NAME} mkdir -p /etc/apache-drill-1.12.0/log/"
+        sh "docker exec ${CONTAINER_NAME} chmod 777 /etc/apache-drill-1.12.0/log/"
+
+        sh "docker exec -ti -d ${DOCKER_IMAGE} /etc/apache-drill-1.12.0/bin/drill-embedded"
+      }
+    }
+
+    stage("Test") {
+      steps {
+        sh "docker exec -ti -d ${CONTAINER_NAME} python3 -m EndToEndTests.allE2ETest configurationFileFalse.js"
+        sh "docker rm -f ${CONTAINER_NAME}"
+      }
+    }
+
+  }
+
+  // Method to post jenkinsfile
+  post {
+   // always {
+   //    notifySlack "Started"
+   //  }
+    success {
+         notifySlack "Success"
+    }
+    failure {
+          notifySlack "Failure"
+    }
+    unstable {
+          notifySlack "Warning"
+    }
+  }
+
+}
+
+// Method to send notifications for slack
+def notifySlack(String buildStatus = 'Started') {
+    buildStatus = buildStatus ?: 'Success'
+
+    def color
+
+    if (buildStatus == 'Started') {
+        color = '#6f7275'
+    } else if (buildStatus == 'Success') {
+        color = '#037c0e'
+    } else if (buildStatus == 'Warning') {
+        color = '#dfdd30'
+    } else {
+        color = '#8e0406'
+    }
+
+
+ slackSend channel: "${params.SLACK_CHANNEL}", color: color, failOnError: true, message: "${buildStatus}" + "$SLACK_MESSAGE"
+}

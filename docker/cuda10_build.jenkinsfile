@@ -5,10 +5,11 @@ pipeline {
   options {
     ansiColor('xterm')
     timestamps()
-    timeout(time: 1, unit: 'HOURS')
+    timeout(time: 2, unit: 'HOURS')
   }
 
   parameters {
+    booleanParam(name: 'CALL_JOB_E2E', defaultValue: true, description: 'Call to job e2e')
     booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Publish tar file and install.sh to S3')
     //choice(name: 'CUDA_VERSION', choices: 'cuda92\cuda10', description: 'Cuda 9.2 or Cuda 10.0')
     //string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
@@ -85,19 +86,40 @@ pipeline {
         sh "docker exec blzsql_colab_cuda10 python3 /blazingsql/demo3.py"
         sh "docker exec blzsql_colab_cuda10 python3 /blazingsql/demo4.py"
 
-        sh "docker rm -f blzsql_colab_cuda10"
-
         /*
-        sh "docker exec blzsql_colab_cuda10 apt-get install -y openjdk-8-jdk mysql-client"
+        sh "docker exec blzsql_colab_cuda10 apt-get install -y openjdk-8-jdk mysql-client git"
         sh "docker exec blzsql_colab_cuda10 pip3 install pydrill"
         sh "docker exec blzsql_colab_cuda10 pip3 install openpyxl"
         sh "docker exec blzsql_colab_cuda10 pip3 install pymysql"
         sh "docker exec blzsql_colab_cuda10 pip3 install gitpython"
         sh "docker exec blzsql_colab_cuda10 wget -O /tmp/apache_drill.tar.gz -nv http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz"
         sh "docker exec blzsql_colab_cuda10 tar -xvzf /tmp/apache_drill.tar.gz -C /etc/"
-        sh "docker exec blzsql_colab_cuda10 mkdir -p /etc/apache-drill-1.12.0/log/
-        sh "docker exec blzsql_colab_cuda10 chmod 777 /etc/apache-drill-1.12.0/log/
+        sh 'export DRILL_JAVA_OPTS="-Duser.timezone=UTC"'
+        sh "/etc/apache-drill-1.12.0/conf/drill-env.sh"
+        sh "docker exec blzsql_colab_cuda10 mkdir -p /etc/apache-drill-1.12.0/log/"
+        sh "docker exec blzsql_colab_cuda10 chmod 777 /etc/apache-drill-1.12.0/log/"
+
+        sh "docker exec -ti -d blzsql_colab_cuda10 /etc/apache-drill-1.12.0/bin/drill-embedded"
+        sh "docker exec -ti -d blzsql_colab_cuda10 python3 -m EndToEndTests.allE2ETest configurationFileFalse.js"
         */
+
+        sh "docker commit blzsql_colab_cuda10 blazingdb/blazingsql:cuda10"
+        sh "docker rm -f blzsql_colab_cuda10"
+      }
+    }
+
+    stage("Call Job E2E") {
+      when {
+        expression {
+          return params.CALL_JOB_E2E ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        build job: "07.ENDTOEND_TEST_CUDA10", parameters: [
+          [$class: 'StringParameterValue', name: 'CALL_JOB_BUILD', value: "false"],
+          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE_BASE', value: "${env.IMAGE}"],
+          [$class: 'StringParameterValue', name: 'BRANCH_BLAZINGDB_AUTOMATION', value: "${params.BRANCH_BLAZINGDB_AUTOMATION}"]
+        ]
       }
     }
 

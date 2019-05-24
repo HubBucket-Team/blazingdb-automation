@@ -36,7 +36,7 @@ pipeline {
         sh "git clone -b develop git@github.com:BlazingDB/blazingdb-testing.git"
         sh "cd blazingdb-testing/ && git pull origin develop && mkdir -p BlazingSQLTest/logtest/"
         sh "gsutil cp gs://blazingdbstorage/configFileFalse.json blazingdb-testing/BlazingSQLTest/"
-        sh "gsutil cp -R gs://blazingdbstorage/DataSet100Mb blazingdb-testing/BlazingSQLTest/
+        sh "gsutil cp -R gs://blazingdbstorage/DataSet100Mb blazingdb-testing/BlazingSQLTest/"
 
         sh "docker run --runtime=nvidia --name ${CONTAINER_NAME} -d -ti -v $PWD/docker/colab/install_tests.sh:/tmp/ -v $PWD/docker/colab/run_test.sh:/tmp/ -v $PWD/blazingdb-testing/BlazingSQLTest/:/tmp/blazingdb/ ${env.DOCKER_IMAGE} bash"
         sh "docker exec ${CONTAINER_NAME} service supervisor start"

@@ -33,12 +33,13 @@ pipeline {
     stage("Config") {
       steps {
         // TODO: compartir volume de workspace
-        sh "rm -rf blazingdb-testing/"
+        //sh "rm -rf blazingdb-testing/"
         sh "git clone -b develop git@github.com:BlazingDB/blazingdb-testing.git"
         sh "cd blazingdb-testing/ && git pull origin develop && mkdir -p BlazingSQLTest/logtest/"
         sh "gsutil cp gs://blazingdbstorage/configFileFalse.json blazingdb-testing/BlazingSQLTest/"
         sh "gsutil cp -R gs://blazingdbstorage/DataSet100Mb blazingdb-testing/BlazingSQLTest/"
 
+        sh "docker rm -f ${CONTAINER_NAME}"
         sh "docker run --runtime=nvidia --name ${CONTAINER_NAME} -d -ti -v ${WORKSPACE}/docker/colab/install_tests.sh:/tmp/install_tests.sh -v ${WORKSPACE}/docker/colab/run_test.sh:/tmp/run_test.sh -v ${WORKSPACE}/blazingdb-testing/BlazingSQLTest/:/tmp/blazingdb/ ${env.DOCKER_IMAGE} bash"
         sh "docker exec ${CONTAINER_NAME} service supervisor start"
         sh "docker exec ${CONTAINER_NAME} blazingsql status"

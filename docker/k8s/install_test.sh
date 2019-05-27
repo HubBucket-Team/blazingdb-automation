@@ -30,12 +30,12 @@ $cmd apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-en
 
 
 echo "### install blazingsql ###"
-$cmd apply -f pv.yaml
-$cmd apply -f pvc.yaml
-$cmd apply -f blazingdb_calcite_dep.yaml
-$cmd apply -f blazingdb_orch_dep.yaml
-$cmd apply -f blazingdb_ral_dep.yaml
-$cmd apply -f blazingdb_jupyter_dep.yaml
+#$cmd apply -f pv.yaml
+#$cmd apply -f pvc.yaml
+#$cmd apply -f blazingdb_calcite_dep.yaml
+#$cmd apply -f blazingdb_orch_dep.yaml
+#$cmd apply -f blazingdb_ral_dep.yaml
+#$cmd apply -f blazingdb_jupyter_dep.yaml
 
-$cmd apply -f blazingdb_orch_svc.yaml
-$cmd apply -f blazingdb_jupyter_svc.yaml
+#$cmd apply -f blazingdb_orch_svc.yaml
+#$cmd apply -f blazingdb_jupyter_svc.yaml

@@ -30,10 +30,12 @@ pipeline {
 
     stage("Create cluster on GCP") { 
       steps {
+         dir("docker/k8s/") {
         script {         
             sh "./install_test.sh ${params.PROJECT_NAME} ${params.CLUSTER_NAME} ${params.ZONE} ${params.NODES_NUMBER} ${params.NUMBER_GPUS_PER_NODE}"
           }
         }
+      }
       }
     }
 

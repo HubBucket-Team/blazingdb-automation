@@ -54,7 +54,7 @@ pipeline {
           notifySlack "Warning"
     }
   }
-}
+
 
 // Method to send notifications for slack
 def notifySlack(String buildStatus = 'Started') {

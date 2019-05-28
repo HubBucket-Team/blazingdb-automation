@@ -1,8 +1,8 @@
 #!/bin/bash
 # Usage branch_name
 
-blazingdb_testing_name=blazingdb-testing
 branch_name=$1
+blazingdb_testing_name=blazingdb-testing
 
 if [ ! -d $blazingdb_testing_name ]; then
   echo " Clonning blazingdb-testing"

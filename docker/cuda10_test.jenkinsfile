@@ -35,9 +35,7 @@ pipeline {
         sh "./docker/blazingsql-testing/download_data_set.sh ${env.E2E_DATA_SET} blazingdb-testing/BlazingSQLTest/"
         sh "gsutil cp gs://blazingdbstorage/configFileFalse.json blazingdb-testing/BlazingSQLTest/"
 
-        sh "docker run --rm --runtime=nvidia --name ${CONTAINER_NAME} -d -ti -v ${WORKSPACE}/docker/colab/install_tests.sh:/tmp/install_tests.sh -v ${WORKSPACE}/docker/colab/run_test.sh:/tmp/run_test.sh -v ${WORKSPACE}/blazingdb-testing/BlazingSQLTest/:/tmp/blazingdb/ ${env.DOCKER_IMAGE} bash"
-        sh "docker exec ${CONTAINER_NAME} service supervisor start"
-        sh "docker exec ${CONTAINER_NAME} blazingsql status"
+        sh "./docker/blazingsql-testing/docker_run_colab.sh ${env.DOCKER_IMAGE} ${CONTAINER_NAME} blazingdb-testing/BlazingSQLTest"
       }
     }
 
@@ -51,6 +49,7 @@ pipeline {
     stage("Test") {
       steps {
         sh "docker exec ${CONTAINER_NAME} /tmp/run_test.sh"
+        
         sh "docker rm -f ${CONTAINER_NAME}"
       }
     }

@@ -22,6 +22,8 @@ services:
     build: ./calcite
     #command: sleep 36000
     command: java -jar /usr/bin/BlazingCalcite.jar -p 8890
+    ports:
+      - "8890"
     #volumes:
     #  - sockets:/tmp/
     networks:
@@ -36,7 +38,8 @@ services:
     #volumes:
     #  - sockets:/tmp/
     ports:
-      - 9000:9000
+      - "8889"
+      - "9000"
     depends_on:
       - calcite
     networks:
@@ -56,6 +59,9 @@ services:
       - orchestrator
     #command: sleep 36000
     command: testing-libgdf 1 172.21.1.3 8889 9000 172.21.1.5 8891 9001
+    ports:
+      - "8891"
+      - "9001"
     networks:
       back-tier:
         ipv4_address: 172.21.1.5
@@ -73,6 +79,9 @@ services:
       - orchestrator
     #command: sleep 36000
     command: testing-libgdf 2 172.21.1.3 8889 9000 172.21.1.6 8891 9001
+    ports:
+      - "8891"
+      - "9001"
     networks:
       back-tier:
         ipv4_address: 172.21.1.6

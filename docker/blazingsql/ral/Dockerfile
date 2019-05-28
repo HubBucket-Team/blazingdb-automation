@@ -19,7 +19,7 @@ COPY ./blazingsql-files/cudf/cpp/install/lib/librmm.so /usr/local/cuda/lib64/
 COPY ./blazingsql-files/nvstrings/lib/libNVCategory.so /usr/local/cuda/lib64/
 COPY ./blazingsql-files/nvstrings/lib/libNVStrings.so /usr/local/cuda/lib64/
 
-COPY ucx/*.so* /usr/lib/
+#COPY ucx/*.so* /usr/lib/
 
 COPY ./blazingsql-files/testing-libgdf /usr/bin/testing-libgdf
 

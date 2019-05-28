@@ -53,13 +53,12 @@ RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm
 CFLAGS="-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/" CXXFLAGS="-I/conda/envs/cudf/include -I$cudf_dir/thirdparty/dlpack/include/dlpack -I$cudf_dir/thirdparty/dlpack/include/" pip install $cudf_dir/python
 
 # Install blazingsql
-blazingdb_ral_artifact_name=testing-libgdf
-blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
-blazingdb_calcite_artifact_name=BlazingCalcite.jar
-
-cp $blazingsql_files/$blazingdb_ral_artifact_name /home/jupyter
-cp $blazingsql_files/$blazingdb_orchestrator_artifact_name /home/jupyter
-cp $blazingsql_files/$blazingdb_calcite_artifact_name /home/jupyter
+#blazingdb_ral_artifact_name=testing-libgdf
+#blazingdb_orchestrator_artifact_name=blazingdb_orchestator_service
+#blazingdb_calcite_artifact_name=BlazingCalcite.jar
+#cp $blazingsql_files/$blazingdb_ral_artifact_name /home/jupyter
+#cp $blazingsql_files/$blazingdb_orchestrator_artifact_name /home/jupyter
+#cp $blazingsql_files/$blazingdb_calcite_artifact_name /home/jupyter
 
 # Install blazingdb-protocol/python
 pip install $blazingsql_files/blazingdb-protocol/python/

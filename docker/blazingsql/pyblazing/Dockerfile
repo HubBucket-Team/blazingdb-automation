@@ -1,22 +1,10 @@
 FROM nvidia/cuda:9.2-devel-ubuntu16.04
-
 MAINTAINER BlazingDB <percy@blazingdb.com>
-
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 
-RUN apt-get update
-
-# Install Java runtime
-RUN apt-get install -y openjdk-8-jre
-
-# Install supervisord
-RUN apt-get install -y supervisor
-
-# Install tools & utils
-RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
-
-# Install blazingdb-io runtime dependencies
-RUN apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
+RUN apt-get update && \
+    apt-get install -y sudo bzip2 wget curl nano vim-tiny lsof htop net-tools iputils-ping && \
+    apt-get install -y libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
 
 # UCX
 RUN apt-get install -y libnuma-dev
@@ -25,10 +13,6 @@ RUN apt-get clean
 
 # Create the container user
 RUN useradd -ms /bin/bash jupyter
-
-# Setup the Calcite database catalog
-RUN mkdir /blazingsql
-RUN chown -R jupyter:jupyter /blazingsql/
 
 # Create conda dir & download conda from https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 #COPY Miniconda3-latest-Linux-x86_64.sh /miniconda.sh
@@ -97,17 +81,8 @@ RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
 ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 
-# Setup Supervisord
-RUN mkdir -p /var/log/supervisor
-COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
-COPY supervisord/blazing-calcite-tcp.conf /etc/supervisor/conf.d/blazing-calcite.conf
-COPY supervisord/blazing-orchestrator-tcp.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
-COPY supervisord/blazing-ral-tcp.conf /etc/supervisor/conf.d/blazing-ral.conf
-COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
-COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
-RUN mkdir -p /var/log/supervisor/
-RUN chown -R jupyter:jupyter /var/log/supervisor/
-RUN chmod +x /usr/bin/run_jupyter.sh
+# Setup Jupyter
+COPY run_jupyter.sh /usr/bin/run_jupyter.sh
 RUN chown jupyter:jupyter /usr/bin/run_jupyter.sh
 
 # Copy the demo files
@@ -141,19 +116,11 @@ VOLUME /blazingsql
 VOLUME /tmp
 
 # 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
-EXPOSE 8889
 EXPOSE 8890
 EXPOSE 8891
 EXPOSE 8892
 
-# Supervisord HTTP port
-EXPOSE 9001
-
 # Jupyter
-#EXPOSE 8888
 EXPOSE 80
 
-# haddop
-#EXPOSE 54310
-
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/run_jupyter.sh"]

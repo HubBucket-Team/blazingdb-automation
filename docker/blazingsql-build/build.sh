@@ -423,7 +423,7 @@ if [ $custrings_enable == true ]; then
     rmm_build_dir=$rmm_src_dir/build
     rmm_install_dir=$rmm_src_dir/install
     
-    if [ ! -f $custrings_install_dir/include/NVStrings.h ]; then
+    if [ ! -f $custrings_install_dir/include/NVStrings.h ] || [ $custrings_clean_before_build == true ]; then
         #BEGIN custrings
         echo "### Custrings - start ###"
         

@@ -272,8 +272,24 @@ fi
 
 #BEGIN set default optional arguments for build options (precompiler definitions, etc.)
 
+if [ -z "$blazingdb_protocol_definitions" ]; then
+    blazingdb_protocol_definitions=""
+fi
+
+if [ -z "$blazingdb_io_definitions" ]; then
+    blazingdb_io_definitions=""
+fi
+
+if [ -z "$blazingdb_communication_definitions" ]; then
+    blazingdb_communication_definitions=""
+fi
+
 if [ -z "$blazingdb_ral_definitions" ]; then
     blazingdb_ral_definitions="-DLOG_PERFORMANCE"
+fi
+
+if [ -z "$blazingdb_orchestrator_definitions" ]; then
+    blazingdb_orchestrator_definitions=""
 fi
 
 #END set default optional arguments for build options (precompiler definitions, etc.)
@@ -779,6 +795,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$blazingdb_protocol_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
+          -DCXX_DEFINES=$blazingdb_protocol_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -857,6 +874,7 @@ if [ $blazingdb_io_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$blazingdb_io_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
+          -DCXX_DEFINES=$blazingdb_io_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -920,6 +938,8 @@ if [ $blazingdb_communication_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$blazingdb_communication_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_communication_install_dir \
+          -DCUDA_DEFINES=$blazingdb_communication_definitions \
+          -DCXX_DEFINES=$blazingdb_communication_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -1068,6 +1088,8 @@ if [ $blazingdb_orchestrator_enable == true ]; then
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \
+          -DCUDA_DEFINES=$blazingdb_orchestrator_definitions \
+          -DCXX_DEFINES=$blazingdb_orchestrator_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1

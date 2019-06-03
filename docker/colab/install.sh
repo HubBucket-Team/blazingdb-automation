@@ -23,11 +23,29 @@ rm -f cmake-3.12.4-Linux-x86_64.sh
 
 echo "### pip dependencies ###"
 pip3 install wheel==0.32.1 > /dev/null
+if [ $? != 0 ]; then
+  exit 1
+fi
 pip3 install cmake_setuptools > /dev/null
+if [ $? != 0 ]; then
+  exit 1
+fi
 pip3 install pyarrow==0.12.1 > /dev/null
+if [ $? != 0 ]; then
+  exit 1
+fi
 pip3 install pandas==0.24.2 > /dev/null
+if [ $? != 0 ]; then
+  exit 1
+fi
 pip3 install numpy==1.16.2 > /dev/null
+if [ $? != 0 ]; then
+  exit 1
+fi
 pip3 install cython
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 blazingsql_files=/tmp/blazing/blazingsql-files
 
@@ -40,6 +58,9 @@ cp -f $blazingsql_files/nvstrings-build/rmm/librmm.so /conda/envs/cudf/lib/
 #pip3 install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $blazingsql_files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py
 RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h pip install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
+if [ $? != 0 ]; then
+  exit 1
+fi
 #pip3 list
 
 echo "### custrings ###"
@@ -48,6 +69,9 @@ cp -rf $blazingsql_files/nvstrings/include/* /usr/include/
 #export NVSTRINGS_INCLUDE=$blazingsql_files/nvstrings/include/
 rm -rf $blazingsql_files/nvstrings-src/python/build/
 pip3 install $blazingsql_files/nvstrings-src/python
+if [ $? != 0 ]; then
+  exit 1
+fi
 #pip3 list
 
 echo "### cudf ###"
@@ -56,6 +80,9 @@ cp -rf $blazingsql_files/cudf/cpp/include/lib/* /usr/include/
 export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
 pip3 install $blazingsql_files/cudf/cpp/python
 CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack" LD_FLASG="-L/usr/lib -lcudf" pip3 install /tmp/blazing/blazingsql-files/cudf/python/
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### test cudf ###"
 export NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
@@ -64,9 +91,15 @@ python3 -c "import cudf"
 
 echo "### protocol ###"
 pip3 install $blazingsql_files/blazingdb-protocol/python
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### pyblazing ###"
 pip3 install $blazingsql_files/pyBlazing
+if [ $? != 0 ]; then
+  exit 1
+fi
 echo "### test pyblazing ###"
 python3 -c "import pyblazing"
 

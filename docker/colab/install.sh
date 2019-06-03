@@ -3,8 +3,14 @@
 if [ -z $1 ];
 then
     wget -O /tmp/blazingsql-files.tar.gz -q https://s3.amazonaws.com/blazingsql-colab/blazingsql-files.tar.gz
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 fi
 mkdir -p /tmp/blazing/ && cd /tmp/blazing/ && tar -xf /tmp/blazingsql-files.tar.gz
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 
 echo "### dependencies ###"
@@ -19,6 +25,9 @@ apt-get install -y -qq supervisor openjdk-8-jre > /dev/null
 echo "### cmake ###"
 wget -q https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh
 bash cmake-3.12.4-Linux-x86_64.sh --skip-license --prefix=/usr
+if [ $? != 0 ]; then
+  exit 1
+fi
 rm -f cmake-3.12.4-Linux-x86_64.sh
 
 echo "### pip dependencies ###"
@@ -51,13 +60,19 @@ blazingsql_files=/tmp/blazing/blazingsql-files
 
 echo "### libhdfs ###"
 cp -f $blazingsql_files/libhdfs3/libhdfs3.so /usr/lib/
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### librmm ###"
-cp -f $blazingsql_files/nvstrings-build/rmm/librmm.so /conda/envs/cudf/lib/
+cp -f $blazingsql_files/nvstrings-build/rmm/librmm.so /usr/lib/
+if [ $? != 0 ]; then
+  exit 1
+fi
 #export RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h
 #pip3 install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $blazingsql_files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py
-RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h pip install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
+RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h pip3 install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -65,7 +80,13 @@ fi
 
 echo "### custrings ###"
 cp $blazingsql_files/nvstrings-build/libNV* /usr/lib/
+if [ $? != 0 ]; then
+  exit 1
+fi
 cp -rf $blazingsql_files/nvstrings/include/* /usr/include/
+if [ $? != 0 ]; then
+  exit 1
+fi
 #export NVSTRINGS_INCLUDE=$blazingsql_files/nvstrings/include/
 rm -rf $blazingsql_files/nvstrings-src/python/build/
 pip3 install $blazingsql_files/nvstrings-src/python
@@ -76,7 +97,13 @@ fi
 
 echo "### cudf ###"
 cp -rf $blazingsql_files/cudf/cpp/install/lib/* /usr/lib/
-cp -rf $blazingsql_files/cudf/cpp/include/lib/* /usr/include/
+if [ $? != 0 ]; then
+  exit 1
+fi
+cp -rf $blazingsql_files/cudf/cpp/include/* /usr/include/
+if [ $? != 0 ]; then
+  exit 1
+fi
 export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
 pip3 install $blazingsql_files/cudf/cpp/python
 CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack" LD_FLASG="-L/usr/lib -lcudf" pip3 install /tmp/blazing/blazingsql-files/cudf/python/

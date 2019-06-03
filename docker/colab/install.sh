@@ -2,10 +2,10 @@
 
 if [ -z $1 ];
 then
-    wget -O /tmp/blazingsql-files.tar.gz -q https://s3.amazonaws.com/blazingsql-colab/blazingsql-files.tar.gz
-    if [ $? != 0 ]; then
-      exit 1
-    fi
+  wget -O /tmp/blazingsql-files.tar.gz -q https://s3.amazonaws.com/blazingsql-colab/blazingsql-files.tar.gz
+  if [ $? != 0 ]; then
+    exit 1
+  fi
 fi
 mkdir -p /tmp/blazing/ && cd /tmp/blazing/ && tar -xf /tmp/blazingsql-files.tar.gz
 if [ $? != 0 ]; then
@@ -105,7 +105,7 @@ if [ $? != 0 ]; then
   exit 1
 fi
 export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
-pip3 install $blazingsql_files/cudf/cpp/python
+pip3 install $blazingsql_files/cudf/python
 CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack" LD_FLASG="-L/usr/lib -lcudf" pip3 install /tmp/blazing/blazingsql-files/cudf/python/
 if [ $? != 0 ]; then
   exit 1

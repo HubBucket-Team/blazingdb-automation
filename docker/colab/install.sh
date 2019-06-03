@@ -106,8 +106,10 @@ if [ $? != 0 ]; then
   exit 1
 fi
 export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
-pip3 install $blazingsql_files/cudf/python
-CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack" LD_FLASG="-L/usr/lib -lcudf" pip3 install /tmp/blazing/blazingsql-files/cudf/python/
+sed -i 's/..\/cpp\/thirdparty\/dlpack\/include\/dlpack\//\/tmp\/blazing\/blazingsql-files\/cudf\/thirdparty\/dlpack\/include\/dlpack\//g' $blazingsql_files/cudf/python/setup.py
+pip3 install $blazingsql_files/cudf/python/
+
+CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack/" LD_FLASG="-L/usr/lib -lcudf" pip3 install /tmp/blazing/blazingsql-files/cudf/python/
 if [ $? != 0 ]; then
   exit 1
 fi

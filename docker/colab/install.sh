@@ -97,6 +97,7 @@ fi
 
 echo "### cudf ###"
 cp -rf $blazingsql_files/cudf/cpp/install/lib/* /usr/lib/
+cp -rf $blazingsql_files/cudf/thirdparty/dlpack/include/dlpack/* /usr/lib/
 if [ $? != 0 ]; then
   exit 1
 fi

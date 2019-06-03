@@ -29,26 +29,32 @@ pip3 install pandas==0.24.2 > /dev/null
 pip3 install numpy==1.16.2 > /dev/null
 pip3 install cython
 
+blazingsql_files=/tmp/blazing/blazingsql-files
+
 echo "### libhdfs ###"
-cp -f /tmp/blazing/blazingsql-files/libhdfs3/libhdfs3.so /usr/lib/
+cp -f $blazingsql_files/libhdfs3/libhdfs3.so /usr/lib/
 
 echo "### librmm ###"
-cp -f /tmp/blazing/blazingsql-files/nvstrings-build/rmm/librmm.so /usr/lib/
-export RMM_HEADER=/tmp/blazing/blazingsql-files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h
-pip3 install /tmp/blazing/blazingsql-files/nvstrings-src/thirdparty/rmm/python/
+cp -f $blazingsql_files/nvstrings-build/rmm/librmm.so /conda/envs/cudf/lib/
+#export RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h
+#pip3 install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
+sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $blazingsql_files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py
+RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h pip install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 #pip3 list
 
 echo "### custrings ###"
-cp /tmp/blazing/blazingsql-files/nvstrings-build/libNV* /usr/lib/
-cp -rf /tmp/blazing/blazingsql-files/nvstrings/include/* /usr/include/
-#export NVSTRINGS_INCLUDE=/tmp/blazing/blazingsql-files/nvstrings/include/
-pip3 install /tmp/blazing/blazingsql-files/nvstrings-src/python
+cp $blazingsql_files/nvstrings-build/libNV* /usr/lib/
+cp -rf $blazingsql_files/nvstrings/include/* /usr/include/
+#export NVSTRINGS_INCLUDE=$blazingsql_files/nvstrings/include/
+rm -rf $blazingsql_files/nvstrings-src/python/build/
+pip3 install $blazingsql_files/nvstrings-src/python
 #pip3 list
 
 echo "### cudf ###"
-cp -rf /tmp/blazing/blazingsql-files/cudf/cpp/install/lib/* /usr/lib/
-export CUDF_INCLUDE_DIR=/tmp/blazing/blazingsql-files/cudf/cpp/include/cudf/
-pip3 install /tmp/blazing/blazingsql-files/cudf/cpp/python
+cp -rf $blazingsql_files/cudf/cpp/install/lib/* /usr/lib/
+cp -rf $blazingsql_files/cudf/cpp/include/lib/* /usr/include/
+export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
+pip3 install $blazingsql_files/cudf/cpp/python
 CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack" LD_FLASG="-L/usr/lib -lcudf" pip3 install /tmp/blazing/blazingsql-files/cudf/python/
 
 echo "### test cudf ###"
@@ -57,18 +63,18 @@ export NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice/
 python3 -c "import cudf"
 
 echo "### protocol ###"
-pip3 install /tmp/blazing/blazingsql-files/blazingdb-protocol/python
+pip3 install $blazingsql_files/blazingdb-protocol/python
 
 echo "### pyblazing ###"
-pip3 install /tmp/blazing/blazingsql-files/pyBlazing
+pip3 install $blazingsql_files/pyBlazing
 echo "### test pyblazing ###"
 python3 -c "import pyblazing"
 
 
 echo "### binaries ###"
-cp -f /tmp/blazing/blazingsql-files/BlazingCalcite.jar /usr/bin/
-cp -f /tmp/blazing/blazingsql-files/blazingdb_orchestator_service /usr/bin/
-cp -f /tmp/blazing/blazingsql-files/testing-libgdf /usr/bin/
+cp -f $blazingsql_files/BlazingCalcite.jar /usr/bin/
+cp -f $blazingsql_files/blazingdb_orchestator_service /usr/bin/
+cp -f $blazingsql_files/testing-libgdf /usr/bin/
 
 mkdir -p /blazingsql/data/ && chmod 777 -R /blazingsql
 

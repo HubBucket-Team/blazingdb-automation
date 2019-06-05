@@ -26,7 +26,7 @@ cp -r $cudf_dir/$libgdf_dir/install/* /conda/envs/cudf/
 cp -r $blazingsql_files/libhdfs3/* /usr/lib/
 
 # Install UCX
-cp -r $blazingsql_files/ucx/*.so* /usr/lib/
+cp -rf $blazingsql_files/ucx/*.so* /usr/lib/
 
 # Install rmm (from nvstrings)
 cp -f $blazingsql_files/nvstrings-build/rmm/*.so /conda/envs/cudf/lib/

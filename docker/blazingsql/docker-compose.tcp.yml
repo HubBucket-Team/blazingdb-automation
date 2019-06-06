@@ -28,7 +28,7 @@ services:
         ipv4_address: 172.21.1.2
 
   ral_orchestrator:
-      image: blazingdb/blazingsql:ral_orchestator_tcp
+      image: blazingdb/blazingsql:ral_orchestrator_tcp
       build: ./ral_orchestrator/
       runtime: nvidia
       environment:

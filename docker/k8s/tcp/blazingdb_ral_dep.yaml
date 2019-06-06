@@ -1,0 +1,31 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-ral-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-ral
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-ral
+    spec:
+      containers:
+      - name: blazingdb
+        image: "blazingdb/blazingsql:ral_tcp"
+        command: ["/usr/bin/testing-libgdf"]
+        args: ["1", "blazingdb-orchestrator-svc", "9000", "127.0.0.1", "8001"]
+        #readinessProbe:
+        #  httpGet:
+        #    path: /login
+        #    port: 80
+        #  periodSeconds: 1
+        #  timeoutSeconds: 1
+        #  successThreshold: 1
+        #  failureThreshold: 10
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+

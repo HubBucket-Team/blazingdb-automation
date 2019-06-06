@@ -94,6 +94,13 @@ if [ -z "$pyblazing_branch" ]; then
     exit 1
 fi
 
+if [ -z "$blazingdb_communication_branch" ]; then
+    echo "Error: Need the 'blazingdb_communication_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+
 #END check mandatory arguments
 
 #BEGIN set default optional arguments for active/enable the build
@@ -138,6 +145,10 @@ if [ -z "$pyblazing_enable" ]; then
     pyblazing_enable=true
 fi
 
+if [ -z "$blazingdb_communication_enable" ]; then
+    blazingdb_communication_enable=true
+fi
+
 #END set default optional arguments for active/enable the build
 
 #BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
@@ -170,8 +181,6 @@ fi
 if [ -z "$blazingdb_orchestrator_build_type" ]; then
     blazingdb_orchestrator_build_type=Release
 fi
-
-#BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
 
 #BEGIN set default optional arguments for tests
 
@@ -213,6 +222,10 @@ fi
 
 if [ -z "$pyblazing_tests" ]; then
     pyblazing_tests=false
+fi
+
+if [ -z "$blazingdb_communication_tests" ]; then
+    blazingdb_communication_tests=false
 fi
 
 #END set default optional arguments for tests
@@ -341,6 +354,7 @@ blazingdb_ral_branch_name=$(normalize_branch_name $blazingdb_ral_branch)
 blazingdb_orchestrator_branch_name=$(normalize_branch_name $blazingdb_orchestrator_branch)
 blazingdb_calcite_branch_name=$(normalize_branch_name $blazingdb_calcite_branch)
 pyblazing_branch_name=$(normalize_branch_name $pyblazing_branch)
+blazingdb_communication_branch_name=$(normalize_branch_name $blazingdb_communication_branch)
 
 cd $workspace_dir
 

@@ -18,7 +18,7 @@ COPY ./blazingsql-files/nvstrings/lib/libNVStrings.so /usr/local/cuda/lib64/
 COPY ./blazingsql-files/testing-libgdf /usr/bin/testing-libgdf
 
 # Orchestrator
-COPY blazingdb_orchestator_service /usr/bin/
+COPY ./blazingsql-files/blazingdb_orchestator_service /usr/bin/
 
 # If the user wants to communicate by unix socket need to mount his /tmp folder
 VOLUME /tmp
@@ -32,5 +32,14 @@ EXPOSE 8001
 
 EXPOSE 9000
 
-CMD ["/usr/bin/testing-libgdf", "1", "172.0.0.1", "9000", "127.0.0.1", "8001"]
-CMD ["/usr/bin/blazingdb_orchestator_service"]
+EXPOSE 8889
+EXPOSE 9001
+EXPOSE 8891
+EXPOSE 8890
+
+
+COPY entrypoint.sh /root/entrypoint.sh
+ENTRYPOINT ["/root/entrypoint.sh"]
+
+#CMD ["/usr/bin/testing-libgdf", "1", "172.0.0.1", "9000", "127.0.0.1", "8001"]
+#CMD ["/usr/bin/blazingdb_orchestator_service"]

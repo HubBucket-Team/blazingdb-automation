@@ -15,6 +15,8 @@ spec:
       containers:
       - name: blazingdb-calcite
         image: "blazingdb/blazingsql:calcite_tcp"
+        command: ["java"]
+        args: ["-jar", "/usr/bin/BlazingCalcite.jar", "-p", "8890"]
         #command: ["sleep"]
         #args: ["36000"]
         #ports:

@@ -39,3 +39,6 @@ $cmd apply -f tcp/blazingdb_jupyter_dep.yaml
 
 $cmd apply -f tcp/blazingdb_orch_svc.yaml
 $cmd apply -f tcp/blazingdb_jupyter_svc.yaml
+
+echo "### command to connect ###"
+echo "gcloud container clusters get-credentials $name --zone $zone --project $project"

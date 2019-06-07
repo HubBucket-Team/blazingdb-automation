@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: blazingdb-svc
+  name: blazingdb-jupyter-svc
 spec:
   type: LoadBalancer
   selector:

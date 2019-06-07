@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-ral-orchestrator-svc
+spec:
+  #type: LoadBalancer
+  selector:
+    app: blazingdb-ral-orch
+  ports:
+    - protocol: TCP
+      port: 8890
+      targetPort: 8890

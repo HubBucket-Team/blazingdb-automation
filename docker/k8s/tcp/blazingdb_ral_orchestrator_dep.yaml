@@ -5,12 +5,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: blazingdb-ral
+      app: blazingdb-ral-orch
   replicas: 1
   template:
     metadata:
       labels:
-        app: blazingdb-ral
+        app: blazingdb-ral-orch
     spec:
       containers:
       - name: blazingdb

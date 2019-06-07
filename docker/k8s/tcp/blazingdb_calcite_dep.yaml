@@ -19,8 +19,8 @@ spec:
         args: ["-jar", "/usr/bin/BlazingCalcite.jar", "-p", "8890"]
         #command: ["sleep"]
         #args: ["36000"]
-        #ports:
-        #- containerPort: 80
+        ports:
+        - containerPort: 8090
         #readinessProbe:
         #  httpGet:
         #    path: /login

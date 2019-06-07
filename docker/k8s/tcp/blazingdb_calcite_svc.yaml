@@ -7,6 +7,6 @@ spec:
   selector:
     app: blazingdb-calcite
   ports:
-    - protocol: TCP
-      port: 8890
-      targetPort: 8890
+  #- protocol: TCP
+  - port: 8890
+    targetPort: 8890

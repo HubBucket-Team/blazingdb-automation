@@ -8,5 +8,5 @@ spec:
     app: blazingdb-ral-orch
   ports:
     - protocol: TCP
-      port: 8890
-      targetPort: 8890
+      port: 8889
+      targetPort: 8889

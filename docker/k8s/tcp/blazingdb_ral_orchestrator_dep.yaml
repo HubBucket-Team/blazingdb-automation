@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: blazingdb-ral-dep
+  name: blazingdb-ral-orch-dep
 spec:
   selector:
     matchLabels:

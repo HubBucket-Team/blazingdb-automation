@@ -20,6 +20,7 @@ RUN apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zli
 
 # UCX
 RUN apt-get install -y libnuma-dev
+RUN apt-get install -y libibverbs-dev
 
 RUN apt-get clean
 
@@ -92,6 +93,9 @@ USER root
 
 # Install hdfs stuff
 RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
+
+# more UCX libs
+RUN apt-get install -y librdmacm-dev
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
 ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so

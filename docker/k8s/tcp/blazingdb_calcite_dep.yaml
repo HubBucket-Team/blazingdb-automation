@@ -20,7 +20,7 @@ spec:
         #command: ["sleep"]
         #args: ["36000"]
         ports:
-        - containerPort: 8890
+          - containerPort: 8890
         #readinessProbe:
         #  httpGet:
         #    path: /login

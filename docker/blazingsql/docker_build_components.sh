@@ -31,4 +31,4 @@ cp -f blazingsql-files.tar.gz pyblazing/
 #docker build -t blazingdb/blazingsql:pyblazing pyblazing/
 
 echo "### Docker build ###"
-docker-compose build $component
+docker-compose -f docker-compose.tcp.yml build $component

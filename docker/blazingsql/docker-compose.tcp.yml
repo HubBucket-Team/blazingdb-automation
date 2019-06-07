@@ -37,6 +37,7 @@ services:
         - data:/blazingdb/data/demo/
       depends_on:
         - calcite
+      #entrypoint: "sleep 36000"
       #command: sleep 36000
       command: ["172.21.1.2", "172.21.1.3"]
       ports:

@@ -53,6 +53,10 @@ RUN echo "</localRepository> </settings>" >> /etc/maven/settings.xml
 
 #END Fix Maven
 
+# FIX UCX build (GDR backend)
+RUN mkdir -p /lib/modules/
+RUN mkdir -p /usr/src/
+
 # Create the user 'builder'
 #RUN useradd -ms /bin/bash builder
 ENV TMP_USER=builder
@@ -77,6 +81,10 @@ RUN mkdir workspace && mkdir output && mkdir .ssh
 VOLUME /home/builder/workspace
 VOLUME /home/builder/output
 VOLUME /home/builder/.ssh
+
+# NOTE Mount these fodler in order to build UCX (GDR backend)
+VOLUME /lib/modules/
+VOLUME /usr/src/
 
 COPY entrypoint.sh /etc/entrypoint.sh
 ENTRYPOINT ["/etc/entrypoint.sh"]

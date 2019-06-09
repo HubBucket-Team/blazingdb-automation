@@ -12,4 +12,3 @@ sed -ie "s/$TMP_UID/$NEW_UID/g" /etc/passwd
 
 #su $TMP_USER -c "$@"
 su -s /bin/bash $TMP_USER -c "$@"
-

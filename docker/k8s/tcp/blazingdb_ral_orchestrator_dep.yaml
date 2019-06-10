@@ -16,7 +16,8 @@ spec:
       - name: blazingdb-ral-orch
         image: "blazingdb/blazingsql:ral_orchestrator_tcp"
         command: ["/root/entrypoint.sh"]
-        args: ["blazingdb-calcite-svc", "blazingdb-ral-orch-svc"]
+        #args: ["blazingdb-calcite-svc", "blazingdb-ral-orch-svc"]
+        args: ["blazingdb-calcite-svc", "127.0.0.1"]
         ports:
           - containerPort: 8889
             protocol: TCP

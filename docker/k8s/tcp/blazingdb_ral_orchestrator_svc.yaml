@@ -1,12 +1,18 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: blazingdb-ral-orchestrator-svc
+  name: blazingdb-ral-orch-svc
 spec:
-  #type: LoadBalancer
+  type: ClusterIP
   selector:
     app: blazingdb-ral-orch
   ports:
-    - protocol: TCP
-      port: 8889
-      targetPort: 8889
+  - port: 8889
+    targetPort: 8889
+    protocol: TCP
+  - port: 8891
+    targetPort: 8891
+    protocol: TCP  
+  - port: 9001
+    targetPort: 9001
+    protocol: TCP

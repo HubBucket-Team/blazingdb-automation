@@ -13,12 +13,19 @@ spec:
         app: blazingdb-ral-orch
     spec:
       containers:
-      - name: blazingdb
+      - name: blazingdb-ral-orch
         image: "blazingdb/blazingsql:ral_orchestrator_tcp"
-        #command: ["/usr/bin/testing-libgdf"]
-        #args: ["1", "blazingdb-orchestrator-svc", "9000", "127.0.0.1", "8001"]
+        command: ["blazingdb-calcite-svc", "blazingdb-ral-orch-svc"]
+        ports:
+          - containerPort: 8889
+            protocol: TCP
+          - containerPort: 8891
+            protocol: TCP
+          - containerPort: 9001
+            protocol: TCP
         resources:
           limits:
             nvidia.com/gpu: 1
+        
 
 

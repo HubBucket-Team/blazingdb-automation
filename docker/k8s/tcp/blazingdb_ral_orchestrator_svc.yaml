@@ -7,12 +7,15 @@ spec:
   selector:
     app: blazingdb-ral-orch
   ports:
-  - port: 8889
+  - name: "protocol"
+    port: 8889
     targetPort: 8889
     protocol: TCP
-  - port: 8891
+  - name: "communication"
+    port: 8891
     targetPort: 8891
     protocol: TCP  
-  - port: 9001
+  - name: "ral"
+    port: 9001
     targetPort: 9001
     protocol: TCP

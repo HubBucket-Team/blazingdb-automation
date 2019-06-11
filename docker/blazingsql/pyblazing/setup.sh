@@ -38,6 +38,7 @@ cp -rf $blazingsql_files/nvstrings/include/* /conda/envs/cudf/include/
 echo "Installing custrings ..."
 working_directory_tmp=$PWD
 cd $blazingsql_files/nvstrings-src/python/
+rm -rf $blazingsql_files/nvstrings-src/python/build/
 python setup.py install
 cd $working_directory_tmp
 echo "custrings DONE"

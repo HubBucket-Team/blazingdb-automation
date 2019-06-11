@@ -24,7 +24,10 @@ cp -r $cudf_dir/$libgdf_dir/install/* /conda/envs/cudf/
 cp -r $cudf_dir/$libgdf_dir/include/* /conda/envs/cudf/include/
 
 # Install libhdfs3
-cp -r $blazingsql_files/libhdfs3/* /usr/lib
+cp -r $blazingsql_files/libhdfs3/* /usr/lib/
+
+# Install UCX
+cp -r $blazingsql_files/ucx/*.so* /usr/lib/
 
 # Install rmm (from nvstrings)
 cp -f $blazingsql_files/nvstrings-build/rmm/*.so /conda/envs/cudf/lib/
@@ -38,6 +41,7 @@ echo "Installing custrings ..."
 rm -rf $blazingsql_files/nvstrings-src/python/build/
 working_directory_tmp=$PWD
 cd $blazingsql_files/nvstrings-src/python/
+rm -rf $blazingsql_files/nvstrings-src/python/build/
 python setup.py install
 cd $working_directory_tmp
 echo "custrings DONE"

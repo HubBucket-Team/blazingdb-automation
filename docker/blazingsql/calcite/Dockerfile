@@ -21,8 +21,9 @@ VOLUME /blazingsql
 VOLUME /tmp
 
 # 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
-#EXPOSE 8890
-EXPOSE 8891
+
+EXPOSE 8890
+#EXPOSE 8891
 #EXPOSE 8892
 
 CMD ["java", "-jar", "/usr/bin/BlazingCalcite.jar"]

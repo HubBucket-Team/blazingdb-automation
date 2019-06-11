@@ -41,7 +41,7 @@ echo "### install blazingsql ###"
 #$cmd apply -f tcp/blazingdb_orch_svc.yaml
 #$cmd apply -f tcp/blazingdb_jupyter_svc.yaml
 
-$cmd apply -f tcp/  .
+$cmd apply -f tcp/
 
 echo "### command to connect ###"
 echo "gcloud container clusters get-credentials $name --zone $zone --project $project"

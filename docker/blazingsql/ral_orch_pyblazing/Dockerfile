@@ -6,9 +6,6 @@ LABEL Description="blazingdb/blazingsql is the official BlazingDB environment fo
 
 RUN apt-get update
 
-# Install Java runtime
-RUN apt-get install -y openjdk-8-jre
-
 # Install supervisord
 RUN apt-get install -y supervisor
 
@@ -25,10 +22,6 @@ RUN apt-get clean
 
 # Create the container user
 RUN useradd -ms /bin/bash jupyter
-
-# Setup the Calcite database catalog
-RUN mkdir /blazingsql
-RUN chown -R jupyter:jupyter /blazingsql/
 
 # Create conda dir & download conda from https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 #COPY Miniconda3-latest-Linux-x86_64.sh /miniconda.sh
@@ -100,7 +93,6 @@ ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor
 COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
-COPY supervisord/blazing-calcite.conf /etc/supervisor/conf.d/blazing-calcite.conf
 COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
 COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
 COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
@@ -134,9 +126,6 @@ RUN rm -rf /tmp/blazing
 # NOTE Expose CUDF runtime
 ENV LD_LIBRARY_PATH /conda/envs/cudf/lib/
 
-# If the user wants to persist the blazingsql catalog (schema store)
-VOLUME /blazingsql
-
 # If the user wants to communicate by unix socket need to mount his /tmp folder
 VOLUME /tmp
 
@@ -148,9 +137,6 @@ EXPOSE 9901
 
 # haddop
 #EXPOSE 54310
-
-# Calcite
-EXPOSE 8890
 
 # Orchestrator (Protocol)
 EXPOSE 8889

@@ -4,7 +4,7 @@ component=$1
 
 echo "### Calcite ###"
 tar -xvf blazingsql-files.tar.gz blazingsql-files/BlazingCalcite.jar
-mv blazingsql-files/BlazingCalcite.jar calcite/
+cp -f blazingsql-files/BlazingCalcite.jar calcite/
 #docker build -t blazingdb/blazingsql:calcite calcite/
 
 echo "### Orchestrator ###"
@@ -21,13 +21,17 @@ tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings/lib/libNVCategory.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings/lib/libNVStrings.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/testing-libgdf
 cp -rf ./blazingsql-files/ ral/
-cp -rf ./blazingsql-files/ ral_orchestrator
+cp -rf ./blazingsql-files/ ral_orchestrator/
 #docker build -t blazingdb/blazingsql:ral ral/
 
 echo "### Pyblazing ###"
 cp -rf data/ pyblazing/
 cp -rf notebooks/ pyblazing/
 cp blazingsql-files.tar.gz pyblazing/
+# this is temporarily
+cp -rf data/ ral_orch_pyblazing/
+cp -rf notebooks/ ral_orch_pyblazing/
+cp -f blazingsql-files.tar.gz ral_orch_pyblazing/
 #docker build -t blazingdb/blazingsql:pyblazing pyblazing/
 
 echo "### Docker build ###"

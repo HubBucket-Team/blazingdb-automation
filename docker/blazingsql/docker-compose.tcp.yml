@@ -16,7 +16,7 @@ services:
   #     back-tier:
   #       ipv4_address: 172.21.1.1
 
-  calcite:
+  blazingdb-calcite-svc:
     image: blazingdb/blazingsql:calcite_tcp
     build: ./calcite
     #command: sleep 36000
@@ -36,7 +36,7 @@ services:
       volumes:
         - data:/blazingdb/data/demo/
       depends_on:
-        - calcite
+        - blazingdb-calcite-svc
       #entrypoint: "sleep 36000"
       ports:
         - 80:80

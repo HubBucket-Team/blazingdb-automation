@@ -1,0 +1,33 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-ral-orch-pyblazing-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-ral-orch-pyblazing
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-ral-orch-pyblazing
+    spec:
+      containers:
+      - name: blazingdb-ral-orch-pyblazing
+        image: "blazingdb/blazingsql:ral_orch_pyblazing_tcp"
+        command: ["/root/entrypoint.sh"]
+        ports:
+          - containerPort: 80
+            protocol: TCP
+          - containerPort: 8889
+            protocol: TCP
+          - containerPort: 8891
+            protocol: TCP
+          - containerPort: 9001
+            protocol: TCP
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        
+
+

@@ -15,7 +15,8 @@ spec:
       containers:
       - name: blazingdb-ral-orch-pyblazing
         image: "blazingdb/blazingsql:ral_orch_pyblazing_tcp"
-        command: ["/root/entrypoint.sh"]
+        #command: ["sleep"]
+        #args: ["36000"]
         ports:
           - containerPort: 80
             protocol: TCP

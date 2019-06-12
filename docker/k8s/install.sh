@@ -44,6 +44,7 @@ echo "### install blazingsql ###"
 $cmd apply -f tcp/
 
 echo "### Listing all in a cluster ###"
+sleep 30 &
 $cmd  get  all
 
 echo "### command to connect ###"

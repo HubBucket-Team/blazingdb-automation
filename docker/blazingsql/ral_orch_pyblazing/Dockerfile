@@ -95,6 +95,7 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
 COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
+COPY supervisord/blazing-ral2.conf /etc/supervisor/conf.d/blazing-ral2.conf
 COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
 COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
 RUN mkdir -p /var/log/supervisor/

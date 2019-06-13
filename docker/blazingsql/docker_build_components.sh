@@ -1,6 +1,8 @@
 #!/bin/bash
+# Usage: simple blazingsql
 
-component=$1
+solution=$1
+component=$2
 
 echo "### Calcite ###"
 tar -xvf blazingsql-files.tar.gz blazingsql-files/BlazingCalcite.jar
@@ -12,7 +14,6 @@ tar -xvf blazingsql-files.tar.gz blazingsql-files/blazingdb_orchestator_service
 cp -f blazingsql-files/blazingdb_orchestator_service orchestator/
 cp -f blazingsql-files/blazingdb_orchestator_service ral_orchestrator/
 #docker build -t blazingdb/blazingsql:orchestator orchestator/
-
 
 echo "### Ral ###"
 tar -xvf blazingsql-files.tar.gz blazingsql-files/cudf/cpp/install/lib/libcudf.so 
@@ -34,5 +35,10 @@ cp -rf notebooks/ ral_orch_pyblazing/
 cp -f blazingsql-files.tar.gz ral_orch_pyblazing/
 #docker build -t blazingdb/blazingsql:pyblazing pyblazing/
 
+echo "### Simple distribution ###"
+cp -rf data/ simple_distribution/
+cp -rf notebooks/ simple_distribution/
+cp -f blazingsql-files.tar.gz simple_distribution/
+
 echo "### Docker build ###"
-docker-compose -f docker-compose.tcp.yml build $component
+docker-compose -f docker-compose.$solution.yml build $component

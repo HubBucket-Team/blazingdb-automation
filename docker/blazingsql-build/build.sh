@@ -1008,6 +1008,7 @@ if [ $blazingdb_ral_enable == true ]; then
     CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$blazingdb_ral_build_type \
           -DBUILD_TESTING=$build_testing_ral \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
+          -DRMM_INSTALL_DIR=$rmm_install_dir \
           -DNVSTRINGS_INSTALL_DIR=$nvstrings_install_dir/ \
           -DLIBGDF_INSTALL_DIR=$libgdf_install_dir \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \

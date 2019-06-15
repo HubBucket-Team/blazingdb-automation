@@ -7,51 +7,82 @@ then
     exit 1
   fi
 fi
+
 mkdir -p /tmp/blazing/ && cd /tmp/blazing/ && tar -xf /tmp/blazingsql-files.tar.gz
 if [ $? != 0 ]; then
   exit 1
 fi
+echo "### update ###"
+apt-get update -qq > /dev/null
 
+PYTHON="python3.7"
+PIP="$PYTHON -m pip"
+source /etc/lsb-release
+if [ $DISTRIB_RELEASE == "16.04" ];
+then
+  apt-get install -y software-properties-common
+  add-apt-repository -y ppa:deadsnakes/ppa
+  if [ $? != 0 ]; then
+    exit 1
+  fi
+
+  apt-get update -qq > /dev/null
+  if [ $? != 0 ]; then
+    exit 1
+  fi
+fi
 
 echo "### dependencies ###"
-apt-get update -qq > /dev/null
-apt-get install -y -qq python3.7 python3-pip > /dev/null
-#ln -s /usr/bin/python3 /usr/bin/python && ln -s /usr/bin/pip3 /usr/bin/pip
+apt-get install -y -qq $PYTHON python3-pip > /dev/null
+apt-get install -y -qq $PYTHON-dev libffi-dev > /dev/null
+#ln -s /usr/bin/python3 /usr/bin/python
+#ln -s /usr/bin/pip3 /usr/bin/pip
 #apt-get install -y -qq git vim > /dev/null
-apt-get install -y -qq --no-install-recommends bzip2 wget curl lsof > /dev/null
-apt-get install -y -qq --no-install-recommends libcurl3 libssl1.0.0 zlib1g libuuid1 > /dev/null
-apt-get install -y -qq supervisor openjdk-8-jre > /dev/null
+apt-get install -y -qq --fix-missing bzip2 wget curl lsof > /dev/null
+apt-get install -y -qq --fix-missing libcurl3 libssl1.0.0 zlib1g libuuid1 > /dev/null
+apt-get install -y -qq --fix-missing supervisor openjdk-8-jre > /dev/null
 
 echo "### cmake ###"
-wget -q https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh
-bash cmake-3.12.4-Linux-x86_64.sh --skip-license --prefix=/usr
+if ! [ -x "$(command -v cmake)" ]; then
+  echo "cmake not installed"
+  wget -q https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh
+  bash cmake-3.12.4-Linux-x86_64.sh --skip-license --prefix=/usr
+  if [ $? != 0 ]; then
+    exit 1
+  fi
+  rm -f cmake-3.12.4-Linux-x86_64.sh
+fi
+cmake --version
 if [ $? != 0 ]; then
   exit 1
 fi
-rm -f cmake-3.12.4-Linux-x86_64.sh
 
 echo "### pip dependencies ###"
-pip3 install wheel==0.32.1 > /dev/null
+echo "PIP: $PIP"
+$PIP install --upgrade --force-reinstall setuptools
+$PIP install --upgrade pip
+
+$PIP install wheel==0.32.1 > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
-pip3 install cmake_setuptools > /dev/null
+$PIP install cmake_setuptools > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
-pip3 install pyarrow==0.12.1 > /dev/null
+$PIP install pyarrow==0.12.1 > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
-pip3 install pandas==0.24.2 > /dev/null
+$PIP install pandas==0.24.2 > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
-pip3 install numpy==1.16.2 > /dev/null
+$PIP install numpy==1.16.2 > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
-pip3 install cython
+$PIP install cython
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -72,7 +103,7 @@ fi
 #export RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h
 #pip3 install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $blazingsql_files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py
-RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h pip3 install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
+RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h $PIP install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -89,7 +120,7 @@ if [ $? != 0 ]; then
 fi
 #export NVSTRINGS_INCLUDE=$blazingsql_files/nvstrings/include/
 rm -rf $blazingsql_files/nvstrings-src/python/build/
-pip3 install $blazingsql_files/nvstrings-src/python
+$PIP install $blazingsql_files/nvstrings-src/python
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -106,10 +137,14 @@ if [ $? != 0 ]; then
   exit 1
 fi
 export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
-sed -i 's/..\/cpp\/thirdparty\/dlpack\/include\/dlpack\//\/tmp\/blazing\/blazingsql-files\/cudf\/thirdparty\/dlpack\/include\/dlpack\//g' $blazingsql_files/cudf/python/setup.py
-pip3 install $blazingsql_files/cudf/python/
+$PIP install $blazingsql_files/cudf/cpp/python/
+if [ $? != 0 ]; then
+  exit 1
+fi
 
-CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack/" LD_FLASG="-L/usr/lib -lcudf" pip3 install /tmp/blazing/blazingsql-files/cudf/python/
+sed -i 's/..\/cpp\/include\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\/include\//g' $blazingsql_files/cudf/python/setup.py
+sed -i 's/..\/cpp\/thirdparty\/dlpack\/include\/dlpack\//\/tmp\/blazing\/blazingsql-files\/cudf\/thirdparty\/dlpack\/include\/dlpack\//g' $blazingsql_files/cudf/python/setup.py
+CFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack/" CXXFLAGS="-I/tmp/blazing/blazingsql-files/cudf/cpp/install/include/ -I/tmp/blazing/blazingsql-files/cudf/thirdparty/dlpack/include/dlpack/" LD_FLASG="-L/usr/lib -lcudf" $PIP install $blazingsql_files/cudf/python/
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -117,22 +152,27 @@ fi
 echo "### test cudf ###"
 export NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 export NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice/
-python3 -c "import cudf"
+$PYTHON -c "import cudf"
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### protocol ###"
-pip3 install $blazingsql_files/blazingdb-protocol/python
+$PIP install $blazingsql_files/blazingdb-protocol/python
 if [ $? != 0 ]; then
   exit 1
 fi
 
 echo "### pyblazing ###"
-pip3 install $blazingsql_files/pyBlazing
+$PIP install $blazingsql_files/pyBlazing
 if [ $? != 0 ]; then
   exit 1
 fi
 echo "### test pyblazing ###"
-python3 -c "import pyblazing"
-
+$PYTHON -c "import pyblazing"
+if [ $? != 0 ]; then
+  exit 1
+fi
 
 echo "### binaries ###"
 cp -f $blazingsql_files/BlazingCalcite.jar /usr/bin/

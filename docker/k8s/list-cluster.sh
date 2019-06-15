@@ -47,13 +47,3 @@ echo "gcloud container clusters get-credentials $name --zone $zone --project $pr
 
 #'kubectl get svc blazingdb-jupyter-svc -o yaml | grep ip' > a.txt
 
-sleep 2m
-echo "### Listing all in a cluster ###"
-$cmd  get  all
-echo " ************** Ingresar  JUPYTER  ********************************** "
-#eval $command 
-kubectl get svc blazingdb-jupyter-svc -o yaml | grep ip >> a.txt
-cat a.txt
-rm -rf a.txt
-#done
-echo " ************** Ingresar  JUPYTER  ********************************** "

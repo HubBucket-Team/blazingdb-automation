@@ -35,6 +35,11 @@ cp -rf notebooks/ ral_orch_pyblazing/
 cp -f blazingsql-files.tar.gz ral_orch_pyblazing/
 #docker build -t blazingdb/blazingsql:pyblazing pyblazing/
 
+echo "### Ral_PyBlazing ###"
+cp -rf data/ ral_pyblazing/
+cp -rf notebooks/ ral_pyblazing/
+cp -f blazingsql-files.tar.gz ral_pyblazing/
+
 echo "### Simple distribution ###"
 cp -rf data/ simple_distribution/
 cp -rf notebooks/ simple_distribution/

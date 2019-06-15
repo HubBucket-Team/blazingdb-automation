@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-ral-pyblazing-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-ral-pyblazing
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-ral-pyblazing
+    spec:
+      containers:
+      - name: blazingdb-ral-pyblazing
+        image: "blazingdb/blazingsql:ral_pyblazing_tcp"
+        #command: ["sleep"]
+        #args: ["36000"]
+        ports:
+          - containerPort: 80
+            protocol: TCP
+          - containerPort: 8891
+            protocol: TCP
+          - containerPort: 9001
+            protocol: TCP
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        
+
+

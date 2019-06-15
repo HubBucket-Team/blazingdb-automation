@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-jupyter-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: blazingdb-ral-pyblazing
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

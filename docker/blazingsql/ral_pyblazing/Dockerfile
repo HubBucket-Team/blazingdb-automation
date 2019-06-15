@@ -93,6 +93,7 @@ ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor
 COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
 COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
 COPY supervisord/blazing-ral2.conf /etc/supervisor/conf.d/blazing-ral2.conf
 COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
@@ -137,6 +138,12 @@ EXPOSE 9901
 
 # haddop
 #EXPOSE 54310
+
+# Orchestrator (Protocol)
+EXPOSE 8889
+
+# Orchestrator (Communication)
+EXPOSE 9000
 
 # RAL 1 (Protocol)
 EXPOSE 8891

@@ -9,10 +9,7 @@ pipeline {
     timeout(time: 1, unit: 'HOURS')
   }
 
-  parameters {
-  }
-
-  environment {
+ environment {
     SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 
@@ -23,7 +20,7 @@ pipeline {
       }
     }
 
-    stage("Create cluster on GCP") { 
+    stage("List cluster GKE on GCP") { 
       steps {
          dir("docker/k8s/") {
         script {         

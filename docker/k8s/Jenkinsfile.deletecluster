@@ -26,7 +26,7 @@ pipeline {
       }
     }
 
-    stage("Create cluster on GCP") { 
+    stage("Remove cluster GKE  on GCP") { 
       steps {
          dir("docker/k8s/") {
         script {         

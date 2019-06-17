@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -qq -y --no-install-recommends \
     ${PYTHON} python3-pip python3-setuptools \
-    ${PYTHON}-dev libffi-dev \
+    ${PYTHON}-dev libffi-dev libprotobuf9v5 libgsasl7 libgsasl7-dev \
     bzip2 wget curl lsof \
     libcurl3 libssl1.0.0 zlib1g libuuid1 \
     supervisor openjdk-8-jre && \

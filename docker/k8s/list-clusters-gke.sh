@@ -15,8 +15,8 @@ for project in  $(gcloud projects list --sort-by=projectId --format="value(proje
 do
   #echo 
   gcloud config set project  $project > /dev/null 2>&1 &  
+
   gcloud container clusters list
-  #echo $project
     if  [ -z  "$(gcloud container clusters list)" ] 
     then 
     var=""

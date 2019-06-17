@@ -10,11 +10,6 @@ pipeline {
   }
 
   parameters {
-    string(name: 'PROJECT_NAME', defaultValue: 'blazingdb-system-automation', description: '')
-    string(name: 'CLUSTER_NAME', defaultValue: 'blazingsql-test', description: '')
-    string(name: 'ZONE', defaultValue: 'us-west1-a', description: '')
-    string(name: 'NODES_NUMBER', defaultValue: '1', description: '')
-    string(name: 'NUMBER_GPUS_PER_NODE', defaultValue: '2', description: '')
   }
 
   environment {

@@ -32,7 +32,7 @@ pipeline {
       steps {
          dir("docker/k8s/") {
         script {         
-            sh "./install.sh ${params.PROJECT_NAME} ${params.CLUSTER_NAME} ${params.ZONE} ${params.NODES_NUMBER} ${params.NUMBER_GPUS_PER_NODE}"
+            sh "./list-clusters-gke.sh"
           }
         }
       }

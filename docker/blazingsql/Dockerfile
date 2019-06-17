@@ -89,7 +89,7 @@ RUN source activate cudf && pip install cmake_setuptools
 USER root
 
 # Install hdfs stuff
-RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
+RUN apt-get install -y --no-install-recommends libffi-dev libprotobuf9v5 libgsasl7 libgsasl7-dev
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
 ENV NUMBAPRO_NVVM /usr/local/cuda/nvvm/lib64/libnvvm.so

@@ -30,7 +30,7 @@ pipeline {
       steps {
          dir("docker/k8s/") {
         script {         
-            sh "./ete-cluster-gke.sh ${params.PROJECT_ID} ${params.CLUSTER_NAME} ${params.ZONE}"
+            sh "./delete-cluster-gke.sh ${params.PROJECT_ID} ${params.CLUSTER_NAME} ${params.ZONE}"
           }
         }
       }

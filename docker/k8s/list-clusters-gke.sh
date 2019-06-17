@@ -21,7 +21,7 @@ do
     then 
     var=""
     else 
-    echo "ProjectID: "  $project
+    echo " ************** ProjectID  ************* "  $project
     fi
 done
 

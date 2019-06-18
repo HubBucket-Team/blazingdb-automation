@@ -25,4 +25,8 @@ if [ $module_test = 'performanceTest' ]
     echo "================================ Second execution ================================"
     echo "PRINT configurationFileTrue$data_set.json"
     python -m EndToEndTests.$module_test  $workdir_home/configurationFileTrue$data_set.json
+else
+    echo "================================ Second execution ================================"
+    echo "PRINT configurationFileTrue$data_set.json"
+    python -m EndToEndTests.$module_test  $workdir_home/configurationFileFalse$data_set.json
 fi

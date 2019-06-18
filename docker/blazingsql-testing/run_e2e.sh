@@ -32,3 +32,4 @@ fi
 echo "================================ Second execution ================================"
 echo "PRINT configurationFile$flag$data_set.json"
 python -m EndToEndTests.$module_test  $workdir_home/configurationFile$flag$data_set.json
+

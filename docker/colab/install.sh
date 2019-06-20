@@ -34,7 +34,7 @@ fi
 
 echo "### dependencies ###"
 apt-get install -y -qq $PYTHON python3-pip > /dev/null
-apt-get install -y -qq $PYTHON-dev libffi-dev libprotobuf9v5 libgsasl7 libgsasl7-dev > /dev/null
+apt-get install -y -qq $PYTHON-dev libffi-dev libgsasl7 libgsasl7-dev > /dev/null
 #ln -s /usr/bin/python3 /usr/bin/python
 #ln -s /usr/bin/pip3 /usr/bin/pip
 #apt-get install -y -qq git vim > /dev/null

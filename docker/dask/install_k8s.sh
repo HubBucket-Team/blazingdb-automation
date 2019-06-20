@@ -31,6 +31,7 @@ $cmd apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-en
 
 
 echo "### install ###"
-$cmd apply -f ./
+$cmd apply -f dask_cluster_k8s.yaml
 
+echo "### to connect ###"
 echo "gcloud container clusters get-credentials $name --zone $zone --project $project"

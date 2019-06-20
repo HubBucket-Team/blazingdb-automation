@@ -1,4 +1,5 @@
 #FROM blazingdb/blazingsql:latest
+#FROM python:3.7-alpine
 FROM python:3.7
 
 #RUN apt-get install -y socat netcat && apt-get clean

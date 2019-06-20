@@ -105,7 +105,7 @@ pipeline {
       }
       steps {
         build job: "07.ENDTOEND_TEST_CUDA10", parameters: [
-          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE', value: "${IMAGE_BUILD}"]
+          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE', value: "${IMAGE_COLAB}"]
         ]
       }
     }

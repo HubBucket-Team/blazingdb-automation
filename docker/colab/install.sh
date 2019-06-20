@@ -71,11 +71,7 @@ $PIP install cmake_setuptools > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
-$PIP install pyarrow==0.12.1 > /dev/null
-if [ $? != 0 ]; then
-  exit 1
-fi
-$PIP install pandas==0.24.2 > /dev/null
+$PIP install numba==0.43.0 > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -83,10 +79,33 @@ $PIP install numpy==1.16.2 > /dev/null
 if [ $? != 0 ]; then
   exit 1
 fi
+$PIP install pandas==0.24.2 > /dev/null
+if [ $? != 0 ]; then
+  exit 1
+fi
+$PIP install pyarrow==0.12.1 > /dev/null
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+$PIP install flatbuffers
+if [ $? != 0 ]; then
+  exit 1
+fi
+
 $PIP install cython
 if [ $? != 0 ]; then
   exit 1
 fi
+$PIP install xgboost
+if [ $? != 0 ]; then
+  exit 1
+fi
+$PIP install sklearn
+if [ $? != 0 ]; then
+  exit 1
+fi
+
 
 blazingsql_files=/tmp/blazing/blazingsql-files
 

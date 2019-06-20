@@ -84,16 +84,13 @@ pipeline {
         sh "docker exec ${CONTAINER_NAME} /tmp/install.sh /tmp/blazingsql-files.tar.gz"
 
         sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/demo1.py"
-        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo1.py"
+        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo1.py"
 
         sh "docker cp ./docker/colab/demo2.py ${CONTAINER_NAME}:/blazingsql/demo2.py"
-        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo2.py"
+        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo2.py"
 
         sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/demo3.py"
-        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo3.py"
-
-        sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/demo4.py"
-        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo4.py"
+        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo3.py"
 
         sh "docker commit ${CONTAINER_NAME} ${IMAGE_COLAB}"
         sh "docker rm -f ${CONTAINER_NAME}"

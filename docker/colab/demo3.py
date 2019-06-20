@@ -1,7 +1,3 @@
-import sys, os
-os.environ["NUMBAPRO_NVVM"] = "/usr/local/cuda/nvvm/lib64/"
-os.environ["NUMBAPRO_LIBDEVICE"] = "/usr/local/cuda/nvvm/libdevice/"
-
 import cudf
 from blazingsql import BlazingContext
 import pyarrow as pa

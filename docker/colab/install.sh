@@ -137,7 +137,7 @@ if [ $? != 0 ]; then
   exit 1
 fi
 export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
-$PIP install $blazingsql_files/cudf/cpp/python/
+#$PIP install $blazingsql_files/cudf/cpp/python/
 if [ $? != 0 ]; then
   exit 1
 fi

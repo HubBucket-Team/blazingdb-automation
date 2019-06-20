@@ -41,6 +41,7 @@ echo "Installing custrings ..."
 rm -rf $blazingsql_files/nvstrings-src/python/build/
 working_directory_tmp=$PWD
 cd $blazingsql_files/nvstrings-src/python/
+rm -rf $blazingsql_files/nvstrings-src/python/build/
 python setup.py install
 cd $working_directory_tmp
 echo "custrings DONE"

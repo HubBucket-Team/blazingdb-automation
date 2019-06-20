@@ -11,6 +11,7 @@ RUN apt-get update
 RUN apt-get install -y libnuma1
 
 COPY blazingdb_orchestator_service /usr/bin/
+
 COPY ucx/*.so* /usr/lib/
 
 RUN ln -s /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so /usr/lib/libcuda.so.1
@@ -19,7 +20,7 @@ RUN ln -s /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so /usr/lib
 VOLUME /tmp
 
 # 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
-EXPOSE 9000
+EXPOSE 8889
 #EXPOSE 8890
 #EXPOSE 8891
 #EXPOSE 8892

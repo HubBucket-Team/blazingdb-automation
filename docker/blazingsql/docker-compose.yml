@@ -2,69 +2,99 @@ version: '2.3'
 
 services:
 
-  jupyter:
-    image: blazingdb/blazingsql:pyblazing
+  pyblazing:
+    image: blazingdb/blazingsql:pyblazing_tcp
     build: ./pyblazing
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - data:/blazingdb/data/demo/
-      - sockets:/tmp/
+    #  - sockets:/tmp/
     ports:
       - 80:80
+    networks:
+      back-tier:
+        ipv4_address: 172.21.1.1
 
   calcite:
-    image: blazingdb/blazingsql:calcite
+    image: blazingdb/blazingsql:calcite_tcp
     build: ./calcite
-    volumes:
-      - sockets:/tmp/
+    #command: sleep 36000
+    command: java -jar /usr/bin/BlazingCalcite.jar -p 8890
+    ports:
+      - "8890:8890"
+    #volumes:
+    #  - sockets:/tmp/
+    networks:
+      back-tier:
+        ipv4_address: 172.21.1.2
 
   orchestrator:
-    image: blazingdb/blazingsql:orchestator
+    image: blazingdb/blazingsql:orchestator_tcp
     build: ./orchestator
-    volumes:
-      - sockets:/tmp/
+    #command: sleep 36000
+    command: blazingdb_orchestator_service 172.21.1.3 8889 9000 172.21.1.2 8890
+    #volumes:
+    #  - sockets:/tmp/
     ports:
-      - 9000:9000
+      - "8889:8889"
+      - "9000:9000"
+    depends_on:
+      - calcite
+    networks:
+      back-tier:
+        ipv4_address: 172.21.1.3
 
   ral1:
-    image: blazingdb/blazingsql:ral
+    image: blazingdb/blazingsql:ral_tcp
     build: ./ral
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - data:/blazingdb/data/demo/
-      - sockets:/tmp/
+    #  - sockets:/tmp/
     depends_on:
       - orchestrator
-    command: sleep 36000
-    #command: testing-libgdf 1 orchestrator 9000 ral1 8001
-    #ports:
-    #  - 80:8888
+    command: testing-libgdf 1 172.21.1.3 8889 9000 172.21.1.5 8891 9001
+    ports:
+      - "8891:8891"
+      - "9001:9001"
+    networks:
+      back-tier:
+        ipv4_address: 172.21.1.5
 
-  ral2:
-    image: blazingdb/blazingsql:ral
-    build: ./ral
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    volumes:
-      - data:/blazingdb/data/demo/
-      - sockets:/tmp/
-    depends_on:
-      - orchestrator
-    command: sleep 36000
-    #command: testing-libgdf 2 orchestrator 9000 ral2 8001
+  # ral2:
+  #   image: blazingdb/blazingsql:ral_tcp
+  #   build: ./ral
+  #   runtime: nvidia
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all
+  #   volumes:
+  #     - data:/blazingdb/data/demo/
+  #   #  - sockets:/tmp/
+  #   depends_on:
+  #     - orchestrator
+  #   #command: sleep 36000
+  #   command: testing-libgdf 2 172.21.1.3 8889 9000 172.21.1.6 8891 9001
+  #   ports:
+  #     - "8891"
+  #     - "9001"
+  #   networks:
+  #     back-tier:
+  #       ipv4_address: 172.21.1.6
 
 
 volumes:
   data:
-  sockets:
+  #sockets:
 
 
 networks:
-  front-tier:
   back-tier:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.1.0/16
 

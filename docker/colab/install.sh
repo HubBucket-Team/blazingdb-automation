@@ -12,6 +12,7 @@ mkdir -p /tmp/blazing/ && cd /tmp/blazing/ && tar -xf /tmp/blazingsql-files.tar.
 if [ $? != 0 ]; then
   exit 1
 fi
+
 echo "### update ###"
 apt-get update -qq > /dev/null
 

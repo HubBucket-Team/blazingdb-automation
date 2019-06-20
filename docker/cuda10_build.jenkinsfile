@@ -66,7 +66,7 @@ pipeline {
 
     stage("Build image") {
       steps {
-        sh "nvidia-docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
+        sh "docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
       }
     }
 
@@ -78,14 +78,21 @@ pipeline {
 
     stage("Test") {
       steps {
-        sh "docker run --runtime=nvidia --name ${CONTAINER_NAME} -d -ti nvidia/cuda:10.0-devel-ubuntu18.04 bash"
+        sh "./docker/cuda10_run.sh ${CONTAINER_NAME}"
         sh "docker cp ${ARTIFACT} ${CONTAINER_NAME}:/tmp/"
         sh "docker cp ./docker/colab/install.sh ${CONTAINER_NAME}:/tmp/"
-
         sh "docker exec ${CONTAINER_NAME} /tmp/install.sh /tmp/blazingsql-files.tar.gz"
+
+        sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/demo1.py"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo1.py"
+
+        sh "docker cp ./docker/colab/demo2.py ${CONTAINER_NAME}:/blazingsql/demo2.py"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo2.py"
+
+        sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/demo3.py"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo3.py"
+
+        sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/demo4.py"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo4.py"
 
         sh "docker commit ${CONTAINER_NAME} ${IMAGE_COLAB}"

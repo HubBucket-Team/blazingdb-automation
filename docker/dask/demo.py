@@ -15,7 +15,7 @@ def add(x, y):
     return x + y
 
 
-client = Client('127.0.0.1:8786')
+client = Client('127.0.0.1:32771')
 
 incs = client.map(inc, range(100))
 decs = client.map(dec, range(100))

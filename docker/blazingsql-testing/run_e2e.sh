@@ -18,18 +18,16 @@ echo "Executing tests"
 #First execution
 #python -m EndToEndTests.parquetFromLocalTest  $workdir_home/configurationFile.json
 
-flag="False"
-
 echo "================================ First execution ================================"
 echo "PRINT configurationFile$flag$data_set.json"
-python -m EndToEndTests.$module_test  $workdir_home/configurationFile$flag$data_set.json
+
+flag="False"
 
 if [ $module_test == 'performanceTest' ]
 then
-    flag="True"
+    flag="True"    
 fi
 
-echo "================================ Second execution ================================"
-echo "PRINT configurationFile$flag$data_set.json"
 python -m EndToEndTests.$module_test  $workdir_home/configurationFile$flag$data_set.json
+
 

@@ -23,7 +23,7 @@ echo "PRINT configurationFile$flag$data_set.json"
 
 flag="False"
 
-if [ $module_test == 'performanceTest' ]
+if [ $module_test == 'allPerformanceTest' ]
 then
     flag="True"    
 fi

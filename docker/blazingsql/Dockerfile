@@ -1,4 +1,5 @@
-FROM nvidia/cuda:9.2-devel-ubuntu16.04
+ARG  CUDA_VERSION=9.2
+FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu16.04
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 
 ENV PYTHON="python3.7"

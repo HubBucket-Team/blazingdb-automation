@@ -74,12 +74,12 @@ $SUDO apt-get install -y -qq --fix-missing supervisor openjdk-8-jre > $VERBOSE
 echo "### cmake ###"
 if ! [ -x "$(command -v cmake)" ]; then
   echo "cmake not installed"
-  wget -q https://github.com/Kitware/CMake/releases/download/v3.12.4/cmake-3.12.4-Linux-x86_64.sh
-  bash cmake-3.12.4-Linux-x86_64.sh --skip-license --prefix=/usr
+  wget -q https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3-Linux-x86_64.sh
+  bash cmake-3.14.3-Linux-x86_64.sh --skip-license --prefix=/usr
   if [ $? != 0 ]; then
     exit 1
   fi
-  rm -f cmake-3.12.4-Linux-x86_64.sh
+  rm -f cmake-3.14.3-Linux-x86_64.sh
 fi
 cmake --version
 if [ $? != 0 ]; then
@@ -137,9 +137,9 @@ fi
 
 blazingsql_files=/tmp/blazing/blazingsql-files
 
-export PYTHON_INCLUDE_DIR=$(python3.7 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")
-export PYTHON_LIBRARY=$(python3.7 -c "import distutils.sysconfig as sysconfig; import os; print(os.path.join(sysconfig.get_config_var('LIBDIR'), sysconfig.get_config_var('LDLIBRARY')))")
-export CMAKE_COMMON_VARIABLES="-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR -DPYTHON_LIBRARY=$PYTHON_LIBRARY"
+PYTHON_INCLUDE_DIR=$(python3.7 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")
+PYTHON_LIBRARY=$(python3.7 -c "import distutils.sysconfig as sysconfig; import os; print(os.path.join(sysconfig.get_config_var('LIBDIR'), sysconfig.get_config_var('LDLIBRARY')))")
+CMAKE_COMMON_VARIABLES="-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR -DPYTHON_LIBRARY=$PYTHON_LIBRARY"
 
 echo "PYTHON_INCLUDE_DIR: $PYTHON_INCLUDE_DIR"
 echo "PYTHON_LIBRARY: $PYTHON_LIBRARY"
@@ -176,10 +176,13 @@ if [ $? != 0 ]; then
 fi
 #export NVSTRINGS_INCLUDE=$blazingsql_files/nvstrings/include/
 rm -rf $blazingsql_files/nvstrings-src/python/build/
-$PIP install $blazingsql_files/nvstrings-src/python
+#$PIP install $blazingsql_files/nvstrings-src/python
+cd $blazingsql_files/nvstrings-src/python && CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$PATH_USR $PYTHON setup.py install
 if [ $? != 0 ]; then
   exit 1
 fi
+echo "### test custrings ###"
+$PYTHON -c "import nvstrings, nvcategory"
 #pip3 list
 
 echo "### cudf ###"

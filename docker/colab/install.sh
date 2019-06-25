@@ -256,7 +256,7 @@ wget -q -O /etc/supervisor/conf.d/blazing-ral.conf https://s3.amazonaws.com/blaz
 service supervisor start
 service supervisor status
 wget -q -O /usr/bin/blazingsql https://s3.amazonaws.com/blazingsql-colab/blazingsql && chmod +x /usr/bin/blazingsql
-$blazingsql status
+blazingsql status
 
 # Clean
 rm -rf /tmp/blazing*

@@ -2,25 +2,22 @@ version: '2.3'
 
 services:
 
-  scheduler:
-    image: blazingdb/blazingsql:scheduler
-    build: ./scheduler/
-    command: ["dask-scheduler", "--show"]
+  dask_scheduler:
+    image: blazingdb/blazingsql:dask_calcite_orchestrator
+    build: ./calcite_orchestrator/
     ports:
       - "8786"
       - 8787:8787
 
   worker1:
-    image: blazingdb/blazingsql:worker
-    build: ./worker/
-    command: ["dask-worker", "scheduler:8786"]
+    image: blazingdb/blazingsql:dask_ral_pyblazing
+    build: ./ral_pyblazing/
     ports:
       - "8786"
 
   worker2:
     image: blazingdb/blazingsql:worker
-    build: ./worker/
-    command: ["dask-worker", "scheduler:8786"]
+    build: ./ral_pyblazing/
     ports:
       - "8786"
 

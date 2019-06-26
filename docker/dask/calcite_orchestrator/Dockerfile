@@ -25,7 +25,7 @@ EXPOSE 8889
 #EXPOSE 8892
 
 # Calcite
-RUN apt-get update && apt-get install -y openjdk-8-jre && apt-get clean
+RUN apt-get update && apt-get install -y openjdk-8-jre
 RUN apt-get install -y python3-pip && apt-get clean && \
     pip3 install "dask[complete]" && pip3 install bokeh
 
@@ -35,6 +35,16 @@ RUN mkdir /blazingsql
 VOLUME /blazingsql
 EXPOSE 8890
 
+# Supervisor
+RUN apt-get install -y supervisor
+COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord/blazing-calcite.conf /etc/supervisor/conf.d/
+COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/
+COPY supervisord/dask-scheduler.conf /etc/supervisor/conf.d/
 
-CMD ["/usr/bin/blazingdb_orchestator_service"]
-CMD ["java", "-jar", "/usr/bin/BlazingCalcite.jar"]
+
+
+#CMD ["/usr/bin/blazingdb_orchestator_service"]
+#CMD ["java", "-jar", "/usr/bin/BlazingCalcite.jar"]
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

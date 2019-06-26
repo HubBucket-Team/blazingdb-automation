@@ -81,6 +81,9 @@ RUN source activate cudf && pip install sklearn
 #extra dependencies (from cudf 0.7)
 RUN source activate cudf && pip install cmake_setuptools
 
+# Dask
+RUN source activate cudf && pip install "dask[complete]"
+
 USER root
 
 # Install hdfs stuff
@@ -93,15 +96,11 @@ ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor
 COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
-COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/blazing-orchestrator.conf
 COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
-COPY supervisord/blazing-ral2.conf /etc/supervisor/conf.d/blazing-ral2.conf
-COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
-COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
+COPY supervisord/run_worker.sh /usr/bin/run_worker.sh
 RUN mkdir -p /var/log/supervisor/
 RUN chown -R jupyter:jupyter /var/log/supervisor/
-RUN chmod +x /usr/bin/run_jupyter.sh
-RUN chown jupyter:jupyter /usr/bin/run_jupyter.sh
+RUN chown jupyter:jupyter /usr/bin/run_worker.sh
 
 # Copy the demo files
 RUN mkdir -p /blazingdb/data/

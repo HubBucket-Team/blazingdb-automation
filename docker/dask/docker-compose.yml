@@ -16,7 +16,7 @@ services:
       - "8786"
 
   worker2:
-    image: blazingdb/blazingsql:worker
+    image: blazingdb/blazingsql:dask_ral_pyblazing
     build: ./ral_pyblazing/
     ports:
       - "8786"

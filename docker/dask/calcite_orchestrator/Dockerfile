@@ -26,14 +26,19 @@ EXPOSE 8889
 
 # Calcite
 RUN apt-get update && apt-get install -y openjdk-8-jre
-RUN apt-get install -y python3-pip && apt-get clean && \
-    pip3 install "dask[complete]" && pip3 install bokeh
 
 COPY BlazingCalcite.jar /usr/bin/
 
 RUN mkdir /blazingsql
 VOLUME /blazingsql
 EXPOSE 8890
+
+# Dask
+RUN apt-get install -y software-properties-common && \
+   add-apt-repository -y ppa:deadsnakes/ppa && \
+   apt-get update && \
+   apt-get install -y python3.7 python3.7-dev python3-pip && \
+   python3.7 -m pip install "dask[complete]" && python3.7 -m pip install bokeh
 
 # Supervisor
 RUN apt-get install -y supervisor

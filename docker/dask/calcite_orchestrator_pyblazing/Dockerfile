@@ -98,18 +98,14 @@ ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor
 COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
-COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
-COPY supervisord/dask-worker.conf /etc/supervisor/conf.d/
-COPY supervisord/run_worker.sh /usr/bin/run_worker.sh
 RUN mkdir -p /var/log/supervisor/
 RUN chown -R jupyter:jupyter /var/log/supervisor/
-RUN chown jupyter:jupyter /usr/bin/run_worker.sh
 
 # Copy the demo files
-#RUN mkdir -p /blazingdb/data/
-#RUN mkdir -p /blazingdb/notebooks/
-#COPY data /blazingdb/data/
-#COPY notebooks/ /blazingdb/notebooks/
+RUN mkdir -p /blazingdb/data/
+RUN mkdir -p /blazingdb/notebooks/
+COPY data /blazingdb/data/
+COPY notebooks/ /blazingdb/notebooks/
 RUN chown -R jupyter:jupyter /blazingdb/
 
 # Create the temporal installation directory for the BlazingSQL setup
@@ -170,5 +166,38 @@ EXPOSE 8894
 
 # RAL 4 (Communication)
 EXPOSE 9004
+
+
+# UCX
+RUN apt-get install -y libnuma1
+#COPY ucx/*.so* /usr/lib/
+
+COPY blazingdb_orchestator_service /usr/bin/
+
+#RUN ln -s /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so /usr/lib/libcuda.so.1
+
+# 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
+EXPOSE 8889
+#EXPOSE 8890
+#EXPOSE 8891
+#EXPOSE 8892
+
+# Calcite
+RUN apt-get update && apt-get install -y openjdk-8-jre
+
+COPY BlazingCalcite.jar /usr/bin/
+
+RUN mkdir /blazingsql
+VOLUME /blazingsql
+EXPOSE 8890
+
+# Dask
+RUN source activate cudf && pip install "dask[complete]" && pip install bokeh
+
+# Supervisor
+COPY supervisord/run_scheduler.sh /usr/bin/run_scheduler.sh
+COPY supervisord/blazing-calcite.conf /etc/supervisor/conf.d/
+COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/
+COPY supervisord/dask-scheduler.conf /etc/supervisor/conf.d/
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

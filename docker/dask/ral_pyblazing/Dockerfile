@@ -86,6 +86,8 @@ RUN source activate cudf && pip install "dask[complete]"
 
 USER root
 
+RUN ln -s /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so.1
+
 # Install hdfs stuff
 RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 

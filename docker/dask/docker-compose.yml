@@ -2,7 +2,7 @@ version: '2.3'
 
 services:
 
-  dask_scheduler:
+  blazingdb-dask-scheduler-svc:
     image: blazingdb/blazingsql:dask_calcite_orchestrator
     build: ./calcite_orchestrator/
     ports:

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-source activate cudf && dask-worker dask_scheduler:8786
+source activate cudf && dask-worker blazingdb-dask-scheduler-svc:8786

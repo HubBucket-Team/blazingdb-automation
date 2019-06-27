@@ -8,7 +8,7 @@ Run docker-compose twith dask and blazingsql stack
 - data and notebooks docker/dask/ral_pyblazing
 
 
-# Build docker compose
+# Build image to docker compose
 
 ```shell-script
 # Create the images to use in docker compose
@@ -19,6 +19,7 @@ docker build -t blazingdb/blazingsql:dask_calcite_orchestrator .
 # Into : cd docker/dask/ral_pyblazing
 docker build -t blazingdb/blazingsql:dask_ral_pyblazing .
 ```
+# Build  docker compose
 
 ```shell-script
 # To create containers with docker compose

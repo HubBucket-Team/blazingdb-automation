@@ -38,3 +38,19 @@ docker-compose  ps
 cd docker/dask
 docker-compose  down
 ```
+
+# Test
+```shell-script
+# Enter the containers for dask scheduler and workers
+docker exec -it dask_blazingdb-dask-scheduler-svc_1 bash
+docker exec -it dask_worker1_1 bash
+docker exec -it dask_worker2_1 bash
+# Check the status in each nodos with:
+supervisorctl status
+
+# In any of workers, copy the demo.py, change the ip for the scheduler ip: client = Client('127.0.0.1:8786') 
+docker exec -it dask_worker1_1 bash
+source activate cudf
+python demo.py
+go to: http://localhost:8787/status
+```

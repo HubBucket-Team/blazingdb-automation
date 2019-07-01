@@ -9,6 +9,7 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     ports:
+      - "9001:9001"
       - "8786:8786"
       - "8787:8787"
 
@@ -19,6 +20,7 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     ports:
+      - "9002:9001"
       - "8786"
 
   worker2:
@@ -28,5 +30,6 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     ports:
+      - "9003:9001"
       - "8786"
 

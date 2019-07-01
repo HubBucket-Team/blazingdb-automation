@@ -2,15 +2,16 @@
 Run docker-compose twith dask and blazingsql stack
 
 # Requirements
+- To this demo we need install docker-compose : https://docs.docker.com/compose/install/
 - Should exist the follow:
-    - blazingsql-files.tar.gz into docker/dask
+    - blazingsql-files.tar.gz into blazingdb-automation/docker/dask
 
 
 # Build images easy way
 Use docker_build_images.sh
 
 ```shell-script
-cd  docker/dask 
+cd  blazingdb-automation/docker/dask 
 ./docker_build_images.sh
 ```
 
@@ -18,19 +19,19 @@ cd  docker/dask
 
 ```shell-script
 # To create containers with docker compose
-cd docker/dask
+cd blazingdb-automation/docker/dask
 docker-compose -f docker-compose.yml  up
 ```
 
 ```shell-script
 # To show  containers with docker compose
-cd docker/dask
+cd blazingdb-automation/docker/dask
 docker-compose  ps
 ```
 
 ```shell-script
 # To delete the  containers with docker compose
-cd docker/dask
+cd blazingdb-automation/docker/dask
 docker-compose  down
 ```
 

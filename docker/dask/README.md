@@ -3,22 +3,17 @@ Run docker-compose twith dask and blazingsql stack
 
 # Requirements
 - Should exist the follow:
-- BlazingCalcite.jar and blazingdb_orchestator_service into  docker/dask/calcite_orchestrator directory
-- blazingsql-files.tar.gz into docker/dask/ral_pyblazing
-- data and notebooks docker/dask/ral_pyblazing
+    - blazingsql-files.tar.gz into docker/dask
 
 
-# Build image to docker compose
+# Build images easy way
+Use docker_build_images.sh
 
 ```shell-script
-# Create the images to use in docker compose
-
-# Into : cd docker/dask/calcite_orchestrator
-docker build -t blazingdb/blazingsql:dask_calcite_orchestrator .
-
-# Into : cd docker/dask/ral_pyblazing
-docker build -t blazingdb/blazingsql:dask_ral_pyblazing .
+cd  docker/dask 
+./docker_build_images.sh
 ```
+
 # Build  docker compose
 
 ```shell-script
@@ -51,6 +46,6 @@ supervisorctl status
 # In any of workers, copy the demo.py, change the ip for the scheduler ip: client = Client('127.0.0.1:8786') 
 docker exec -it dask_worker1_1 bash
 source activate cudf
-python demo.py
+python demoral.py
 go to: http://localhost:8787/status
 ```

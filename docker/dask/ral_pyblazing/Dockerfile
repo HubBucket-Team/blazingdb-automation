@@ -105,13 +105,6 @@ RUN mkdir -p /var/log/supervisor/
 RUN chown -R jupyter:jupyter /var/log/supervisor/
 RUN chown jupyter:jupyter /usr/bin/run_worker.sh
 
-# Copy the demo files
-#RUN mkdir -p /blazingdb/data/
-#RUN mkdir -p /blazingdb/notebooks/
-#COPY data /blazingdb/data/
-#COPY notebooks/ /blazingdb/notebooks/
-RUN chown -R jupyter:jupyter /blazingdb/
-
 # Create the temporal installation directory for the BlazingSQL setup
 RUN mkdir -p /tmp/blazing/
 COPY blazingsql-files.tar.gz /tmp/blazing/

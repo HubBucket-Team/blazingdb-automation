@@ -29,9 +29,9 @@ spec:
         #  timeoutSeconds: 1
         #  successThreshold: 1
         #  failureThreshold: 10
-        #resources:
-        #  limits:
-        #    nvidia.com/gpu: 1 # requesting 1 GPU
+        resources:
+          limits:
+            nvidia.com/gpu: 1 # requesting 1 GPU
 
 ---
 kind: Deployment
@@ -56,6 +56,9 @@ spec:
         ports:
           - containerPort: 9001
           - containerPort: 8786
+        resources:
+          limits:
+            nvidia.com/gpu: 1
 
 ---
 kind: Service

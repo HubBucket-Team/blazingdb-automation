@@ -11,7 +11,7 @@ region="${zone::-2}"
 
 
 echo "### creating cluster ###"
-gcloud beta container --project "$project" clusters create "$name" --zone "$zone" --username "admin" --cluster-version "1.12.7-gke.10" --machine-type "n1-standard-4" --accelerator "type=nvidia-tesla-t4,count=$num_gpus" --image-type "COS" --disk-type "pd-standard" --disk-size "50" --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --num-nodes "$num_nodes" --enable-cloud-logging --enable-cloud-monitoring --no-enable-ip-alias --network "projects/$project/global/networks/default" --subnetwork "projects/$project/regions/$region/subnetworks/default" --addons HorizontalPodAutoscaling,HttpLoadBalancing --enable-autoupgrade --enable-autorepair
+gcloud beta container --project "$project" clusters create "$name" --zone "$zone" --username "admin" --cluster-version "1.12.8-gke.10" --machine-type "n1-standard-4" --accelerator "type=nvidia-tesla-t4,count=$num_gpus" --image-type "COS" --disk-type "pd-standard" --disk-size "50" --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --num-nodes "$num_nodes" --enable-cloud-logging --enable-cloud-monitoring --no-enable-ip-alias --network "projects/$project/global/networks/default" --subnetwork "projects/$project/regions/$region/subnetworks/default" --addons HorizontalPodAutoscaling,HttpLoadBalancing --enable-autoupgrade --enable-autorepair
 
 
 echo "### credentials ###"
@@ -31,7 +31,7 @@ $cmd apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-en
 
 
 echo "### install ###"
-$cmd apply -f dask_cluster_k8s.yaml
+$cmd apply -f k8s_dask_cluster.yaml
 
 echo "### to connect ###"
 echo "gcloud container clusters get-credentials $name --zone $zone --project $project"

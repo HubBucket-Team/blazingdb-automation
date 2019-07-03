@@ -120,7 +120,7 @@ RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
 
 # NOTE Expose CUDF runtime
-ENV LD_LIBRARY_PATH /conda/envs/cudf/lib/
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib64/:/conda/envs/cudf/lib/:/usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/
 
 # If the user wants to communicate by unix socket need to mount his /tmp folder
 VOLUME /tmp

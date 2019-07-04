@@ -91,7 +91,7 @@ pipeline {
       steps {
         dir("docker/blazingsql-testing") {
           sh "./run_complete_test.sh ${params.E2E_USER} ${params.E2E_WORKDIR} ${params.DOCKER_IMAGE_TAG} ${params.E2E_DATA_SET} ${params.E2E_BLAZINGDB_TESTING_BRANCH} ${params.E2E_BLAZINGDB_TESTING_MODULE}"
-          sh "./endtoend_test_blazingsql.sh ${env.BUILD_NUMBER}"
+          sh "./endtoend_test_logs.sh ${env.BUILD_NUMBER}"
         }
       }
     }

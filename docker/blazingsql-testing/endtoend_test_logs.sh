@@ -11,7 +11,7 @@ echo "Copying logs into localmachine"
 sudo docker cp bzsqlcontainer:/var/log/supervisor  /tmp/$build_number
 
 #  Uploading logs to s3 public bucket
-aws s3 cp  /tmp/$build_number/* $logs_path/$build_number --recursive
+aws s3 cp  /tmp/$build_number/ $logs_path/$build_number --recursive
 aws s3 cp /tmp/supervisor/* $logs_path
 
 # Print logs

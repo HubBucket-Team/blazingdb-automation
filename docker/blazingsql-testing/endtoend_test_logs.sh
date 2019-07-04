@@ -20,6 +20,6 @@ echo "=========== Listing Logs ======================"
 aws s3 ls $logs_path/$build_number/supervisor/
 
 echo "check  the logs in your local machine"
-echo "wget https://blazingsql-colab.s3.amazonaws.com/blazingsql-logs/endtoend_test_blazingsql/200/$output_log"
+echo "wget https://blazingsql-colab.s3.amazonaws.com/blazingsql-logs/endtoend_test_blazingsql/$build_number/supervisor/"
 
 #bzsqlcontainer

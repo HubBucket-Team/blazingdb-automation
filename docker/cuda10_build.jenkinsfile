@@ -92,7 +92,7 @@ pipeline {
         sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/demo3.py"
         sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo3.py"
 
-        sh "docker cp ././docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
+        sh "docker cp ./docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
         sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/demo4.py"
         sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo4.py"
 
@@ -121,6 +121,15 @@ pipeline {
         }
       }      
       steps {
+        sh "aws s3 cp ./docker/blazingsql/data/nation.psv s3://blazingsql-colab/latest/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/gpu.arrow s3://blazingsql-colab/latest/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/Music.csv s3://blazingsql-colab/latest/demo/data/"
+
+        sh "aws s3 cp ./docker/colab/demo1.py s3://blazingsql-colab/latest/demo/"
+        sh "aws s3 cp ./docker/colab/demo2.py s3://blazingsql-colab/latest/demo/"
+        sh "aws s3 cp ./docker/colab/demo3.py s3://blazingsql-colab/latest/demo/"
+        sh "aws s3 cp ./docker/colab/demo4.py s3://blazingsql-colab/latest/demo/"
+        
         sh "aws s3 cp ./docker/colab/install.sh s3://blazingsql-colab/latest/"
         sh "aws s3 cp ${ARTIFACT} s3://blazingsql-colab/latest/"
       }

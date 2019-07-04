@@ -243,6 +243,8 @@ $SUDO mkdir -p /blazingsql/data/ && chmod 777 -R /blazingsql
 echo "### downloading demo files ###"
 wget -q -O /blazingsql/data/nation.psv https://s3.amazonaws.com/blazingsql-colab/demo/data/nation.psv
 wget -q -O /blazingsql/data/gpu.arrow https://s3.amazonaws.com/blazingsql-colab/demo/data/gpu.arrow
+wget -q -O /blazingsql/data/Music.csv https://s3.amazonaws.com/blazingsql-colab/demo/data/Music.csv
+
 wget -q -O /blazingsql/demo1.py https://s3.amazonaws.com/blazingsql-colab/demo/demo1.py
 wget -q -O /blazingsql/demo2.py https://s3.amazonaws.com/blazingsql-colab/demo/demo2.py
 wget -q -O /blazingsql/demo3.py https://s3.amazonaws.com/blazingsql-colab/demo/demo3.py

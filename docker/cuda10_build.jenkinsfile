@@ -92,6 +92,10 @@ pipeline {
         sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/demo3.py"
         sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo3.py"
 
+        sh "docker cp ././docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
+        sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/demo4.py"
+        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo4.py"
+
         sh "docker commit ${CONTAINER_NAME} ${IMAGE_COLAB}"
         sh "docker rm -f ${CONTAINER_NAME}"
       }

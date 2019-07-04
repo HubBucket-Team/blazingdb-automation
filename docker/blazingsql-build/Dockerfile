@@ -1,6 +1,7 @@
 ARG  CUDA_VERSION=9.2
+ARG  UBUNTU_VERSION=16.04
 #FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu16.04
-FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu16.04
+FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 

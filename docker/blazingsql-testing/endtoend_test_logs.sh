@@ -9,7 +9,7 @@ sudo mkdir /tmp/$build_number
 
 echo "Copying logs into local machine jenkins"
 sudo docker cp bzsqlcontainer:/var/log/supervisor  /tmp/$build_number
-sudo chmod  666  -R /tmp/$build_number
+sudo chmod  777  -R /tmp/$build_number
 #  Uploading logs to s3 public bucket
 echo "Copying logs to s3"
 aws s3 cp  /tmp/$build_number/ $logs_path/$build_number --recursive

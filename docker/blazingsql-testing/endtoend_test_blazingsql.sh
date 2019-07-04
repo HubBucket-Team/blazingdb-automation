@@ -15,3 +15,6 @@ aws s3 cp /tmp/supervisor/* $logs_path
 # Print logs
 echo "The generated logs are:"
 aws s3 ls $logs_path/$build_number
+
+echo "check  the logs in your local machine"
+echo "wget https://blazingsql-colab.s3.amazonaws.com/blazingsql-logs/endtoend_test_blazingsql/200/$output_log"

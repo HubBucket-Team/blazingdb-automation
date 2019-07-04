@@ -8,7 +8,7 @@ logs_path=s3://blazingsql-colab/blazingsql-logs/endtoend_test_blazingsql
 sudo mkdir /tmp/$build_number
 
 echo "Copying logs into localmachine"
-docker cp bzsqlcontainer:/var/log/supervisor  /tmp/$build_number
+sudo docker cp bzsqlcontainer:/var/log/supervisor  /tmp/$build_number
 
 #  Uploading logs to s3 public bucket
 aws s3 cp  /tmp/$build_number/* $logs_path/$build_number --recursive

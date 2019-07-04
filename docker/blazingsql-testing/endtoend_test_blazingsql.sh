@@ -6,6 +6,8 @@ logs_path=s3://blazingsql-colab/blazingsql-logs/endtoend_test_blazingsql
 
 # Copy from docker container to tmp directory
 sudo mkdir /tmp/$build_number
+
+echo "Copying logs into localmachine"
 docker cp myjupyter:/var/log/supervisor  /tmp/$build_number
 
 #  Uploading logs to s3 public bucket

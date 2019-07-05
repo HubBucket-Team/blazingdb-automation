@@ -15,7 +15,7 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-PYTHON="python3.7"
+PYTHON="python"
 PIP="$PYTHON -m pip"
 
 VERBOSE="/dev/null"
@@ -137,8 +137,8 @@ fi
 
 blazingsql_files=/tmp/blazing/blazingsql-files
 
-PYTHON_INCLUDE_DIR=$(python3.7 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")
-PYTHON_LIBRARY=$(python3.7 -c "import distutils.sysconfig as sysconfig; import os; print(os.path.join(sysconfig.get_config_var('LIBDIR'), sysconfig.get_config_var('LDLIBRARY')))")
+PYTHON_INCLUDE_DIR=$(python3.6 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")
+PYTHON_LIBRARY=$(python3.6 -c "import distutils.sysconfig as sysconfig; import os; print(os.path.join(sysconfig.get_config_var('LIBDIR'), sysconfig.get_config_var('LDLIBRARY')))")
 CMAKE_COMMON_VARIABLES="-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR -DPYTHON_LIBRARY=$PYTHON_LIBRARY"
 
 echo "PYTHON_INCLUDE_DIR: $PYTHON_INCLUDE_DIR"

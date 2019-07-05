@@ -4,7 +4,7 @@ PYTHON="python3"
 #PIP="$PYTHON -m pip"
 PIP="pip3"
 
-apt-get install -y openjdk-8-jre mysql-client git
+apt-get install -y openjdk-8-jre mysql-client git netcat
 
 $PIP install pydrill
 $PIP install openpyxl

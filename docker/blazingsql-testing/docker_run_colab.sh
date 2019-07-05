@@ -6,6 +6,7 @@ image_name=$1
 container_name=$2
 dir_testing=$3
 
+docker rm -f $container_name
 docker run --rm --runtime=nvidia --name $container_name -d -ti -v $dir_testing/:/tmp/blazingdb/ $image_name bash
 
 docker cp ./docker/colab/install_tests.sh $container_name:/tmp/

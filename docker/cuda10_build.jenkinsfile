@@ -83,6 +83,9 @@ pipeline {
         sh "docker cp ./docker/colab/install.sh ${CONTAINER_NAME}:/tmp/"
         sh "docker exec ${CONTAINER_NAME} /tmp/install.sh /tmp/blazingsql-files.tar.gz"
 
+        sh "sleep 10"
+        sh "docker exec ${CONTAINER_NAME} blazingsql status"
+
         sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/demo1.py"
         sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo1.py"
 

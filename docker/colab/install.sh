@@ -82,7 +82,7 @@ if ! [ -x "$(command -v cmake)" ]; then
   fi
   rm -f cmake-3.14.3-Linux-x86_64.sh
 fi
-cmake --version
+echo "CMAKE version: "$(cmake --version)
 if [ $? != 0 ]; then
   exit 1
 fi

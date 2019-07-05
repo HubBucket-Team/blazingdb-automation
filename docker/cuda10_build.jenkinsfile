@@ -45,6 +45,7 @@ pipeline {
     BZSQL_WORKSPACE = "${env.WORKSPACE}/workspace_cuda10"
     BZSQL_OUTPUT = "${env.WORKSPACE}/output_cuda10"
     ARTIFACT = "${env.BZSQL_OUTPUT}/blazingsql-files.tar.gz"
+    BUCKET = "blazingsql-colab/latest"
     SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 
@@ -93,17 +94,17 @@ pipeline {
         sh "docker exec ${CONTAINER_NAME} blazingsql status"
 
         sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/demo1.py"
-        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo1.py"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo1.py"
 
         sh "docker cp ./docker/colab/demo2.py ${CONTAINER_NAME}:/blazingsql/demo2.py"
-        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo2.py"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo2.py"
 
         sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/demo3.py"
-        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo3.py"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo3.py"
 
         sh "docker cp ./docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
         sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/demo4.py"
-        sh "docker exec ${CONTAINER_NAME} python3.7 /blazingsql/demo4.py"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo4.py"
 
         sh "docker commit ${CONTAINER_NAME} ${IMAGE_COLAB}"
         sh "docker rm -f ${CONTAINER_NAME}"
@@ -130,17 +131,17 @@ pipeline {
         }
       }
       steps {
-        sh "aws s3 cp ./docker/blazingsql/data/nation.psv s3://blazingsql-colab/latest/demo/data/"
-        sh "aws s3 cp ./docker/blazingsql/data/gpu.arrow s3://blazingsql-colab/latest/demo/data/"
-        sh "aws s3 cp ./docker/blazingsql/data/Music.csv s3://blazingsql-colab/latest/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/nation.psv s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/gpu.arrow s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/Music.csv s3://${env.BUCKET}/demo/data/"
 
-        sh "aws s3 cp ./docker/colab/demo1.py s3://blazingsql-colab/latest/demo/"
-        sh "aws s3 cp ./docker/colab/demo2.py s3://blazingsql-colab/latest/demo/"
-        sh "aws s3 cp ./docker/colab/demo3.py s3://blazingsql-colab/latest/demo/"
-        sh "aws s3 cp ./docker/colab/demo4.py s3://blazingsql-colab/latest/demo/"
+        sh "aws s3 cp ./docker/colab/demo1.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo2.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo3.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo4.py s3://${env.BUCKET}/demo/"
         
-        sh "aws s3 cp ./docker/colab/install.sh s3://blazingsql-colab/latest/"
-        sh "aws s3 cp ${ARTIFACT} s3://blazingsql-colab/latest/"
+        sh "aws s3 cp ./docker/colab/install.sh s3://${env.BUCKET}/"
+        sh "aws s3 cp ${ARTIFACT} s3://${env.BUCKET}/"
       }
     }
   }

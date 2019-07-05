@@ -2,7 +2,7 @@
 # Usage: path_tar verbose sudo path_usr
 # Usage: /tmp/blazingsql-files.tar.gz true true $PYENV_VIRTUAL_ENV/
 
-BUCKET="blazingsql-colab"
+BUCKET="blazingsql-colab/latest"
 BUCKET_DEMO=$BUCKET"/demo"
 BUCKET_DATA=$BUCKET_DEMO"/data"
 

@@ -36,11 +36,12 @@ then
   PATH_USR=$4
 fi
 
-echo "PYTHON: $PYTHON"
-echo "PIP: $PIP"
-echo "VERBOSE: $VERBOSE"
-echo "SUDO: $SUDO"
-echo "PATH_USR: $PATH_USR"
+echo "PYTHON: "$PYTHON
+echo "VERSION: "$($PYTHON --version)
+echo "PIP: "$PIP
+echo "VERBOSE: "$VERBOSE
+echo "SUDO: "$SUDO
+echo "PATH_USR: "$PATH_USR
 
 source /etc/lsb-release
 if [ $DISTRIB_RELEASE == "16.04" ];

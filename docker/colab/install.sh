@@ -2,9 +2,13 @@
 # Usage: path_tar verbose sudo path_usr
 # Usage: /tmp/blazingsql-files.tar.gz true true $PYENV_VIRTUAL_ENV/
 
+BUCKET="blazingsql-colab"
+BUCKET_DEMO=$BUCKET"/demo"
+BUCKET_DATA=$BUCKET_DEMO"/data"
+
 if [ -z $1 ];
 then
-  wget -O /tmp/blazingsql-files.tar.gz -q https://s3.amazonaws.com/blazingsql-colab/blazingsql-files.tar.gz
+  wget -O /tmp/blazingsql-files.tar.gz -q https://s3.amazonaws.com/$BUCKET/blazingsql-files.tar.gz
   if [ $? != 0 ]; then
     exit 1
   fi
@@ -15,8 +19,9 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-PYTHON="python"
-PIP="$PYTHON -m pip"
+PYTHON="python3"
+#PIP="$PYTHON -m pip"
+PIP="pip3"
 
 VERBOSE="/dev/null"
 if [ ! -z $2 ];
@@ -43,34 +48,42 @@ echo "VERBOSE: "$VERBOSE
 echo "SUDO: "$SUDO
 echo "PATH_USR: "$PATH_USR
 
-source /etc/lsb-release
-if [ $DISTRIB_RELEASE == "16.04" ];
-then
-  echo "Installing python 3.7"
-  $SUDO apt-get update -qq > $VERBOSE
-  if [ $? != 0 ]; then
-    exit 1
-  fi
+# source /etc/lsb-release
+# if [ $DISTRIB_RELEASE == "16.04" ];
+# then
+#   echo "Installing python 3.7"
+#   $SUDO apt-get update -qq > $VERBOSE
+#   if [ $? != 0 ]; then
+#     exit 1
+#   fi
 
-  $SUDO apt-get install -y software-properties-common > $VERBOSE
-  $SUDO add-apt-repository -y ppa:deadsnakes/ppa
-  if [ $? != 0 ]; then
-    exit 1
-  fi
-fi
+#   $SUDO apt-get install -y software-properties-common > $VERBOSE
+#   $SUDO add-apt-repository -y ppa:deadsnakes/ppa
+#   if [ $? != 0 ]; then
+#     exit 1
+#   fi
+# fi
 
 echo "### update ###"
 $SUDO apt-get update -qq > $VERBOSE
 
 echo "### dependencies ###"
-$SUDO apt-get install -y -qq $PYTHON $PYTHON-pip > $VERBOSE
-$SUDO apt-get install -y -qq $PYTHON-dev libffi-dev libgsasl7 libgsasl7-dev > $VERBOSE
 #ln -s /usr/bin/python3 /usr/bin/python
 #ln -s /usr/bin/pip3 /usr/bin/pip
 #apt-get install -y -qq git vim > $VERBOSE
-$SUDO apt-get install -y -qq --fix-missing bzip2 wget curl lsof > $VERBOSE
-$SUDO apt-get install -y -qq --fix-missing libcurl3 libssl1.0.0 zlib1g libuuid1 > $VERBOSE
-$SUDO apt-get install -y -qq --fix-missing supervisor openjdk-8-jre > $VERBOSE
+$SUDO apt-get install -y -qq --fix-missing --no-install-recommends \
+  $PYTHON $PYTHON-pip $PYTHON-dev \
+  libffi-dev libgsasl7 libgsasl7-dev \
+  bzip2 wget curl lsof \
+  libssl1.0.0 zlib1g libuuid1 \
+  supervisor openjdk-8-jre > $VERBOSE
+if [ $? != 0 ]; then
+    exit 1
+fi
+$SUDO apt-get install -y -qq libcurl3
+if [ $? != 0 ]; then
+    exit 1
+fi
 
 echo "### cmake ###"
 if ! [ -x "$(command -v cmake)" ]; then
@@ -89,11 +102,11 @@ fi
 
 echo "### pip dependencies ###"
 $PIP install --upgrade --force-reinstall setuptools
-$PIP install --upgrade pip
+#$PIP install --upgrade pip
 
 $PIP install wheel==0.32.1 > $VERBOSE
 if [ $? != 0 ]; then
-  exit 
+  exit 1
 fi
 $PIP install cmake_setuptools > $VERBOSE
 if [ $? != 0 ]; then
@@ -241,14 +254,14 @@ cp -f $blazingsql_files/testing-libgdf $PATH_USR/bin/
 $SUDO mkdir -p /blazingsql/data/ && chmod 777 -R /blazingsql
 
 echo "### downloading demo files ###"
-wget -q -O /blazingsql/data/nation.psv https://s3.amazonaws.com/blazingsql-colab/demo/data/nation.psv
-wget -q -O /blazingsql/data/gpu.arrow https://s3.amazonaws.com/blazingsql-colab/demo/data/gpu.arrow
-wget -q -O /blazingsql/data/Music.csv https://s3.amazonaws.com/blazingsql-colab/demo/data/Music.csv
+wget -q -O /blazingsql/data/nation.psv https://s3.amazonaws.com/$BUCKET_DATA/nation.psv
+wget -q -O /blazingsql/data/gpu.arrow https://s3.amazonaws.com/$BUCKET_DATA/gpu.arrow
+wget -q -O /blazingsql/data/Music.csv https://s3.amazonaws.com/$BUCKET_DATA/Music.csv
 
-wget -q -O /blazingsql/demo1.py https://s3.amazonaws.com/blazingsql-colab/demo/demo1.py
-wget -q -O /blazingsql/demo2.py https://s3.amazonaws.com/blazingsql-colab/demo/demo2.py
-wget -q -O /blazingsql/demo3.py https://s3.amazonaws.com/blazingsql-colab/demo/demo3.py
-wget -q -O /blazingsql/demo4.py https://s3.amazonaws.com/blazingsql-colab/demo/demo4.py
+wget -q -O /blazingsql/demo1.py https://s3.amazonaws.com/$BUCKET_DEMO/demo1.py
+wget -q -O /blazingsql/demo2.py https://s3.amazonaws.com/$BUCKET_DEMO/demo2.py
+wget -q -O /blazingsql/demo3.py https://s3.amazonaws.com/$BUCKET_DEMO/demo3.py
+wget -q -O /blazingsql/demo4.py https://s3.amazonaws.com/$BUCKET_DEMO/demo4.py
 
 
 echo "### supervisor ###"
@@ -261,6 +274,7 @@ wget -q -O /usr/bin/blazingsql https://s3.amazonaws.com/blazingsql-colab/blazing
 blazingsql status
 
 # Clean
+#apt-get clean
 rm -rf /tmp/blazing*
 
 echo "### BlazingSQL installation finished ###"
@@ -269,6 +283,6 @@ echo "!blazingsql status"
 echo "Demo files are in /blazingsql/"
 ls -la /blazingsql/
 
-echo "Run command, copy content and execute it:"
-#echo $(cat /blazingsql/demo1.py)
+echo "Run these commands, copy its content and/or execute it:"
 echo "!cat /blazingsql/demo1.py"
+echo "!python /blazingsql/demo1.py"

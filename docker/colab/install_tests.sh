@@ -1,9 +1,10 @@
 #!/bin/bash
 
-PYTHON="python"
-PIP="$PYTHON -m pip"
+PYTHON="python3"
+#PIP="$PYTHON -m pip"
+PIP="pip3"
 
-apt-get install -y openjdk-8-jdk mysql-client git netcat
+apt-get install -y openjdk-8-jre mysql-client git
 
 $PIP install pydrill
 $PIP install openpyxl

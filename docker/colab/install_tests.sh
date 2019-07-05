@@ -1,11 +1,14 @@
 #!/bin/bash
 
+PYTHON="python"
+PIP="$PYTHON -m pip"
+
 apt-get install -y openjdk-8-jdk mysql-client git netcat
 
-pip3 install pydrill
-pip3 install openpyxl
-pip3 install pymysql
-pip3 install gitpython
+$PIP install pydrill
+$PIP install openpyxl
+$PIP install pymysql
+$PIP install gitpython
 
 wget -O /tmp/apache_drill.tar.gz -nv http://archive.apache.org/dist/drill/drill-1.12.0/apache-drill-1.12.0.tar.gz
 tar -xvzf /tmp/apache_drill.tar.gz -C /etc/

@@ -88,9 +88,8 @@ if [ $? != 0 ]; then
 fi
 
 echo "### pip dependencies ###"
-#echo "PIP: $PIP"
-#$PIP install --upgrade --force-reinstall setuptools
-#$PIP install --upgrade pip
+$PIP install --upgrade --force-reinstall setuptools
+$PIP install --upgrade pip
 
 $PIP install wheel==0.32.1 > $VERBOSE
 if [ $? != 0 ]; then

@@ -87,7 +87,7 @@ pipeline {
         sh "./docker/cuda10_run.sh ${CONTAINER_NAME}"
         sh "docker cp ${ARTIFACT} ${CONTAINER_NAME}:/tmp/"
         sh "docker cp ./docker/colab/install.sh ${CONTAINER_NAME}:/tmp/"
-        sh "docker exec ${CONTAINER_NAME} /tmp/install.sh /tmp/blazingsql-files.tar.gz"
+        sh "docker exec ${CONTAINER_NAME} /tmp/install.sh /tmp/blazingsql-files.tar.gz true"
 
         sh "sleep 10"
         sh "docker exec ${CONTAINER_NAME} blazingsql status"

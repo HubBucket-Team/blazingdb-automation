@@ -62,7 +62,7 @@ echo "### update ###"
 $SUDO apt-get update -qq > $VERBOSE
 
 echo "### dependencies ###"
-$SUDO apt-get install -y -qq $PYTHON python3-pip > $VERBOSE
+$SUDO apt-get install -y -qq $PYTHON $PYTHON-pip > $VERBOSE
 $SUDO apt-get install -y -qq $PYTHON-dev libffi-dev libgsasl7 libgsasl7-dev > $VERBOSE
 #ln -s /usr/bin/python3 /usr/bin/python
 #ln -s /usr/bin/pip3 /usr/bin/pip
@@ -137,8 +137,8 @@ fi
 
 blazingsql_files=/tmp/blazing/blazingsql-files
 
-PYTHON_INCLUDE_DIR=$(python3.6 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")
-PYTHON_LIBRARY=$(python3.6 -c "import distutils.sysconfig as sysconfig; import os; print(os.path.join(sysconfig.get_config_var('LIBDIR'), sysconfig.get_config_var('LDLIBRARY')))")
+PYTHON_INCLUDE_DIR=$($PYTHON -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")
+PYTHON_LIBRARY=$($PYTHON -c "import distutils.sysconfig as sysconfig; import os; print(os.path.join(sysconfig.get_config_var('LIBDIR'), sysconfig.get_config_var('LDLIBRARY')))")
 CMAKE_COMMON_VARIABLES="-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR -DPYTHON_LIBRARY=$PYTHON_LIBRARY"
 
 echo "PYTHON_INCLUDE_DIR: $PYTHON_INCLUDE_DIR"

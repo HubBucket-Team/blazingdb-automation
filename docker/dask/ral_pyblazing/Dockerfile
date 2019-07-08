@@ -106,6 +106,7 @@ COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
 RUN mkdir -p /var/log/supervisor/
 RUN chown -R jupyter:jupyter /var/log/supervisor/
 RUN chown jupyter:jupyter /usr/bin/run_worker.sh
+RUN mkdir /blazingsql/
 
 # Create the temporal installation directory for the BlazingSQL setup
 RUN mkdir -p /tmp/blazing/

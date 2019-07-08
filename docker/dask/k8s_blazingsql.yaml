@@ -84,10 +84,10 @@ spec:
     - name: supervisor
       protocol: TCP
       port: 9001
-    - name: ral_http
+    - name: ral-http
       protocol: TCP
       port: 9000
-    - name: ral_com
+    - name: ral-com
       protocol: TCP
       port: 8891
 

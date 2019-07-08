@@ -1,12 +1,13 @@
 #!/bin/bash
-# Syntax: ./create_cluster.sh project_name cluster_name zone number_nodes number_gpus_per_node
-# Example: ./create_cluster.sh myproject-bigdata cluster-2-2gpu us-west1-a 2 2
+# Syntax: ./create_cluster.sh project_name cluster_name zone number_nodes number_gpus_per_node directory_yaml/
+# Example: ./create_cluster.sh myproject-bigdata cluster-2-2gpu us-west1-a 2 2 tcp/
 
 project=$1
 name=$2
 zone=$3
 num_nodes=$4
 num_gpus=$5
+recipe=$6
 region="${zone::-2}"
 
 
@@ -41,7 +42,7 @@ echo "### install blazingsql ###"
 #$cmd apply -f tcp/blazingdb_orch_svc.yaml
 #$cmd apply -f tcp/blazingdb_jupyter_svc.yaml
 
-$cmd apply -f tcp/
+$cmd apply -f $recipe/
 
 echo "gcloud container clusters get-credentials $name --zone $zone --project $project"
 

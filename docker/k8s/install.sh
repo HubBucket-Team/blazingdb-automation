@@ -46,7 +46,7 @@ echo "### install blazingsql ###"
 #$cmd apply -f tcp/blazingdb_orch_svc.yaml
 #$cmd apply -f tcp/blazingdb_jupyter_svc.yaml
 
-$cmd apply -f $recipe/
+$cmd apply -f $recipe
 if [ $? != 0 ]; then
   exit 1
 fi

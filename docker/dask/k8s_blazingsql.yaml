@@ -63,9 +63,16 @@ spec:
   selector:
     app: blazingdb-dask-scheduler
   ports:
-    - protocol: TCP
+    - name: dask
+      protocol: TCP
       port: 8786
       targetPort: 8786
+    - name: orchestrator
+      protocol: TCP
+      port: 9000
+    - name: ral-com
+      protocol: TCP
+      port: 8891
 
 ---
 kind: Service
@@ -84,12 +91,6 @@ spec:
     - name: supervisor
       protocol: TCP
       port: 9001
-    - name: ral-http
-      protocol: TCP
-      port: 9000
-    - name: ral-com
-      protocol: TCP
-      port: 8891
 
 ---
 kind: Service

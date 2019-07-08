@@ -193,4 +193,7 @@ COPY supervisord/blazing-calcite.conf /etc/supervisor/conf.d/
 COPY supervisord/blazing-orchestrator.conf /etc/supervisor/conf.d/
 COPY supervisord/dask-scheduler.conf /etc/supervisor/conf.d/
 
+COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
+COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

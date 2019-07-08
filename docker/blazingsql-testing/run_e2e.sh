@@ -16,11 +16,18 @@ echo "Executing tests"
 #python allE2ETest.py $workdir_home/configurationFile$data_set.json
 
 #First execution
-echo "================================ First execution ================================"
 #python -m EndToEndTests.parquetFromLocalTest  $workdir_home/configurationFile.json
-echo "PRINT configurationFileFalse$data_set.json"
-python -m EndToEndTests.$module_test  $workdir_home/configurationFileFalse$data_set.json
 
-echo "================================ Second execution ================================"
-echo "PRINT configurationFileTrue$data_set.json"
-python -m EndToEndTests.$module_test  $workdir_home/configurationFileTrue$data_set.json
+echo "================================ First execution ================================"
+echo "PRINT configurationFile$flag$data_set.json"
+
+flag="False"
+
+if [ $module_test == 'allPerformanceTest' ]
+then
+    flag="True"    
+fi
+
+python -m EndToEndTests.$module_test  $workdir_home/configurationFile$flag$data_set.json
+
+

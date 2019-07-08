@@ -15,23 +15,15 @@ spec:
       containers:
       - name: blazingdb-dask-scheduler
         image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazing"
-        #command: ["dask-scheduler"]
-        #args: ["--show"]
         ports:
-        #- containerPort: 9001
-        - containerPort: 8786
-        - containerPort: 8787
+          - containerPort: 80 # jupyter
+          - containerPort: 9001 # supervisor
+          - containerPort: 9000 # orchestrator
+          - containerPort: 8786 # dask
+          - containerPort: 8787 # dashboard
         resources:
           limits:
             nvidia.com/gpu: 1
-        #readinessProbe:
-        #  httpGet:
-        #    path: /login
-        #    port: 80
-        #  periodSeconds: 1
-        #  timeoutSeconds: 1
-        #  successThreshold: 1
-        #  failureThreshold: 10
 
 ---
 kind: Deployment
@@ -51,11 +43,12 @@ spec:
       containers:
       - name: blazingdb-dask-worker
         image: "blazingdb/blazingsql:dask_ral_pyblazing"
-        #command: ["dask-worker"]
-        #args: ["blazingdb-dask-scheduler-svc:8786"]
         ports:
-          - containerPort: 9001
-          - containerPort: 8786
+          - containerPort: 80 # jupyter
+          - containerPort: 9001 # supervisor
+          - containerPort: 9000 # ral
+          - containerPort: 8891 # ral
+          - containerPort: 8786 # dask
         resources:
           limits:
             nvidia.com/gpu: 1
@@ -78,6 +71,30 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
+  name: blazingdb-dask-worker-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: blazingdb-dask-worker
+  ports:
+    - name: jupyter
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: supervisor
+      protocol: TCP
+      port: 9001
+    - name: ral_http
+      protocol: TCP
+      port: 9000
+    - name: ral_com
+      protocol: TCP
+      port: 8891
+
+---
+kind: Service
+apiVersion: v1
+metadata:
   name: blazingdb-dask-scheduler-lb
 spec:
   type: LoadBalancer
@@ -88,6 +105,9 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 80
+    - name: supervisor
+      protocol: TCP
+      port: 9001
     - name: dashboard
       protocol: TCP
       port: 8787

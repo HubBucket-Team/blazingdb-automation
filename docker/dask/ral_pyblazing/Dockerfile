@@ -99,8 +99,10 @@ ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 RUN mkdir -p /var/log/supervisor
 COPY supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 COPY supervisord/blazing-ral.conf /etc/supervisor/conf.d/blazing-ral.conf
+COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
 COPY supervisord/dask-worker.conf /etc/supervisor/conf.d/
 COPY supervisord/run_worker.sh /usr/bin/run_worker.sh
+COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
 RUN mkdir -p /var/log/supervisor/
 RUN chown -R jupyter:jupyter /var/log/supervisor/
 RUN chown jupyter:jupyter /usr/bin/run_worker.sh
@@ -129,7 +131,7 @@ VOLUME /tmp
 EXPOSE 80
 
 # Supervisord (HTTP port)
-EXPOSE 9901
+EXPOSE 9001
 
 # haddop
 #EXPOSE 54310

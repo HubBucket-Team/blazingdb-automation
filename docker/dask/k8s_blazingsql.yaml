@@ -21,6 +21,7 @@ spec:
           - containerPort: 9000 # orchestrator
           - containerPort: 8786 # dask
           - containerPort: 8787 # dashboard
+          - containerPort: 8889 # orchestrator
         resources:
           limits:
             nvidia.com/gpu: 1
@@ -109,6 +110,10 @@ spec:
     - name: supervisor
       protocol: TCP
       port: 9001
+    - name: orchestrator
+      protocol: TCP
+      port: 8889
+      targetPort: 8889
     - name: dashboard
       protocol: TCP
       port: 8787

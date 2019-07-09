@@ -74,6 +74,10 @@ spec:
     - name: ral-com
       protocol: TCP
       port: 8891
+    - name: orch
+      protocol: TCP
+      port: 8889
+      targetPort: 8889
 
 ---
 kind: Service

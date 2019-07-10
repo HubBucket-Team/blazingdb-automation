@@ -103,6 +103,7 @@ COPY supervisord/jupyterlab.conf /etc/supervisor/conf.d/jupyterlab.conf
 COPY supervisord/dask-worker.conf /etc/supervisor/conf.d/
 COPY supervisord/run_worker.sh /usr/bin/run_worker.sh
 COPY supervisord/run_jupyter.sh /usr/bin/run_jupyter.sh
+COPY supervisord/run_ral.sh /usr/bin/run_ral.sh
 RUN mkdir -p /var/log/supervisor/
 RUN chown -R jupyter:jupyter /var/log/supervisor/
 RUN chown jupyter:jupyter /usr/bin/run_worker.sh

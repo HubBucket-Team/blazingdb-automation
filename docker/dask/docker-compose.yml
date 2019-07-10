@@ -3,7 +3,7 @@ version: '2.3'
 services:
 
   blazingdb-dask-scheduler-svc:
-    image: blazingdb/blazingsql:dask_calcite_orchestrator_pyblazing
+    image: blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv3
     build: ./calcite_orchestrator_pyblazing
     runtime: nvidia
     environment:
@@ -15,7 +15,7 @@ services:
       - "8787:8787"
 
   worker1:
-    image: blazingdb/blazingsql:dask_ral_pyblazing
+    image: blazingdb/blazingsql:dask_ral_pyblazingv3
     build: ./ral_pyblazing/
     runtime: nvidia
     environment:

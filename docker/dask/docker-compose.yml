@@ -23,13 +23,13 @@ services:
       - "9002:9001"
       - "8786"
 
-  worker2:
-    image: blazingdb/blazingsql:dask_ral_pyblazing
-    build: ./ral_pyblazing/
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    ports:
-      - "9003:9001"
-      - "8786"
+  #worker2:
+  #  image: blazingdb/blazingsql:dask_ral_pyblazing
+  #  build: ./ral_pyblazing/
+  #  runtime: nvidia
+  #  environment:
+  #    - NVIDIA_VISIBLE_DEVICES=all
+  #  ports:
+  #    - "9003:9001"
+  #    - "8786"
 

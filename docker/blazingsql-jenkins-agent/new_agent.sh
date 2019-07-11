@@ -4,9 +4,8 @@
 
 # Creating New Agent
 ###################################
-build_number=1
-instance_name=slave-gpu-$build_number
-image_project=blazingsql-workspace
+instance_name=slave-gpu-01
+image_project=blazingdb-jenkins
 zone=us-east1-c
 machine_type=n1-standard-4
 boot_disk_type=pd-standard

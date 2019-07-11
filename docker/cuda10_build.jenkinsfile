@@ -1,7 +1,5 @@
 pipeline {
-  agent {
-      label 'slave-gpu'
-  }  
+
   options {
     ansiColor('xterm')
     timestamps()
@@ -9,6 +7,7 @@ pipeline {
   }
 
   parameters {
+    booleanParam(name: 'NEW_AGENT', defaultValue: true, description: 'Do you want run it in a new instance? Check it!')
     booleanParam(name: 'COMPILE', defaultValue: true, description: 'Compile to cuda10')
     booleanParam(name: 'CALL_JOB_E2E', defaultValue: true, description: 'Call to job e2e')
     booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Publish tar file and install.sh to S3')
@@ -56,7 +55,22 @@ pipeline {
         checkout scm
       }
     }
+
+    stage("NEW_AGENT") {
+      when {
+        expression {
+          return params.NEW_AGENT ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        sh "./docker/new_agent.sh ${BZSQL_WORKSPACE} ${BZSQL_OUTPUT} ${IMAGE_BUILD}"
+      }
+    }
     
+  agent {
+      label 'slave-gpu-${env.BUILD_NUMBER}'
+  }  
+
     stage("Config") {
       steps {
         sh "mkdir -p ${BZSQL_WORKSPACE}"
@@ -71,6 +85,8 @@ pipeline {
         sh "docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
       }
     }
+
+
 
     stage("Compile") {
       when {

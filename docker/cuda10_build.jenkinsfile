@@ -1,5 +1,4 @@
 pipeline {
-
   options {
     ansiColor('xterm')
     timestamps()
@@ -68,7 +67,7 @@ pipeline {
     }
     
   agent {
-      label 'slave-gpu-${env.BUILD_NUMBER}'
+      label 'slave-gpu'
   }  
 
     stage("Config") {

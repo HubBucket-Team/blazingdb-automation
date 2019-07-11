@@ -1,4 +1,7 @@
 pipeline {
+    agent {
+      label 'slave-gpu'
+  }  
   options {
     ansiColor('xterm')
     timestamps()
@@ -66,9 +69,7 @@ pipeline {
       }
     }
     
-  agent {
-      label 'slave-gpu'
-  }  
+
 
     stage("Config") {
       steps {

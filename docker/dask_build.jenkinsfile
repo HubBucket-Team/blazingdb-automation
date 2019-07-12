@@ -1,0 +1,122 @@
+pipeline {
+  agent {
+    label 'slave-gpu'
+  }
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 2, unit: 'HOURS')
+  }
+
+  parameters {
+    booleanParam(name: 'COMPILE', defaultValue: true, description: 'Compile binaries')
+    booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Publish images to Docker Hub')
+    string(name: 'BLAZINGDB_TOOLCHAIN_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'CUSTRINGS_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_COMMUNICATION_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
+    string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+  }
+  
+  environment {
+    IMAGE_BUILD = "blazingsql/build:latest"
+    IMAGE_SCHEDULER = "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazing"
+    IMAGE_WORKER = "blazingdb/blazingsql:dask_ral_pyblazing"
+    BZSQL_WORKSPACE = "${env.WORKSPACE}/workspace_dask"
+    BZSQL_OUTPUT = "${env.WORKSPACE}/output_dask"
+    ARTIFACT = "${env.BZSQL_OUTPUT}/blazingsql-files.tar.gz"
+    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
+  }
+
+  stages {
+
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage("Config") {
+      steps {
+        sh "mkdir -p ${BZSQL_WORKSPACE}"
+        sh "mkdir -p ${BZSQL_OUTPUT}"
+        sh "./docker/config_write.sh ${params.BLAZINGDB_TOOLCHAIN_BRANCH} ${params.CUSTRINGS_BRANCH} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_COMMUNICATION_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH}"
+        sh "cp -f ./blazingsql-build.properties ${BZSQL_WORKSPACE}"
+      }
+    }
+
+    stage("Compile Binaries") {
+      when {
+        expression {
+          return params.COMPILE ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        sh "./docker/compile.sh ${BZSQL_WORKSPACE} ${BZSQL_OUTPUT} ${IMAGE_BUILD}"
+      }
+    }
+
+    stage("Build images") {
+      steps {
+        sh "./docker/docker_build_images.sh"
+      }
+    }
+
+    stage("Deploy") {
+      when {
+        expression {
+          return params.DEPLOY ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        sh "docker push ${env.IMAGE_SCHEDULER}"
+        sh "docker push ${env.IMAGE_WORKER}"
+      }
+    }
+  }
+
+// Method to post jenkinsfile
+  post {
+    //always {
+      //notifySlack "Started"
+      //archiveArtifacts artifacts: "${ARTIFACT}", onlyIfSuccessful: true
+      //sh "rm -f ${ARTIFACT}"
+    //}
+    success {
+         notifySlack "Success"
+    }
+    failure {
+          notifySlack "Failure"
+    }
+    unstable {
+          notifySlack "Warning"
+    }
+  }
+
+}
+
+// Method to send notifications for slack
+def notifySlack(String buildStatus = 'Started') {
+    buildStatus = buildStatus ?: 'Success'
+
+    def color
+
+    if (buildStatus == 'Started') {
+        color = '#6f7275'
+    } else if (buildStatus == 'Success') {
+        color = '#037c0e'
+    } else if (buildStatus == 'Warning') {
+        color = '#dfdd30'
+    } else {
+        color = '#8e0406'
+    }
+
+
+ slackSend channel: "${params.SLACK_CHANNEL}", color: color, failOnError: true, message: "${buildStatus}" + "$SLACK_MESSAGE"
+}

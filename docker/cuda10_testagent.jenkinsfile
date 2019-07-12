@@ -1,9 +1,8 @@
 pipeline {
-   agent none
    stages {
        stage('Back-end') {
            agent {
-               agent miagente
+               agent slave-jenkins-gpu-01
                docker { image 'maven:3-alpine' }
            }
            steps {
@@ -12,7 +11,7 @@ pipeline {
        }
        stage('Front-end') {
            agent {
-               agent miagente
+               agent slave-jenkins-gpu-01
                docker { image 'node:7-alpine' }
            }
            steps {

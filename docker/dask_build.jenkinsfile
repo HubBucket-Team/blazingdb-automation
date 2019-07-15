@@ -11,6 +11,7 @@ pipeline {
   parameters {
     booleanParam(name: 'COMPILE', defaultValue: true, description: 'Compile binaries')
     booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Publish images to Docker Hub')
+    string(name: 'CREDENTIALS', defaultValue: 'dockerhub-editaxz', description: 'Your credentials on blazingdb docker hub organization')
     string(name: 'BLAZINGDB_TOOLCHAIN_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'CUSTRINGS_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
@@ -64,7 +65,11 @@ pipeline {
 
     stage("Build images") {
       steps {
-        sh "./docker/docker_build_images.sh"
+        sh "cp -f ${env.ARTIFACT} ./docker/dask/"
+
+        dir ("./docker/dask/") {
+          sh "./docker_build_images.sh"
+        }
       }
     }
 
@@ -75,8 +80,13 @@ pipeline {
         }
       }
       steps {
-        sh "docker push ${env.IMAGE_SCHEDULER}"
-        sh "docker push ${env.IMAGE_WORKER}"
+
+        withCredentials([usernamePassword(credentialsId: "${param.CREDENTIALS}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+          sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
+
+          sh "docker push ${env.IMAGE_SCHEDULER}"
+          sh "docker push ${env.IMAGE_WORKER}"
+        }
       }
     }
   }

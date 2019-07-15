@@ -92,7 +92,7 @@ pipeline {
       }
       steps {
 
-        withCredentials([usernamePassword(credentialsId: "${param.CREDENTIALS}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+        withCredentials([usernamePassword(credentialsId: "${params.CREDENTIALS}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
           sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
 
           sh "docker push ${env.IMAGE_SCHEDULER}"

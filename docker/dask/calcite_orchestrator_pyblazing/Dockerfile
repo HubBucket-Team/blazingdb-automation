@@ -10,7 +10,7 @@ RUN apt-get update
 RUN apt-get install -y supervisor
 
 # Install tools & utils
-RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools
+RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tiny lsof htop net-tools unzip
 
 # Install blazingdb-io runtime dependencies
 RUN apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1

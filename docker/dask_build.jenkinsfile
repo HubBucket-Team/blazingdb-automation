@@ -74,20 +74,30 @@ pipeline {
       }
     }
 
-    stage("Build images") {
+    stage("Config Images") {
       steps {
         sh "cp -f ${env.ARTIFACT} ./docker/dask/"
 
         dir ("./docker/dask/") {
           sh "./docker_build_images.sh"
-
-          sh "docker build -t ${env.IMAGE_SCHEDULER} calcite_orchestrator_pyblazing/"
-          sh "docker build -t ${env.IMAGE_WORKER} ral_pyblazing/"
         }
       }
     }
 
-    stage("Deploy") {
+    stage("Build Images") {
+      steps {
+        parallel (
+          scheduler: {
+            sh "docker build -t ${env.IMAGE_SCHEDULER} ./docker/dask/calcite_orchestrator_pyblazing/"
+          }
+          worker: {
+            sh "docker build -t ${env.IMAGE_WORKER} ./docker/dask/ral_pyblazing/"
+          }
+        )
+      }
+    }
+
+    stage("Docker Hub") {
       when {
         expression {
           return params.DEPLOY ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/

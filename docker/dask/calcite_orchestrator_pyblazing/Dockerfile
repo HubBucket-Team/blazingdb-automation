@@ -187,6 +187,15 @@ EXPOSE 8890
 # Dask
 RUN source activate cudf && pip install "dask[complete]" && pip install bokeh
 
+# Dask Cudf
+RUN wget https://github.com/rapidsai/dask-cudf/archive/branch-0.8.zip && \
+    unzip branch-0.8.zip && \
+    cd dask-cudf-branch-0.8/ && \
+    sed '1d' requirements.txt > tmp.txt && \
+    mv tmp.txt requirements.txt && \
+    source activate cudf && \
+    pip install .
+
 # Supervisor
 COPY supervisord/run_scheduler.sh /usr/bin/run_scheduler.sh
 COPY supervisord/blazing-calcite.conf /etc/supervisor/conf.d/

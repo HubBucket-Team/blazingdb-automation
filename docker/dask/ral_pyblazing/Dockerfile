@@ -84,6 +84,15 @@ RUN source activate cudf && pip install cmake_setuptools
 # Dask
 RUN source activate cudf && pip install "dask[complete]"
 
+# Dask Cudf
+RUN wget https://github.com/rapidsai/dask-cudf/archive/branch-0.8.zip && \
+    unzip branch-0.8.zip && \
+    cd dask-cudf-branch-0.8/ && \
+    sed '1d' requirements.txt > tmp.txt && \
+    mv tmp.txt requirements.txt && \
+    source activate cudf && \
+    pip install .
+
 USER root
 
 RUN ln -s /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so.1

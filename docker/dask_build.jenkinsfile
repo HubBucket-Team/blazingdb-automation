@@ -98,11 +98,16 @@ pipeline {
       }
     }
 
-    stage("Docker Hub") {
+    stage("Docker Login") {
       steps {
         withCredentials([usernamePassword(credentialsId: "${params.CREDENTIALS}", passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
           sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
         }
+      }
+    }
+
+    stage("Docker Hub") {
+      steps {
         parallel (
           scheduler: {
             sh "docker push ${env.IMAGE_SCHEDULER}"
@@ -111,6 +116,11 @@ pipeline {
             sh "docker push ${env.IMAGE_WORKER}"
           }
         )
+      }
+    }
+
+    stage("Docker Logout") {
+      steps {
         sh "docker logout"
       }
     }

@@ -94,6 +94,13 @@ if [ -z "$pyblazing_branch" ]; then
     exit 1
 fi
 
+if [ -z "$blazingdb_communication_branch" ]; then
+    echo "Error: Need the 'blazingdb_communication_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
+
 #END check mandatory arguments
 
 #BEGIN set default optional arguments for active/enable the build
@@ -138,6 +145,10 @@ if [ -z "$pyblazing_enable" ]; then
     pyblazing_enable=true
 fi
 
+if [ -z "$blazingdb_communication_enable" ]; then
+    blazingdb_communication_enable=true
+fi
+
 #END set default optional arguments for active/enable the build
 
 #BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
@@ -170,8 +181,6 @@ fi
 if [ -z "$blazingdb_orchestrator_build_type" ]; then
     blazingdb_orchestrator_build_type=Release
 fi
-
-#BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
 
 #BEGIN set default optional arguments for tests
 
@@ -213,6 +222,10 @@ fi
 
 if [ -z "$pyblazing_tests" ]; then
     pyblazing_tests=false
+fi
+
+if [ -z "$blazingdb_communication_tests" ]; then
+    blazingdb_communication_tests=false
 fi
 
 #END set default optional arguments for tests
@@ -259,8 +272,24 @@ fi
 
 #BEGIN set default optional arguments for build options (precompiler definitions, etc.)
 
+if [ -z "$blazingdb_protocol_definitions" ]; then
+    blazingdb_protocol_definitions=""
+fi
+
+if [ -z "$blazingdb_io_definitions" ]; then
+    blazingdb_io_definitions=""
+fi
+
+if [ -z "$blazingdb_communication_definitions" ]; then
+    blazingdb_communication_definitions=""
+fi
+
 if [ -z "$blazingdb_ral_definitions" ]; then
     blazingdb_ral_definitions="-DLOG_PERFORMANCE"
+fi
+
+if [ -z "$blazingdb_orchestrator_definitions" ]; then
+    blazingdb_orchestrator_definitions=""
 fi
 
 #END set default optional arguments for build options (precompiler definitions, etc.)
@@ -341,6 +370,7 @@ blazingdb_ral_branch_name=$(normalize_branch_name $blazingdb_ral_branch)
 blazingdb_orchestrator_branch_name=$(normalize_branch_name $blazingdb_orchestrator_branch)
 blazingdb_calcite_branch_name=$(normalize_branch_name $blazingdb_calcite_branch)
 pyblazing_branch_name=$(normalize_branch_name $pyblazing_branch)
+blazingdb_communication_branch_name=$(normalize_branch_name $blazingdb_communication_branch)
 
 cd $workspace_dir
 
@@ -765,6 +795,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$blazingdb_protocol_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_protocol_install_dir \
+          -DCXX_DEFINES=$blazingdb_protocol_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -843,6 +874,7 @@ if [ $blazingdb_io_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$blazingdb_io_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_io_install_dir \
+          -DCXX_DEFINES=$blazingdb_io_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -906,6 +938,8 @@ if [ $blazingdb_communication_enable == true ]; then
     cmake -DCMAKE_BUILD_TYPE=$blazingdb_communication_build_type \
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DCMAKE_INSTALL_PREFIX:PATH=$blazingdb_communication_install_dir \
+          -DCUDA_DEFINES=$blazingdb_communication_definitions \
+          -DCXX_DEFINES=$blazingdb_communication_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1
@@ -1055,6 +1089,8 @@ if [ $blazingdb_orchestrator_enable == true ]; then
           -DBLAZINGDB_DEPENDENCIES_INSTALL_DIR=$workspace_dir/dependencies/ \
           -DBLAZINGDB_PROTOCOL_INSTALL_DIR=$blazingdb_protocol_install_dir \
           -DBLAZINGDB_COMMUNICATION_INSTALL_DIR=$blazingdb_communication_install_dir \
+          -DCUDA_DEFINES=$blazingdb_orchestrator_definitions \
+          -DCXX_DEFINES=$blazingdb_orchestrator_definitions \
           ..
     if [ $? != 0 ]; then
       exit 1

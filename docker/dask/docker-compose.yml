@@ -3,33 +3,35 @@ version: '2.3'
 services:
 
   blazingdb-dask-scheduler-svc:
-    image: blazingdb/blazingsql:dask_calcite_orchestrator_pyblazing
+    image: blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv3
     build: ./calcite_orchestrator_pyblazing
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     ports:
+      - "80:80"
       - "9001:9001"
       - "8786:8786"
       - "8787:8787"
 
   worker1:
-    image: blazingdb/blazingsql:dask_ral_pyblazing
+    image: blazingdb/blazingsql:dask_ral_pyblazingv3
     build: ./ral_pyblazing/
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     ports:
+      - "81:80"
       - "9002:9001"
       - "8786"
 
-  worker2:
-    image: blazingdb/blazingsql:dask_ral_pyblazing
-    build: ./ral_pyblazing/
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    ports:
-      - "9003:9001"
-      - "8786"
+  #worker2:
+  #  image: blazingdb/blazingsql:dask_ral_pyblazing
+  #  build: ./ral_pyblazing/
+  #  runtime: nvidia
+  #  environment:
+  #    - NVIDIA_VISIBLE_DEVICES=all
+  #  ports:
+  #    - "9003:9001"
+  #    - "8786"
 

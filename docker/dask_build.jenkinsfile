@@ -38,8 +38,8 @@ pipeline {
   
   environment {
     IMAGE_BUILD = "blazingsql/build:latest"
-    IMAGE_SCHEDULER = "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazing"
-    IMAGE_WORKER = "blazingdb/blazingsql:dask_ral_pyblazing"
+    IMAGE_SCHEDULER = "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv${env.BUILD_NUMBER}"
+    IMAGE_WORKER = "blazingdb/blazingsql:dask_ral_pyblazingv${env.BUILD_NUMBER}"
     BZSQL_WORKSPACE = "${env.WORKSPACE}/workspace_dask"
     BZSQL_OUTPUT = "${env.WORKSPACE}/output_dask"
     ARTIFACT = "${env.BZSQL_OUTPUT}/blazingsql-files.tar.gz"
@@ -80,6 +80,9 @@ pipeline {
 
         dir ("./docker/dask/") {
           sh "./docker_build_images.sh"
+
+          sh "docker build -t ${env.IMAGE_SCHEDULER} calcite_orchestrator_pyblazing/"
+          sh "docker build -t ${env.IMAGE_WORKER} ral_pyblazing/"
         }
       }
     }

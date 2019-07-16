@@ -89,7 +89,7 @@ pipeline {
         parallel (
           scheduler: {
             sh "docker build -t ${env.IMAGE_SCHEDULER} ./docker/dask/calcite_orchestrator_pyblazing/"
-          }
+          },
           worker: {
             sh "docker build -t ${env.IMAGE_WORKER} ./docker/dask/ral_pyblazing/"
           }

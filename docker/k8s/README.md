@@ -77,10 +77,10 @@ sudo apt-get install -y kubectl
 
 ```shell-script
 # Execute this command to create the infrastructure a node in GKE (Enter the folder k8s) and for intall the yaml blazingsql.yaml (blazingdb/blazingsql:v0.3.5)
-./install.sh $project_name $name_cluster $zone $num_nodes $num_gpus
+./install.sh $project_name $name_cluster $zone $num_nodes $num_gpus $num_nodes $gpu_type $recipe
 
 # Example:
-./install.sh blazingdb-system-automation blazingsql-tcp-test us-west1-a 1 1
+./install.sh blazingdb-system-automation tmp-1-1-gpu us-west1-a 1 1 p100 blazingsql.yaml
 
 # Then wait until the script finishes ant type the JUPYTER IP
 # Example:

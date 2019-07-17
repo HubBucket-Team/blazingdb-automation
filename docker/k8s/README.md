@@ -8,7 +8,7 @@
 - Then, perform the steps below in the local machine to start to use Google CLI
 
 
-# Install  SDK de Google Cloud (In local machine)
+## Install  SDK de Google Cloud (In local machine)
 
 ```shell-script
 # Open terminal in local machine
@@ -26,7 +26,7 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt-get update && sudo apt-get install google-cloud-sdk
 ```
 
-# Initialize the SDK (In local machine)
+## Initialize the SDK (In local machine)
 
 ```shell-script
 # Open terminal in local machine
@@ -54,7 +54,7 @@ You can use [gcloud config] to change more gcloud settings.
 Your active configuration is: [default]
 ```
 
-# Add Kuberntes API (Through the Google Cloud Interface)
+## Add Kuberntes API (Through the Google Cloud Interface)
 
 ```shell-script
 #  In Google Cloud Platform, search APIs & Services section
@@ -63,7 +63,7 @@ Search "KUBERNETES"
 To finish,  enable the API
 ```
 
-# Install kubectl (local machine)
+## Install kubectl (local machine)
 
 ```shell-script
 sudo apt-get update && sudo apt-get install -y apt-transport-https
@@ -73,7 +73,7 @@ sudo apt-get update
 sudo apt-get install -y kubectl
 ```
 
-# Build the cluster in GKE
+## Build the cluster in GKE
 
 ```shell-script
 # Execute this command to create the infrastructure a node in GKE (Enter the folder k8s) and for intall the yaml blazingsql.yaml (blazingdb/blazingsql:v0.3.5)
@@ -92,6 +92,5 @@ sudo apt-get install -y kubectl
  
 # It takes approximately 8 minutes to set the deployment and and that the ip is enabled
 
-Note: Jupyter password is: rapids
-
+**Note: Jupyter password is: rapids
 ```

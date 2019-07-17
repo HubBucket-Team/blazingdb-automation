@@ -256,12 +256,15 @@ $SUDO mkdir -p /blazingsql/data/ && chmod 777 -R /blazingsql
 echo "### downloading demo files ###"
 wget -q -O /blazingsql/data/nation.psv https://s3.amazonaws.com/$BUCKET_DATA/nation.psv
 wget -q -O /blazingsql/data/gpu.arrow https://s3.amazonaws.com/$BUCKET_DATA/gpu.arrow
-wget -q -O /blazingsql/data/Music.csv https://s3.amazonaws.com/$BUCKET_DATA/Music.csv
+wget -q -O /blazingsql/data/cancer_data_00.csv https://s3.amazonaws.com/$BUCKET_DATA/cancer_data_00.csv
+wget -q -O /blazingsql/data/cancer_data_01.parquet https://s3.amazonaws.com/$BUCKET_DATA/cancer_data_01.parquet
+wget -q -O /blazingsql/data/cancer_data_02.csv .csv https://s3.amazonaws.com/$BUCKET_DATA/cancer_data_02.csv
 
 wget -q -O /blazingsql/demo1.py https://s3.amazonaws.com/$BUCKET_DEMO/demo1.py
 wget -q -O /blazingsql/demo2.py https://s3.amazonaws.com/$BUCKET_DEMO/demo2.py
 wget -q -O /blazingsql/demo3.py https://s3.amazonaws.com/$BUCKET_DEMO/demo3.py
 wget -q -O /blazingsql/demo4.py https://s3.amazonaws.com/$BUCKET_DEMO/demo4.py
+wget -q -O /blazingsql/demo5.py https://s3.amazonaws.com/$BUCKET_DEMO/demo5.py
 
 
 echo "### supervisor ###"

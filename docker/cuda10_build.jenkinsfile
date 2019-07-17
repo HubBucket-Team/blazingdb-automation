@@ -94,18 +94,21 @@ pipeline {
         sh "sleep 10"
         sh "docker exec ${CONTAINER_NAME} blazingsql status"
 
-        sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/demo1.py"
+        sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo1.py"
 
-        sh "docker cp ./docker/colab/demo2.py ${CONTAINER_NAME}:/blazingsql/demo2.py"
+        sh "docker cp ./docker/colab/demo2.py ${CONTAINER_NAME}:/blazingsql/"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo2.py"
 
-        sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/demo3.py"
+        sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo3.py"
 
-        sh "docker cp ./docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
-        sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/demo4.py"
+        //sh "docker cp ./docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
+        sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo4.py"
+
+        sh "docker cp ./docker/colab/demo5.py ${CONTAINER_NAME}:/blazingsql/"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo5.py"
 
         sh "docker commit ${CONTAINER_NAME} ${IMAGE_COLAB}"
         sh "docker rm -f ${CONTAINER_NAME}"
@@ -135,11 +138,15 @@ pipeline {
         sh "aws s3 cp ./docker/blazingsql/data/nation.psv s3://${env.BUCKET}/demo/data/"
         sh "aws s3 cp ./docker/blazingsql/data/gpu.arrow s3://${env.BUCKET}/demo/data/"
         sh "aws s3 cp ./docker/blazingsql/data/Music.csv s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/cancer_data_00.csv s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/cancer_data_01.parquet s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/cancer_data_02.csv s3://${env.BUCKET}/demo/data/"
 
         sh "aws s3 cp ./docker/colab/demo1.py s3://${env.BUCKET}/demo/"
         sh "aws s3 cp ./docker/colab/demo2.py s3://${env.BUCKET}/demo/"
         sh "aws s3 cp ./docker/colab/demo3.py s3://${env.BUCKET}/demo/"
         sh "aws s3 cp ./docker/colab/demo4.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo5.py s3://${env.BUCKET}/demo/"
         
         sh "aws s3 cp ./docker/colab/install.sh s3://${env.BUCKET}/"
         sh "aws s3 cp ${ARTIFACT} s3://${env.BUCKET}/"

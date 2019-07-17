@@ -1,6 +1,6 @@
 #!/bin/bash
-# Syntax: ./create_cluster.sh project_name cluster_name zone number_nodes number_gpus_per_node gpu_type directory_yaml/
-# Example: ./create_cluster.sh myproject-bigdata cluster-2-2gpu us-west1-a 2 2 v100|p100|k80|t4 tcp/
+# Syntax: ./install.sh project_name cluster_name zone number_nodes number_gpus_per_node gpu_type directory_yaml/
+# Example: ./install.sh myproject-bigdata cluster-2-2gpu us-west1-a 2 2 v100|p100|k80|t4 tcp/
 
 project=$1
 name=$2
@@ -42,15 +42,6 @@ $cmd apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-en
 
 
 echo "### install blazingsql ###"
-#$cmd apply -f pv.yaml
-#$cmd apply -f pvc.yaml
-#$cmd apply -f tcp/blazingdb_calcite_dep.yaml
-#$cmd apply -f blazingdb_orch_dep.yaml
-#$cmd apply -f tcp/blazingdb_ral_orchestrator_dep.yaml
-#$cmd apply -f tcp/blazingdb_jupyter_dep.yaml
-
-#$cmd apply -f tcp/blazingdb_orch_svc.yaml
-#$cmd apply -f tcp/blazingdb_jupyter_svc.yaml
 
 $cmd apply -f $recipe
 if [ $? != 0 ]; then
@@ -63,6 +54,4 @@ sleep 2m
 echo "### Listing all in a cluster ###"
 $cmd  get  all
 echo " ************** Go to JUPYTER :  ********************************** "
-$cmd  get svc blazingdb-jupyter-svc -o yaml | grep ip >> a.txt
-cat a.txt
-rm -rf a.txt
+$cmd  get svc blazingdb-jupyter-svc --output=wide|awk 'FNR == 2 {print $3}'

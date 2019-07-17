@@ -57,10 +57,10 @@ Your active configuration is: [default]
 ## Add Kuberntes API (Through the Google Cloud Interface)
 
 ```shell-script
-#  In Google Cloud Platform, search APIs & Services section
-After select "Dashboard" go to "ENABLE APIS AND SERVICES"
-Search "KUBERNETES"
-To finish,  enable the API
+- In Google Cloud Platform, search APIs & Services section
+- After select "Dashboard" go to "ENABLE APIS AND SERVICES"
+- Search "KUBERNETES"
+- To finish,  enable the API
 ```
 
 ## Install kubectl (local machine)

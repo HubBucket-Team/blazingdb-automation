@@ -19,6 +19,9 @@ RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tin
 # Install blazingdb-io runtime dependencies
 RUN apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
 
+# UCX
+RUN apt-get install -y libnuma-dev
+
 RUN apt-get clean
 
 # Create the container user
@@ -138,19 +141,46 @@ VOLUME /blazingsql
 # If the user wants to communicate by unix socket need to mount his /tmp folder
 VOLUME /tmp
 
-# 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
-EXPOSE 8890
-EXPOSE 8891
-EXPOSE 8892
-
-# Supervisord HTTP port
-EXPOSE 9001
-
 # Jupyter
-#EXPOSE 8888
 EXPOSE 80
+
+# Supervisord (HTTP port)
+EXPOSE 9901
 
 # haddop
 #EXPOSE 54310
+
+# Calcite
+EXPOSE 8890
+
+# Orchestrator (Protocol)
+EXPOSE 8889
+
+# Orchestrator (Communication)
+EXPOSE 9000
+
+# RAL 1 (Protocol)
+EXPOSE 8891
+
+# RAL 1 (Communication)
+EXPOSE 9001
+
+# RAL 2 (Protocol)
+EXPOSE 8892
+
+# RAL 2 (Communication)
+EXPOSE 9002
+
+# RAL 3 (Protocol)
+EXPOSE 8893
+
+# RAL 3 (Communication)
+EXPOSE 9003
+
+# RAL 4 (Protocol)
+EXPOSE 8894
+
+# RAL 4 (Communication)
+EXPOSE 9004
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

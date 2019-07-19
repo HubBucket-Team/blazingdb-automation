@@ -3,9 +3,9 @@ schemaVersion: "2.0.0"
 metadataTest:
   env:
     - key: "NUMBAPRO_NVVM"
-      value: "/usr/local/cuda-9.2/nvvm/lib64/libnvvm.so"
+      value: "/usr/local/cuda/nvvm/lib64/libnvvm.so"
     - key: "NUMBAPRO_LIBDEVICE"
-      value: "/usr/local/cuda-9.2/nvvm/libdevice/"
+      value: "/usr/local/cuda/nvvm/libdevice/"
     - key: "LD_LIBRARY_PATH"
       value: "/conda/envs/cudf/lib/"
   exposedPorts: ["80", "9001"]

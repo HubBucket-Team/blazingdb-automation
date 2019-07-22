@@ -20,6 +20,7 @@ echo "### Ral ###"
 tar -xvf blazingsql-files.tar.gz blazingsql-files/cudf/cpp/install/lib/libcudf.so 
 #tar -xvf blazingsql-files.tar.gz blazingsql-files/cudf/cpp/install/lib/librmm.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings-src/thirdparty/rmm/install/lib/librmm.so
+tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py
 tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings/lib/libNVCategory.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings/lib/libNVStrings.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/testing-libgdf

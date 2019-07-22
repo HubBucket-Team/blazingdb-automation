@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER BlazingDB <percy@blazingdb.com>
+LABEL BlazingDB <percy@blazingdb.com>
 LABEL Description="blazingdb/blazingsql is the official BlazingDB environment for BlazingSQL on NIVIDA RAPIDS." Vendor="BlazingDB" Version="1.0"
 
 RUN apt-get update && apt-get install -y openjdk-8-jre && apt-get clean

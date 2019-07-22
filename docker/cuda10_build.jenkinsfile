@@ -69,7 +69,8 @@ pipeline {
 
     stage("Build image") {
       steps {
-        sh "docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
+        //sh "docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
+        sh "docker build --build-arg CUDA_VERSION=9.2 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
       }
     }
 

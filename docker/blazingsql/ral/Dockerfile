@@ -15,8 +15,8 @@ RUN apt-get clean
 
 COPY ./blazingsql-files/cudf/cpp/install/lib/libcudf.so /usr/local/cuda/lib64/
 #COPY ./blazingsql-files/cudf/cpp/install/lib/librmm.so /usr/local/cuda/lib64/
-COPY ./blazingsql-files/nvstrings-src/thirdparty/rmm/install/lib/librmm.so /usr/local/cuda/lib64/
-COPY ./blazingsql-files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py /usr/local/cuda/lib64/
+#COPY ./blazingsql-files/nvstrings-src/thirdparty/rmm/install/lib/librmm.so /usr/local/cuda/lib64/
+#COPY ./blazingsql-files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py /usr/local/cuda/lib64/
 
 COPY ./blazingsql-files/nvstrings/lib/libNVCategory.so /usr/local/cuda/lib64/
 COPY ./blazingsql-files/nvstrings/lib/libNVStrings.so /usr/local/cuda/lib64/

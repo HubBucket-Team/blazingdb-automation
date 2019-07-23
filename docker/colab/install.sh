@@ -1,13 +1,26 @@
 #!/bin/bash
-# Usage: path_tar verbose sudo path_usr
-# Usage: /tmp/blazingsql-files.tar.gz true true $PYENV_VIRTUAL_ENV/
+# Usage: path_tar verbose sudo path_usr non_strict_mode
+# Usage: /tmp/blazingsql-files.tar.gz true true $PYENV_VIRTUAL_ENV/ true
 
-BUCKET="blazingsql-colab/latest"
+GPU_TYPE=$(nvidia-smi --query-gpu=gpu_name --format=csv|awk 'FNR==2 {print $1}')
+echo "GPU_TYPE: "$GPU_TYPE
+
+STRICT_MODE=1
+if [ ! -z $5 ]; then
+  STRICT_MODE=0
+fi
+
+echo "Strict mode: "$STRICT_MODE
+if [ $STRICT_MODE == 1 ] && [ "$GPU_TYPE" != "Tesla T4" ]; then
+  echo "GPU model must be Tesla T4"
+  exit 1
+fi
+
+BUCKET="blazingsql-colab"
 BUCKET_DEMO=$BUCKET"/demo"
 BUCKET_DATA=$BUCKET_DEMO"/data"
 
-if [ -z $1 ];
-then
+if [ -z $1 ]; then
   wget -O /tmp/blazingsql-files.tar.gz -q https://s3.amazonaws.com/$BUCKET/blazingsql-files.tar.gz
   if [ $? != 0 ]; then
     exit 1
@@ -19,28 +32,28 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-PYTHON="python3"
-#PIP="$PYTHON -m pip"
-PIP="pip3"
+PYTHON="python"
+PIP="python -m pip"
 
 VERBOSE="/dev/null"
-if [ ! -z $2 ];
-then
+if [ ! -z $2 ]; then
   VERBOSE="/dev/stdout"
 fi
 
 SUDO=""
-if [ ! -z $3 ];
-then
+if [ ! -z $3 ]; then
   SUDO="sudo"
 fi
 
 PATH_USR="/usr/"
-if [ ! -z $4 ];
-then
+if [ ! -z $4 ]; then
   PATH_USR=$4
 fi
 
+source /etc/lsb-release
+#echo "DISTRIB_ID: "$DISTRIB_ID
+#echo "DISTRIB_RELEASE: "$DISTRIB_RELEASE
+echo "DISTRIB_DESCRIPTION: "$DISTRIB_DESCRIPTION
 echo "PYTHON: "$PYTHON
 echo "VERSION: "$($PYTHON --version)
 echo "PIP: "$PIP
@@ -48,41 +61,19 @@ echo "VERBOSE: "$VERBOSE
 echo "SUDO: "$SUDO
 echo "PATH_USR: "$PATH_USR
 
-# source /etc/lsb-release
-# if [ $DISTRIB_RELEASE == "16.04" ];
-# then
-#   echo "Installing python 3.7"
-#   $SUDO apt-get update -qq > $VERBOSE
-#   if [ $? != 0 ]; then
-#     exit 1
-#   fi
-
-#   $SUDO apt-get install -y software-properties-common > $VERBOSE
-#   $SUDO add-apt-repository -y ppa:deadsnakes/ppa
-#   if [ $? != 0 ]; then
-#     exit 1
-#   fi
-# fi
-
 echo "### update ###"
 $SUDO apt-get update -qq > $VERBOSE
 
 echo "### dependencies ###"
-#ln -s /usr/bin/python3 /usr/bin/python
-#ln -s /usr/bin/pip3 /usr/bin/pip
-#apt-get install -y -qq git vim > $VERBOSE
-$SUDO apt-get install -y -qq --fix-missing --no-install-recommends \
-  $PYTHON $PYTHON-pip $PYTHON-dev \
-  libffi-dev libgsasl7 libgsasl7-dev \
-  bzip2 wget curl lsof \
-  libssl1.0.0 zlib1g libuuid1 \
-  supervisor openjdk-8-jre > $VERBOSE
+echo "$SUDO apt-get install -y $PYTHON $PYTHON-pip $PYTHON-dev libffi-dev libgsasl7 libgsasl7-dev bzip2 wget curl lsof libssl1.0.0 zlib1g libuuid1 supervisor openjdk-8-jre > $VERBOSE"
+$SUDO apt-get install -y $PYTHON $PYTHON-pip $PYTHON-dev libffi-dev libgsasl7 libgsasl7-dev bzip2 wget curl lsof libssl1.0.0 zlib1g libuuid1 supervisor openjdk-8-jre > $VERBOSE
 if [ $? != 0 ]; then
     exit 1
 fi
-$SUDO apt-get install -y -qq libcurl3
+echo "CMD: $SUDO apt-get install -y libcurl3"
+$SUDO apt-get install -y libcurl3
 if [ $? != 0 ]; then
-    exit 1
+  exit 1
 fi
 
 echo "### cmake ###"
@@ -102,7 +93,7 @@ fi
 
 echo "### pip dependencies ###"
 $PIP install --upgrade --force-reinstall setuptools
-#$PIP install --upgrade pip
+$PIP install --upgrade pip
 
 $PIP install wheel==0.32.1 > $VERBOSE
 if [ $? != 0 ]; then
@@ -169,14 +160,11 @@ cp -f $blazingsql_files/nvstrings-build/rmm/librmm.so $PATH_USR/lib/
 if [ $? != 0 ]; then
   exit 1
 fi
-#export RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h
-#pip3 install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 sed -i 's/..\/..\//\/tmp\/blazing\/blazingsql-files\/cudf\/cpp\//g' $blazingsql_files/nvstrings-src/thirdparty/rmm/python/librmm_cffi/librmm_build.py
 RMM_HEADER=$blazingsql_files/cudf/cpp/thirdparty/rmm/include/rmm/rmm_api.h $PIP install $blazingsql_files/nvstrings-src/thirdparty/rmm/python/
 if [ $? != 0 ]; then
   exit 1
 fi
-#pip3 list
 
 echo "### custrings ###"
 cp $blazingsql_files/nvstrings-build/libNV* $PATH_USR/lib/
@@ -187,16 +175,13 @@ cp -rf $blazingsql_files/nvstrings/include/* $PATH_USR/include/
 if [ $? != 0 ]; then
   exit 1
 fi
-#export NVSTRINGS_INCLUDE=$blazingsql_files/nvstrings/include/
 rm -rf $blazingsql_files/nvstrings-src/python/build/
-#$PIP install $blazingsql_files/nvstrings-src/python
-cd $blazingsql_files/nvstrings-src/python && CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$PATH_USR $PYTHON setup.py install
+cd $blazingsql_files/nvstrings-src/python && CUDACXX=/usr/local/cuda/bin/nvcc NVSTRINGS_ROOT=$PATH_USR $PIP install .
 if [ $? != 0 ]; then
   exit 1
 fi
 echo "### test custrings ###"
 $PYTHON -c "import nvstrings, nvcategory"
-#pip3 list
 
 echo "### cudf ###"
 cp -rf $blazingsql_files/cudf/cpp/install/lib/* $PATH_USR/lib/
@@ -209,7 +194,6 @@ if [ $? != 0 ]; then
   exit 1
 fi
 export CUDF_INCLUDE_DIR=$blazingsql_files/cudf/cpp/include/cudf/
-#$PIP install $blazingsql_files/cudf/cpp/python/
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -277,7 +261,7 @@ wget -q -O /usr/bin/blazingsql https://s3.amazonaws.com/blazingsql-colab/blazing
 blazingsql status
 
 # Clean
-#apt-get clean
+apt-get clean
 rm -rf /tmp/blazing*
 
 echo "### BlazingSQL installation finished ###"

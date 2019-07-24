@@ -86,13 +86,14 @@ RUN source activate cudf && pip install cmake_setuptools
 RUN source activate cudf && pip install "dask[complete]"
 
 # Dask Cudf
-RUN wget https://github.com/rapidsai/dask-cudf/archive/branch-0.8.zip && \
-    unzip branch-0.8.zip && \
-    cd dask-cudf-branch-0.8/ && \
-    sed '1d' requirements.txt > tmp.txt && \
-    mv tmp.txt requirements.txt && \
-    source activate cudf && \
-    pip install .
+#RUN wget https://github.com/rapidsai/dask-cudf/archive/branch-0.8.zip && \
+#    unzip branch-0.8.zip && \
+#    cd dask-cudf-branch-0.8/ && \
+#    sed '1d' requirements.txt > tmp.txt && \
+#    mv tmp.txt requirements.txt && \
+#    source activate cudf && \
+#    pip install .
+RUN conda install -n cudf -y -c nvidia -c rapidsai-nightly dask-cudf
 
 USER root
 
@@ -132,6 +133,11 @@ WORKDIR /home/jupyter
 USER root
 RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
+
+# Install rmm, cudf, nvstring from conda
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf
 
 # NOTE Expose CUDF runtime
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib64/:/conda/envs/cudf/lib/:/usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/

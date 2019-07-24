@@ -2,12 +2,10 @@
 
 action=$1
 
-blazingsql_dir=$CONDA_PREFIX/lib/python3.7/site-packages/blazingsql
-supervisord_dir=$blazingsql_dir/runtime/supervisord
+blazingsql_dir=/usr/bin/
+supervisord_dir=/etc/supervisor/
 supervisord_conf=$supervisord_dir/supervisord.conf
-supervisord_pid=$supervisord_dir/run/supervisord.pid
-
-working_directory=$PWD
+supervisord_pid=/var/run/supervisord.pid
 
 cd $supervisord_dir
 
@@ -18,7 +16,8 @@ fi
 
 if [ ! -f $supervisord_pid ]; then
     echo "starting supervisord"
-    supervisord -c $supervisord_conf -d $supervisord_dir
+    #supervisord -c $supervisord_conf
+    service supervisor start
 fi
 
 supervisord_action="$action all"
@@ -33,5 +32,3 @@ if [ "$action" == "stop" ] ; then
 fi
 
 supervisorctl -c $supervisord_conf $supervisord_action
-
-cd $working_directory

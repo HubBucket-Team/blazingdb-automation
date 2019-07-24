@@ -1,4 +1,5 @@
-FROM nvidia/cuda:9.2-devel-ubuntu16.04
+ARG  CUDA_VERSION=9.2
+FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
@@ -91,11 +92,11 @@ RUN source activate cudf && pip install cmake_setuptools
 USER root
 
 # Install hdfs stuff
-RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
+RUN apt-get install -y --no-install-recommends libffi-dev libprotobuf9v5 libgsasl7 libgsasl7-dev
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
-ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
-ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
+ENV NUMBAPRO_NVVM /usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE /usr/local/cuda/nvvm/libdevice/
 
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor

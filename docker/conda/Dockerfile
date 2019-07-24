@@ -1,3 +1,5 @@
+#ARG  CUDA_VERSION=9.2
+#FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu16.04
 FROM nvidia/cuda:9.2-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
@@ -42,26 +44,33 @@ SHELL ["/bin/bash", "-c"]
 
 # Create the conda env called 'user' this env simulate the user env
 # Build 'user' conda env
-ARG PYTHON_VERSION=3.5
+ARG PYTHON_VERSION=3.7
 RUN conda create -n user python=${PYTHON_VERSION}
 
-ARG NUMBA_VERSION=0.40.0
-ARG NUMPY_VERSION=1.14.3
+ARG NUMBA_VERSION=0.43.0
+ARG NUMPY_VERSION=1.16.2
 # Locked to Pandas 0.20.3 by https://github.com/rapidsai/cudf/issues/118
-ARG PANDAS_VERSION=0.20.3
-ARG PYARROW_VERSION=0.10.0
+ARG PANDAS_VERSION=0.24.2
+ARG PYARROW_VERSION=0.12.1
 
 # Install default packages for the user env
 RUN conda install -n user -y -c numba -c conda-forge -c defaults numba=${NUMBA_VERSION}
 RUN conda install -n user -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
 RUN conda install -n user -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
 RUN conda install -n user -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
+RUN conda install -n user -y -c numba -c conda-forge -c defaults cmake=3.14
+RUN conda install -n user -y -c numba -c conda-forge -c defaults gtest=1.8.0
+
+RUN source activate user && pip install --upgrade pip
+RUN source activate user && pip install flatbuffers
+RUN source activate user && pip install cmake_setuptools
 
 USER root
 
+RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
-ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
-ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
+ENV NUMBAPRO_NVVM /usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE /usr/local/cuda/nvvm/libdevice/
 
 # NOTE Expose 'user' runtime
 ENV LD_LIBRARY_PATH /conda/envs/user/lib/

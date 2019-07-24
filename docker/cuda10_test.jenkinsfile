@@ -1,0 +1,95 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }  
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  parameters {
+    string(name: 'DOCKER_IMAGE', defaultValue: 'blazingdb/blazingsql:colab-cuda10', description: 'The image to run tests e2e')
+    string(name: 'E2E_WORKDIR', defaultValue: '/home/mario21ic/blazingsql/workspace', description: '')
+    string(name: 'E2E_DATA_SET', defaultValue: 'DataSet1Gb', description: 'Examples: DataSet1Mb, DataSet100Mb, DataSet1Gb or DataSetNulls1Gb')
+    string(name: 'E2E_BLAZINGDB_TESTING_BRANCH', defaultValue: 'develop', description: 'branch of repo blazingdb-testing')
+    string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+  }
+
+  environment {
+    CONTAINER_NAME = "blzsql_test_cuda10"
+    SLACK_MESSAGE  = " - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
+  }
+  
+  stages {
+
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage("Config") {
+      steps {
+        sh "./docker/blazingsql-testing/clone_repo.sh ${env.E2E_BLAZINGDB_TESTING_BRANCH}"
+        sh "./docker/blazingsql-testing/download_data_set.sh ${env.E2E_DATA_SET} blazingdb-testing/BlazingSQLTest/"
+        sh "gsutil cp gs://blazingdbstorage/configFileFalse.json blazingdb-testing/BlazingSQLTest/"
+
+        sh "./docker/blazingsql-testing/docker_run_colab.sh ${env.DOCKER_IMAGE} ${CONTAINER_NAME} ${WORKSPACE}/blazingdb-testing/BlazingSQLTest"
+      }
+    }
+
+    stage("Build") {
+      steps {
+        sh "docker exec ${CONTAINER_NAME} /tmp/install_tests.sh"
+        sh "docker exec -ti -d ${CONTAINER_NAME} /etc/apache-drill-1.12.0/bin/drill-embedded"
+      }
+    }
+
+    stage("Test") {
+      steps {
+        sh "docker exec ${CONTAINER_NAME} /tmp/run_test.sh"
+
+        sh "docker rm -f ${CONTAINER_NAME}"
+      }
+    }
+
+  }
+
+  // Method to post jenkinsfile
+  post {
+   // always {
+   //    notifySlack "Started"
+   //  }
+    success {
+         notifySlack "Success"
+    }
+    failure {
+          notifySlack "Failure"
+    }
+    unstable {
+          notifySlack "Warning"
+    }
+  }
+
+}
+
+// Method to send notifications for slack
+def notifySlack(String buildStatus = 'Started') {
+    buildStatus = buildStatus ?: 'Success'
+
+    def color
+
+    if (buildStatus == 'Started') {
+        color = '#6f7275'
+    } else if (buildStatus == 'Success') {
+        color = '#037c0e'
+    } else if (buildStatus == 'Warning') {
+        color = '#dfdd30'
+    } else {
+        color = '#8e0406'
+    }
+
+
+ slackSend channel: "${params.SLACK_CHANNEL}", color: color, failOnError: true, message: "${buildStatus}" + "$SLACK_MESSAGE"
+}

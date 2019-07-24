@@ -1,0 +1,195 @@
+pipeline {
+  agent {
+      //label 'slave-gpu'
+      label 'slave01-jenkins-gpu'
+  }  
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 2, unit: 'HOURS')
+  }
+
+  parameters {
+    booleanParam(name: 'COMPILE', defaultValue: true, description: 'Compile to cuda10')
+    booleanParam(name: 'CALL_JOB_E2E', defaultValue: true, description: 'Call to job e2e')
+    booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Publish tar file and install.sh to S3')
+    //choice(name: 'CUDA_VERSION', choices: 'cuda92\cuda10', description: 'Cuda 9.2 or Cuda 10.0')
+    //string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
+    string(name: 'BLAZINGDB_TOOLCHAIN_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'CUSTRINGS_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_IO_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_COMMUNICATION_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_RAL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
+    booleanParam(name: 'BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build all dependencies')
+    booleanParam(name: 'CUSTRINGS_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'CUDF_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'BLAZINGDB_PROTOCOL_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'BLAZINGDB_IO_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'BLAZINGDB_COMMUNICATION_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'BLAZINGDB_RAL_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'BLAZINGDB_ORCHESTRATOR_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'PYBLAZING_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
+    booleanParam(name: 'CLEAN_WORKSPACE_MAVEN', defaultValue: false, description: 'maven-repository')
+    string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+  }
+  
+  environment {
+    IMAGE_BUILD = "blazingsql/build:cuda10"
+    IMAGE_COLAB = "blazingdb/blazingsql:colab-cuda10"
+    CONTAINER_NAME = "blzsql_colab_cuda10"
+    BZSQL_WORKSPACE = "${env.WORKSPACE}/workspace_cuda10"
+    BZSQL_OUTPUT = "${env.WORKSPACE}/output_cuda10"
+    ARTIFACT = "${env.BZSQL_OUTPUT}/blazingsql-files.tar.gz"
+    BUCKET = "blazingsql-colab/latest"
+    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
+  }
+
+  stages {
+
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage("Config") {
+      steps {
+        sh "mkdir -p ${BZSQL_WORKSPACE}"
+        sh "mkdir -p ${BZSQL_OUTPUT}"
+        sh "./docker/config_write.sh ${params.BLAZINGDB_TOOLCHAIN_BRANCH} ${params.CUSTRINGS_BRANCH} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_COMMUNICATION_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH} ${params.BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD} ${params.CUSTRINGS_CLEAN_BEFORE_BUILD} ${params.CUDF_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_PROTOCOL_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_IO_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_COMMUNICATION_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_RAL_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_ORCHESTRATOR_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD} ${params.PYBLAZING_CLEAN_BEFORE_BUILD} ${params.CLEAN_WORKSPACE_MAVEN}"
+        sh "cp -f ./blazingsql-build.properties ${BZSQL_WORKSPACE}"
+      }
+    }
+
+    stage("Build image") {
+      steps {
+        sh "docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
+      }
+    }
+
+    stage("Compile") {
+      when {
+        expression {
+          return params.COMPILE ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        sh "./docker/compile.sh ${BZSQL_WORKSPACE} ${BZSQL_OUTPUT} ${IMAGE_BUILD}"
+      }
+    }
+
+    stage("Test") {
+      steps {
+        sh "./docker/cuda10_run.sh ${CONTAINER_NAME}"
+        sh "docker cp ${ARTIFACT} ${CONTAINER_NAME}:/tmp/"
+        sh "docker cp ./docker/colab/install.sh ${CONTAINER_NAME}:/tmp/"
+        sh "docker exec ${CONTAINER_NAME} /tmp/install.sh /tmp/blazingsql-files.tar.gz true"
+
+        sh "sleep 10"
+        sh "docker exec ${CONTAINER_NAME} blazingsql status"
+
+        sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo1.py"
+
+        sh "docker cp ./docker/colab/demo2.py ${CONTAINER_NAME}:/blazingsql/"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo2.py"
+
+        sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo3.py"
+
+        //sh "docker cp ./docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
+        sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo4.py"
+
+        sh "docker cp ./docker/colab/demo5.py ${CONTAINER_NAME}:/blazingsql/"
+        sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo5.py"
+
+        sh "docker commit ${CONTAINER_NAME} ${IMAGE_COLAB}"
+        sh "docker rm -f ${CONTAINER_NAME}"
+      }
+    }
+
+    stage("Call Job E2E") {
+      when {
+        expression {
+          return params.CALL_JOB_E2E ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        build job: "07.ENDTOEND_TEST_CUDA10", parameters: [
+          [$class: 'StringParameterValue', name: 'DOCKER_IMAGE', value: "${IMAGE_COLAB}"]
+        ]
+      }
+    }
+
+    stage("Deploy") {
+      when {
+        expression {
+          return params.DEPLOY ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+        }
+      }
+      steps {
+        sh "aws s3 cp ./docker/blazingsql/data/nation.psv s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/gpu.arrow s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/Music.csv s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/cancer_data_00.csv s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/cancer_data_01.parquet s3://${env.BUCKET}/demo/data/"
+        sh "aws s3 cp ./docker/blazingsql/data/cancer_data_02.csv s3://${env.BUCKET}/demo/data/"
+
+        sh "aws s3 cp ./docker/colab/demo1.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo2.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo3.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo4.py s3://${env.BUCKET}/demo/"
+        sh "aws s3 cp ./docker/colab/demo5.py s3://${env.BUCKET}/demo/"
+        
+        sh "aws s3 cp ./docker/colab/install.sh s3://${env.BUCKET}/"
+        sh "aws s3 cp ${ARTIFACT} s3://${env.BUCKET}/"
+      }
+    }
+  }
+
+// Method to post jenkinsfile
+  post {
+    //always {
+      //notifySlack "Started"
+      //archiveArtifacts artifacts: "${ARTIFACT}", onlyIfSuccessful: true
+      //sh "rm -f ${ARTIFACT}"
+    //}
+    success {
+         notifySlack "Success"
+    }
+    failure {
+          notifySlack "Failure"
+    }
+    unstable {
+          notifySlack "Warning"
+    }
+  }
+
+}
+
+// Method to send notifications for slack
+def notifySlack(String buildStatus = 'Started') {
+    buildStatus = buildStatus ?: 'Success'
+
+    def color
+
+    if (buildStatus == 'Started') {
+        color = '#6f7275'
+    } else if (buildStatus == 'Success') {
+        color = '#037c0e'
+    } else if (buildStatus == 'Warning') {
+        color = '#dfdd30'
+    } else {
+        color = '#8e0406'
+    }
+
+
+ slackSend channel: "${params.SLACK_CHANNEL}", color: color, failOnError: true, message: "${buildStatus}" + "$SLACK_MESSAGE"
+}

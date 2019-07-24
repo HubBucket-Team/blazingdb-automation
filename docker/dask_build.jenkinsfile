@@ -42,7 +42,7 @@ pipeline {
   }
   
   environment {
-    IMAGE_BUILD = "blazingsql/build:latest"
+    IMAGE_BUILD = "blazingsql/build:dask"
     IMAGE_SCHEDULER = "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv${env.BUILD_NUMBER}"
     IMAGE_WORKER = "blazingdb/blazingsql:dask_ral_pyblazingv${env.BUILD_NUMBER}"
     BZSQL_WORKSPACE = "${env.WORKSPACE}/workspace_dask"
@@ -56,6 +56,12 @@ pipeline {
     stage("Repository") {
       steps {
         checkout scm
+      }
+    }
+
+    stage("Build compiler") {
+      steps {
+        sh "nvidia-docker build -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
       }
     }
     

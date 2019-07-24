@@ -444,6 +444,7 @@ rmm_install_dir=$rmm_current_dir/install
 
 if [ $rmm_enable == true ]; then
 
+    echo "### RMM - start ###"
     # if [ $rmm_clean_before_build == true ]; then
 
     if [ ! -d $rmm_current_dir ]; then
@@ -462,12 +463,22 @@ if [ $rmm_enable == true ]; then
     mkdir -p $rmm_build_dir
     cd $rmm_build_dir
 
+    echo "### RMM - cmake ###"
     CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$rmm_build_type \
             -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
             ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### RMM - make ###"
     make -j$rmm_parallel install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
 
     # fi
+    echo "### RMM - end ###"
 fi
 
 #END rmm

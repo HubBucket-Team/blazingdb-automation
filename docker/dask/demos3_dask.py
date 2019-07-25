@@ -12,8 +12,9 @@ bc.s3('tpch_s3', bucket_name='blazingsql-colab', encryption_type=EncryptionType.
 
 column_names = ['ARTIST', 'RATING', 'YEAR', 'LOCATION', 'FESTIVAL_SET']
 
-bc.create_table('music8', ['s3://tpch_s3/Music.csv', 's3://tcph_s3/Music.csv'], delimiter='|', names=colum_names)
+bc.create_table('music8', ['s3://tpch_s3/Music.csv', 's3://tcph_s3/Music.csv'], delimiter='|', names=column_names)
 
 result = bc.sql("select * from main.music8")
 
-data.result.get()
+data = result.get()
+

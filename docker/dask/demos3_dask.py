@@ -1,20 +1,29 @@
-import cudf
-from blazingsql import BlazingContext
-import pyblazing
-from pyblazing import EncryptionType
+from distributed import Client
+from time import sleep
+import random
 
-#pyblazing.SetupOrchestratorConnection('blazingdb-dask-scheduler-svc', 8889)
+def collect_results():
+    import cudf
+    from blazingsql import BlazingContext
+    import pyblazing
+    from pyblazing import EncryptionType
 
-bc = BlazingContext()
-#authority = "tpch_s3"
-#bc.s3(authority, bucket_name='blazingsql-bucket', access_key_id='AKIAJGB3SR3IXU3TE5WA', secret_key='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')
-bc.s3('tpch_s3', bucket_name='blazingsql-colab', encryption_type=EncryptionType.NONE, access_key_id='AKIAJGB3SR3IXU3TE5WA', secret_key='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')
+    #pyblazing.SetupOrchestratorConnection('blazingdb-dask-scheduler-svc', 8889)
 
-column_names = ['ARTIST', 'RATING', 'YEAR', 'LOCATION', 'FESTIVAL_SET']
+    bc = BlazingContext()
+    #authority = "tpch_s3"
+    #bc.s3(authority, bucket_name='blazingsql-bucket', access_key_id='AKIAJGB3SR3IXU3TE5WA', secret_key='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')
+    bc.s3('tpch_s3', bucket_name='blazingsql-colab', encryption_type=EncryptionType.NONE, access_key_id='AKIAJGB3SR3IXU3TE5WA', secret_key='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')
 
-bc.create_table('music8', ['s3://tpch_s3/Music.csv', 's3://tcph_s3/Music.csv'], delimiter='|', names=column_names)
+    column_names = ['ARTIST', 'RATING', 'YEAR', 'LOCATION', 'FESTIVAL_SET']
 
-result = bc.sql("select * from main.music8")
+    bc.create_table('music8', ['s3://tpch_s3/Music.csv', 's3://tcph_s3/Music.csv'], delimiter='|', names=column_names)
 
-data = result.get()
+    result = bc.sql("select * from main.music8")
+
+    data = result.get()
+
+client = Client('127.0.0.1:8786')
+job = client.submit(collect_results)
+print(job.result())
 

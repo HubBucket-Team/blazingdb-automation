@@ -199,9 +199,10 @@ RUN source activate cudf && pip install "dask[complete]" && pip install bokeh
 RUN conda install -n cudf -y -c nvidia -c rapidsai-nightly dask-cudf
 
 # Install rmm, cudf, nvstring from conda
-RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm
-RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings
-RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings=0.9.0a
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
+
 
 # Supervisor
 COPY supervisord/run_scheduler.sh /usr/bin/run_scheduler.sh

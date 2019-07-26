@@ -135,9 +135,10 @@ RUN bash /tmp/blazing/setup.sh
 RUN rm -rf /tmp/blazing
 
 # Install rmm, cudf, nvstring from conda
-RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm
-RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings
-RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings=0.9.0a
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
+
 
 # NOTE Expose CUDF runtime
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib64/:/conda/envs/cudf/lib/:/usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/

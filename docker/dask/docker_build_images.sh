@@ -12,5 +12,5 @@ cp -f blazingsql-files.tar.gz calcite_orchestrator_pyblazing/
 echo "### ral_pyblazing ###"
 cp -f blazingsql-files.tar.gz ral_pyblazing/
 
-#echo "### docker build ###"
-#docker-compose build
+echo "### docker build ###"
+docker-compose build

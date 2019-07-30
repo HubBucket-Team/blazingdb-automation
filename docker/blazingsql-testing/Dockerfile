@@ -15,11 +15,11 @@ RUN apt-get install -y git netcat
 RUN apt-get clean
 RUN apt-get install -y mysql-client 
 
-
 RUN source activate cudf && pip install pydrill
 RUN source activate cudf && pip install openpyxl
 RUN source activate cudf && pip install pymysql
 RUN source activate cudf && pip install gitpython
+RUN source activate cudf && pip install pynvml
 
 # Create the user 'tester'
 #RUN useradd -ms /bin/bash $USER

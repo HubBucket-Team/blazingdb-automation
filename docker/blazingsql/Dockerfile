@@ -18,6 +18,9 @@ RUN apt-get install -y --no-install-recommends sudo bzip2 wget curl nano vim-tin
 # Install blazingdb-io runtime dependencies
 RUN apt-get install -y --no-install-recommends libicu55 libcurl3 libssl1.0.0 zlib1g libuuid1
 
+# UCX
+RUN apt-get install -y libnuma-dev
+
 RUN apt-get clean
 
 # Create the container user
@@ -51,31 +54,32 @@ ARG PYTHON_VERSION=3.7
 RUN conda create -n cudf python=${PYTHON_VERSION}
 
 ARG NUMBA_VERSION=0.43.0
-ARG NUMPY_VERSION=1.16.2
 # Locked to Pandas 0.20.3 by https://github.com/rapidsai/cudf/issues/118
 ARG PANDAS_VERSION=0.24.2
 ARG PYARROW_VERSION=0.12.1
 
 # Install default packages for the user env
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numba=${NUMBA_VERSION}
-RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.14
-RUN conda install -n cudf -y -c numba -c conda-forge -c defaults gtest=1.8.0
+
+# Dask
+RUN conda install -n cudf -y dask
+
+# Conda Nightly
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9.0a1
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings=0.9.0a
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
 
 # libgdf dependencies
 RUN source activate cudf && pip install --upgrade pip
-# TODO percy mario edith uncomment this when we don't need to build nvstrings(custrings)
-#RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c defaults nvstrings
 
 # blazingdb-protocol dependencies
 RUN source activate cudf && pip install flatbuffers
 
 # Pyblazing dependencies
 RUN source activate cudf && conda install -c conda-forge jupyterlab
-#RUN source activate cudf && pip install numba==0.40.1
-#RUN source activate cudf && pip install pycuda==2018.1.1
 RUN source activate cudf && pip install cython
 
 # Demo dependencies
@@ -137,19 +141,46 @@ VOLUME /blazingsql
 # If the user wants to communicate by unix socket need to mount his /tmp folder
 VOLUME /tmp
 
-# 8890 for Orchestrator, 8891 for Calcite, 8892 for RAL
-EXPOSE 8890
-EXPOSE 8891
-EXPOSE 8892
-
-# Supervisord HTTP port
-EXPOSE 9001
-
 # Jupyter
-#EXPOSE 8888
 EXPOSE 80
+
+# Supervisord (HTTP port)
+EXPOSE 9901
 
 # haddop
 #EXPOSE 54310
+
+# Calcite
+EXPOSE 8890
+
+# Orchestrator (Protocol)
+EXPOSE 8889
+
+# Orchestrator (Communication)
+EXPOSE 9000
+
+# RAL 1 (Protocol)
+EXPOSE 8891
+
+# RAL 1 (Communication)
+EXPOSE 9001
+
+# RAL 2 (Protocol)
+EXPOSE 8892
+
+# RAL 2 (Communication)
+EXPOSE 9002
+
+# RAL 3 (Protocol)
+EXPOSE 8893
+
+# RAL 3 (Communication)
+EXPOSE 9003
+
+# RAL 4 (Protocol)
+EXPOSE 8894
+
+# RAL 4 (Communication)
+EXPOSE 9004
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

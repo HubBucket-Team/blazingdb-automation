@@ -67,6 +67,11 @@ RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARR
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.14
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults gtest=1.8.0
 
+# Conda Nightly
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings=0.9.0a
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
+
 # libgdf dependencies
 RUN source activate cudf && pip install --upgrade pip
 # TODO percy mario edith uncomment this when we don't need to build nvstrings(custrings)

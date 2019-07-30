@@ -467,7 +467,8 @@ if [ $rmm_enable == true ]; then
             ..
     make -j$rmm_parallel install
 
-    # fi
+    mkdir -p ${output}/rmm/
+    cp -r $rmm_install_dir/* ${output}/rmm/
 fi
 
 #END rmm

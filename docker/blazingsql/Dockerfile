@@ -56,7 +56,7 @@ RUN conda create -n cudf python=${PYTHON_VERSION}
 ARG NUMBA_VERSION=0.43.0
 # Locked to Pandas 0.20.3 by https://github.com/rapidsai/cudf/issues/118
 ARG PANDAS_VERSION=0.24.2
-ARG PYARROW_VERSION=0.14.1
+ARG PYARROW_VERSION=0.12.1
 
 # Install default packages for the user env
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numba=${NUMBA_VERSION}
@@ -64,8 +64,11 @@ RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pandas=${PANDAS
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.14
 
+# Dask
+RUN conda install -n cudf -y dask
+
 # Conda Nightly
-RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9.0a1
 RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings=0.9.0a
 RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
 

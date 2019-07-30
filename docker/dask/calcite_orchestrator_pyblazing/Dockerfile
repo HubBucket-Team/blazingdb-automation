@@ -61,7 +61,7 @@ RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.14
 # Dask
 RUN conda install -n cudf -y dask
 RUN source activate cudf && pip install bokeh
-#RUN conda install -n cudf -y -c nvidia -c rapidsai-nightly dask-cudf
+RUN conda install -n cudf -y -c nvidia -c rapidsai-nightly dask-cudf
 
 # Conda Nightly
 RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9.0a1

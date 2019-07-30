@@ -445,7 +445,6 @@ rmm_install_dir=$rmm_current_dir/install
 if [ $rmm_enable == true ]; then
 
     echo "### RMM - start ###"
-    # if [ $rmm_clean_before_build == true ]; then
 
     if [ ! -d $rmm_current_dir ]; then
         mkdir -p $rmm_current_dir
@@ -477,7 +476,6 @@ if [ $rmm_enable == true ]; then
       exit 1
     fi
 
-    # fi
     echo "### RMM - end ###"
 fi
 

@@ -1,0 +1,86 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-dask-scheduler-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-dask-scheduler
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-dask-scheduler
+    spec:
+      containers:
+      - name: blazingdb-dask-scheduler
+        image: "blazingdb/blazingsql:scheduler"
+        command: ["dask-scheduler"]
+        args: ["--show"]
+        ports:
+        - containerPort: 8786
+        - containerPort: 8787
+        #readinessProbe:
+        #  httpGet:
+        #    path: /login
+        #    port: 80
+        #  periodSeconds: 1
+        #  timeoutSeconds: 1
+        #  successThreshold: 1
+        #  failureThreshold: 10
+        #resources:
+        #  limits:
+        #    nvidia.com/gpu: 1 # requesting 1 GPU
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-dask-worker-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-dask-worker
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: blazingdb-dask-worker
+    spec:
+      containers:
+      - name: blazingdb-dask-worker
+        image: "blazingdb/blazingsql:worker"
+        command: ["dask-worker"]
+        args: ["blazingdb-dask-scheduler-svc:8786"]
+        ports:
+        - containerPort: 8786
+        - containerPort: 8787
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-dask-scheduler-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: blazingdb-dask-scheduler
+  ports:
+    - protocol: TCP
+      port: 8786
+      targetPort: 8786
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-dask-scheduler-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: blazingdb-dask-scheduler
+  ports:
+    - protocol: TCP
+      port: 8787
+      targetPort: 8787
+

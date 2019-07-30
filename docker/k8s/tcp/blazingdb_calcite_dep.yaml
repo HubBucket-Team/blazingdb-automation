@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-calcite-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-calcite
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-calcite
+    spec:
+      containers:
+      - name: blazingdb-calcite
+        image: "blazingdb/blazingsql:calcite_tcp"
+        command: ["java"]
+        args: ["-jar", "/usr/bin/BlazingCalcite.jar", "-p", "8890"]
+        #command: ["sleep"]
+        #args: ["36000"]
+        ports:
+          - containerPort: 8890
+        #readinessProbe:
+        #  httpGet:
+        #    path: /login
+        #    port: 80
+        #  periodSeconds: 1
+        #  timeoutSeconds: 1
+        #  successThreshold: 1
+        #  failureThreshold: 10
+

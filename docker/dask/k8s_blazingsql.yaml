@@ -1,0 +1,129 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-dask-scheduler-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-dask-scheduler
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-dask-scheduler
+    spec:
+      containers:
+      - name: blazingdb-dask-scheduler
+        image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv37"
+        ports:
+          - containerPort: 80 # jupyter
+          - containerPort: 9001 # supervisor
+          - containerPort: 9000 # orchestrator
+          - containerPort: 8786 # dask
+          - containerPort: 8787 # dashboard
+          - containerPort: 8889 # orchestrator
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blazingdb-dask-worker-dep
+spec:
+  selector:
+    matchLabels:
+      app: blazingdb-dask-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blazingdb-dask-worker
+    spec:
+      containers:
+      - name: blazingdb-dask-worker
+        image: "blazingdb/blazingsql:dask_ral_pyblazingv37"
+        ports:
+          - containerPort: 80 # jupyter
+          - containerPort: 9001 # supervisor
+          - containerPort: 9000 # ral
+          - containerPort: 8891 # ral
+          - containerPort: 8786 # dask
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-dask-scheduler-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: blazingdb-dask-scheduler
+  ports:
+    - name: dask
+      protocol: TCP
+      port: 8786
+      targetPort: 8786
+    - name: orchestrator
+      protocol: TCP
+      port: 9000
+    - name: ral-com
+      protocol: TCP
+      port: 8891
+    - name: orch
+      protocol: TCP
+      port: 8889
+      targetPort: 8889
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-dask-worker-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: blazingdb-dask-worker
+  ports:
+    - name: jupyter
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: supervisor
+      protocol: TCP
+      port: 9001
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-dask-scheduler-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: blazingdb-dask-scheduler
+  ports:
+    - name: jupyter
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: supervisor
+      protocol: TCP
+      port: 9001
+    - name: orchestrator
+      protocol: TCP
+      port: 8889
+      targetPort: 8889
+    - name: dashboard
+      protocol: TCP
+      port: 8787
+      targetPort: 8787
+    - name: dask
+      protocol: TCP
+      port: 8786
+      targetPort: 8786
+

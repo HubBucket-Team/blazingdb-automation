@@ -138,6 +138,9 @@ EXPOSE 9901
 # haddop
 #EXPOSE 54310
 
+# Calcite
+EXPOSE 8890
+
 # Orchestrator (Protocol)
 EXPOSE 8889
 

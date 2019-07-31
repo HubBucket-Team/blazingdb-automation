@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blazingdb-dask-scheduler
-        image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv38"
+        image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv39"
         ports:
           - containerPort: 80 # jupyter
           - containerPort: 9001 # supervisor
@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
       - name: blazingdb-dask-worker
-        image: "blazingdb/blazingsql:dask_ral_pyblazingv38"
+        image: "blazingdb/blazingsql:dask_ral_pyblazingv39"
         ports:
           - containerPort: 80 # jupyter
           - containerPort: 9001 # supervisor

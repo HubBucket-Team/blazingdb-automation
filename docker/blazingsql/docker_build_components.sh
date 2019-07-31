@@ -16,8 +16,8 @@ mv blazingsql-files/blazingdb_orchestator_service orchestator/
 #docker build -t blazingdb/blazingsql:orchestator orchestator/
 
 echo "### Ral ###"
-tar -xvf blazingsql-files.tar.gz blazingsql-files/cudf/cpp/install/lib/libcudf.so 
-tar -xvf blazingsql-files.tar.gz blazingsql-files/cudf/cpp/install/lib/librmm.so
+#tar -xvf blazingsql-files.tar.gz blazingsql-files/cudf/cpp/install/lib/libcudf.so 
+tar -xvf blazingsql-files.tar.gz blazingsql-files/rmm/lib/librmm.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings/lib/libNVCategory.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/nvstrings/lib/libNVStrings.so
 tar -xvf blazingsql-files.tar.gz blazingsql-files/testing-libgdf

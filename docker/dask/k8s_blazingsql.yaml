@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blazingdb-dask-scheduler
-        image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv41"
+        image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv42"
         ports:
           - containerPort: 80 # jupyter
           - containerPort: 9001 # supervisor
@@ -35,7 +35,7 @@ spec:
   selector:
     matchLabels:
       app: blazingdb-dask-worker
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
       - name: blazingdb-dask-worker
-        image: "blazingdb/blazingsql:dask_ral_pyblazingv41"
+        image: "blazingdb/blazingsql:dask_ral_pyblazingv42"
         ports:
           - containerPort: 80 # jupyter
           - containerPort: 9001 # supervisor

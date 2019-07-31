@@ -1,7 +1,9 @@
 #!/bin/bash
-# Usage: ./k8s_admin.sh status|delete|update|services
+# Usage: ./k8s_admin.sh status|delete|update|services build_number
 
 action=$1
+build_number=$2
+
 echo "action: "$action
 
 if [ "$action" == "status" ]; then
@@ -18,6 +20,8 @@ fi
 if [ "$action" == "update" ]; then
     kubectl delete deployments --all
     kubectl apply -f k8s_blazingsql.yaml
+    #kubectl --record deployment/blazingdb-dask-scheduler-dep set image blazingdb-dask-scheduler=blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv$build_number
+    #kubectl --record deployment/blazingdb-dask-worker-dep set image blazingdb-dask-worker=blazingdb/blazingsql:dask_ral_pyblazingv$build_number
 fi
 
 if [ "$action" == "services" ]; then

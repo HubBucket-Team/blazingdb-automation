@@ -30,7 +30,7 @@ tar -xzvf data/mortgage.tar.gz
 bash utils/start_jupyter.sh
 ```
 
-# Run Build and Deploy 
+# Compile and Deploy BlazingSQL on Docker with fast script
 ```shell-script
 # Create the  belong folders
 mkdir /home/$USER/blazingsql
@@ -38,9 +38,22 @@ mkdir /home/$USER/blazingsql/output
 mkdir /home/$USER/blazingsql/workspace
 mkdir /home/$USER/blazingsql/workspace-testing
 
-# Execute the script to build and deploy into docker folder
+# Create the build image
+cd docker/blazingsql-build
+docker build -t blazingdb/blazingsql:build  .
+
+# Compile BlazingSQL stack
 cd docker
-./build-deploy.sh latest develop develop develop develop develop develop develop
+./compile.sh /home/$USER/blazingsql/workspace /home/$USER/blazingsql/output blazingdb/blazingsql:build
+
+#  Build the BlazingSQL image
+cd blazingsql
+docker build -t blazingdb/blazingsql:latest  .
+
+# Deploy BlazingSQL
+cd blazingsql
+./run-deploy.sh latest
+
 ```
 
 # Run end to end test

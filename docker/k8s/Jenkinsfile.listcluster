@@ -1,0 +1,34 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+ environment {
+    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage("List cluster GKE on GCP") { 
+      steps {
+         dir("docker/k8s/") {
+        script {         
+            sh "./list-clusters-gke.sh"
+          }
+        }
+      }
+      }
+    }
+
+  }

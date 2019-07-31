@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: blazingdb-orch-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: blazingdb-orch
+  ports:
+  - protocol: TCP
+    port: 8889
+    targetPort: 8889
+

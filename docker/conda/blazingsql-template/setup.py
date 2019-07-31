@@ -26,10 +26,32 @@ import os
 class cudf_installer(install):
 
     def run(self):
+        print("RUN ###############################")
+        self._install_custrings()
         self._install_libgdf_cffi()
         self._install_cudf_python()
 
         install.run(self)
+
+    def _install_custrings(self):
+        print("CUSTRINGS ###############################")
+        blazingsql_dir = os.path.dirname(os.path.realpath(__file__))
+        os.system("ls -la " + blazingsql_dir)
+        pypkg = blazingsql_dir + "/nvstrings-src/python/"
+        print("pypkg:", pypkg)
+        os.chdir(pypkg)
+
+        #print("Install cmake_setuptools")
+        #os.system("pip install cmake_setuptools==0.1.3")
+
+        nvstrings_lib_dir = blazingsql_dir + "/nvstrings-build/"
+        nvstrings_include_dir = blazingsql_dir + "/nvstrings-src/cpp/include/"
+        env_vars = 'LD_LIBRARY_PATH=%s NVSTRINGS_INCLUDE=%s' % (nvstrings_lib_dir, nvstrings_include_dir)
+        print("### ENV_VARS: ", env_vars)
+        libnvstrings_install_cmd = "%s python %s/setup.py" % (env_vars, pypkg)
+        print("### CMD: ", libnvstrings_install_cmd)
+        print("CUSTRINGS Install ###############################")
+        os.system(libnvstrings_install_cmd)
 
     def _install_libgdf_cffi(self):
 
@@ -47,7 +69,7 @@ class cudf_installer(install):
 
         # TODO percy add ld path library del runtime/lib antes de buold insalarlo
 
-        runtime_dir = self.prefix + "/lib/python3.5/site-packages/blazingsql/runtime"
+        runtime_dir = self.prefix + "/lib/python3.7/site-packages/blazingsql/runtime"
         pypkg = blazingsql_dir + "/cudf/cpp/python/"
         # libgdf_install_cmd = "pip install --target=%s %s" % (runtime_dir, pypkg)
 
@@ -75,7 +97,7 @@ class cudf_installer(install):
         cudf_include_dir = blazingsql_dir + "/cudf/cpp/include"
         cudf_lib_dir = blazingsql_dir + "/cudf/cpp/install/lib"
         env_vars = 'CFLAGS="-I%s" CXXFLAGS="-I%s" LDFLAGS="-L%s"' % (cudf_include_dir, cudf_include_dir, cudf_lib_dir)
-        runtime_dir = self.prefix + "/lib/python3.5/site-packages/blazingsql/runtime"
+        runtime_dir = self.prefix + "/lib/python3.7/site-packages/blazingsql/runtime"
         pypkg = blazingsql_dir + "/cudf/python/"
         cudf_pip_cmd = "python %s/setup.py install --prefix=%s --single-version-externally-managed --record=record.txt" % (pypkg, runtime_dir)
         cudf_install_cmd = "%s %s" % (env_vars, cudf_pip_cmd)
@@ -98,7 +120,7 @@ def package_files(directory):
 
 
 # TODO percy when nvstrings can support more python distributions then try to improve this
-nvstrings_python_lib_dir = os.path.dirname(os.path.realpath(__file__)) + "/blazingsql/runtime/lib/python3.5"
+nvstrings_python_lib_dir = os.path.dirname(os.path.realpath(__file__)) + "/blazingsql/runtime/lib/python3.7"
 nvstrings_python_lib_files = package_files(nvstrings_python_lib_dir)
 
 # Add supervisord files
@@ -111,7 +133,8 @@ blazingsql_runtime_bin_lib_files = [
     'runtime/bin/testing-libgdf',
     'runtime/lib/libcudf.so',
     'runtime/lib/librmm.so',
-    'runtime/lib/libNVStrings.so'
+    'runtime/lib/libNVStrings.so',
+    'runtime/lib/libNVCategory.so'
 ]
 
 blazingsql_files = supervisord_conf_files + nvstrings_python_lib_files + blazingsql_runtime_bin_lib_files
@@ -125,7 +148,9 @@ setup(
     packages = find_packages(include = ['blazingsql', 'blazingsql.*']),
     package_data = {'blazingsql': blazingsql_files},
     include_package_data = True,
-    install_requires = [],
+    install_requires = [
+        'cmake_setuptools'
+    ],
     cmdclass = {'install': cudf_installer},
     zip_safe = False,
     scripts = ['blazingsql/runtime/bin/blazingsql', 'blazingsql/runtime/bin/pyblazing']

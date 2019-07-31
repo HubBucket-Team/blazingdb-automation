@@ -1,0 +1,42 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  parameters {
+    string(name: 'PROJECT_NAME', defaultValue: 'blazingdb-system-automation', description: '')
+    string(name: 'CLUSTER_NAME', defaultValue: 'blazingsql-test', description: '')
+    string(name: 'ZONE', defaultValue: 'us-west1-a', description: '')
+    string(name: 'NODES_NUMBER', defaultValue: '1', description: '')
+    string(name: 'NUMBER_GPUS_PER_NODE', defaultValue: '2', description: '')
+  }
+
+  environment {
+    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage("Create cluster on GCP") { 
+      steps {
+         dir("docker/k8s/") {
+        script {         
+            sh "./install.sh ${params.PROJECT_NAME} ${params.CLUSTER_NAME} ${params.ZONE} ${params.NODES_NUMBER} ${params.NUMBER_GPUS_PER_NODE}"
+          }
+        }
+      }
+      }
+    }
+
+  }

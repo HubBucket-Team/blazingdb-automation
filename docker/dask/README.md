@@ -30,6 +30,12 @@ docker-compose  ps
 ```
 
 ```shell-script
+# To scale workers
+cd blazingdb-automation/docker/dask
+docker-compose scale worker=3
+```
+
+```shell-script
 # To delete the  containers with docker compose
 cd blazingdb-automation/docker/dask
 docker-compose  down

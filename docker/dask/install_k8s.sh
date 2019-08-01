@@ -45,9 +45,15 @@ if [ $? != 0 ]; then
 fi
 
 
-echo "### install ###"
-#$cmd apply -f k8s_dask_cluster.yaml
-$cmd apply -f k8s_blazingsql.yaml
+echo "### scheduler install ###"
+$cmd apply -f k8s_blazingsql_scheduler.yaml
+if [ $? != 0 ]; then
+  exit 1
+fi
+sleep 10
+
+echo "### worker install ###"
+$cmd apply -f k8s_blazingsql_worker.yaml
 if [ $? != 0 ]; then
   exit 1
 fi

@@ -19,7 +19,9 @@ fi
 
 if [ "$action" == "update" ]; then
     kubectl delete deployments --all
-    kubectl apply -f k8s_blazingsql.yaml
+    kubectl apply -f k8s_blazingsql_scheduler.yaml
+    sleep 10
+    kubectl apply -f k8s_blazingsql_worker.yaml
     #kubectl --record deployment/blazingdb-dask-scheduler-dep set image blazingdb-dask-scheduler=blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv$build_number
     #kubectl --record deployment/blazingdb-dask-worker-dep set image blazingdb-dask-worker=blazingdb/blazingsql:dask_ral_pyblazingv$build_number
 fi

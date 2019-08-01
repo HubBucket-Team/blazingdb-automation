@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blazingdb-dask-scheduler
-        image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv42"
+        image: "blazingdb/blazingsql:dask_calcite_orchestrator_pyblazingv44"
         ports:
           - containerPort: 80 # jupyter
           - containerPort: 9001 # supervisor
@@ -25,35 +25,6 @@ spec:
         resources:
           limits:
             nvidia.com/gpu: 1
-
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: blazingdb-dask-worker-dep
-spec:
-  selector:
-    matchLabels:
-      app: blazingdb-dask-worker
-  replicas: 2
-  template:
-    metadata:
-      labels:
-        app: blazingdb-dask-worker
-    spec:
-      containers:
-      - name: blazingdb-dask-worker
-        image: "blazingdb/blazingsql:dask_ral_pyblazingv42"
-        ports:
-          - containerPort: 80 # jupyter
-          - containerPort: 9001 # supervisor
-          - containerPort: 9000 # ral
-          - containerPort: 8891 # ral
-          - containerPort: 8786 # dask
-        resources:
-          limits:
-            nvidia.com/gpu: 1
-
 ---
 kind: Service
 apiVersion: v1
@@ -78,24 +49,6 @@ spec:
       protocol: TCP
       port: 8889
       targetPort: 8889
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: blazingdb-dask-worker-lb
-spec:
-  type: LoadBalancer
-  selector:
-    app: blazingdb-dask-worker
-  ports:
-    - name: jupyter
-      protocol: TCP
-      port: 80
-      targetPort: 80
-    - name: supervisor
-      protocol: TCP
-      port: 9001
 
 ---
 kind: Service

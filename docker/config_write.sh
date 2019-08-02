@@ -35,7 +35,7 @@ blazingdb_io_branch=$6
 blazingdb_communication_branch=$7
 blazingdb_ral_branch=$8
 blazingdb_orchestrator_branch=$9
-blazingdb_calcite_branch=$10
+blazingdb_calcite_branch=${10}
 pyblazing_branch=${11}
 
 # Parametrize clean before build options

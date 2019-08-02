@@ -12,6 +12,33 @@ echo "action: "$action
 echo "filter: "$filter
 echo "cmd: "$cmd
 
+if [ "$action" == "restart" ]; then
+    echo "### orchestrator stop ###"
+    kubectl get pods -l app=blazingdb-dask-scheduler -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-orchestrator
+    echo "### ral stop ###"
+    kubectl get pods -l app=blazingdb-dask-worker -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-ral
+    echo "### orchestrator start ###"
+    kubectl get pods -l app=blazingdb-dask-scheduler -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl start blazing-orchestrator
+    echo "### ral start ###"
+    kubectl get pods -l app=blazingdb-dask-worker -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl start blazing-ral
+fi
+
+if [ "$action" == "orchestrator_start" ]; then
+    kubectl get pods -l app=blazingdb-dask-scheduler -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl start blazing-orchestrator
+fi
+
+if [ "$action" == "orchestrator_stop" ]; then
+    kubectl get pods -l app=blazingdb-dask-scheduler -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-orchestrator
+fi
+
+if [ "$action" == "ral_start" ]; then
+    kubectl get pods -l app=blazingdb-dask-worker -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl start blazing-ral
+fi
+
+if [ "$action" == "ral_stop" ]; then
+    kubectl get pods -l app=blazingdb-dask-worker -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-ral
+fi
+
 if [ "$action" == "cmd_pod" ]; then
     kubectl get pods -l app=blazingdb-dask-$filter -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} $cmd
 fi

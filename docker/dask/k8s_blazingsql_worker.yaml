@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: blazingdb-dask-worker
-  replicas: 11
+  replicas: 4
   template:
     metadata:
       labels:

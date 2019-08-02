@@ -13,10 +13,10 @@ echo "filter: "$filter
 echo "cmd: "$cmd
 
 if [ "$action" == "restart" ]; then
-    echo "### orchestrator stop ###"
-    kubectl get pods -l app=blazingdb-dask-scheduler -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-orchestrator
     echo "### ral stop ###"
     kubectl get pods -l app=blazingdb-dask-worker -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-ral
+    echo "### orchestrator stop ###"
+    kubectl get pods -l app=blazingdb-dask-scheduler -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-orchestrator
     echo "### orchestrator start ###"
     kubectl get pods -l app=blazingdb-dask-scheduler -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl start blazing-orchestrator
     echo "### ral start ###"

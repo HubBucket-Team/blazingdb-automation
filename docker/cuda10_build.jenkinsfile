@@ -1,7 +1,7 @@
 pipeline {
   agent {
-      //label 'slave-gpu'
-      label 'slave01-jenkins-gpu'
+      label 'slave-gpu'
+      //label 'slave01-jenkins-gpu'
   }  
   options {
     ansiColor('xterm')

@@ -12,6 +12,14 @@ echo "action: "$action
 echo "filter: "$filter
 echo "cmd: "$cmd
 
+if [ "$action" == "reset" ]; then
+    kubectl delete deployments --all
+    sleep 5
+    kubectl apply -f k8s_blazingsql_scheduler.yaml
+    sleep 10
+    kubectl apply -f k8s_blazingsql_worker.yaml
+fi
+
 if [ "$action" == "restart" ]; then
     echo "### ral stop ###"
     kubectl get pods -l app=blazingdb-dask-worker -o custom-columns=NAME:.metadata.name --no-headers=true|xargs -I{} kubectl exec {} supervisorctl stop blazing-ral

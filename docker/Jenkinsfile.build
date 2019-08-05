@@ -85,9 +85,7 @@ pipeline {
       steps {
         sh "cp -f ${env.ARTIFACT} ./docker/blazingsql/"
 
-        dir ("./docker/blazingsql/") {
-          sh "nvidia-docker build -t ${IMAGE_BUILD} ./docker/blazingsql/"
-        }
+        sh "nvidia-docker build -t ${IMAGE_BUILD} ./docker/blazingsql/"
       }
     }
 

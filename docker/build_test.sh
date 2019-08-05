@@ -19,6 +19,9 @@ BRANCH="${BRANCH/\//\\/}"
 echo "BRANCH: $BRANCH"
 
 cp ./blazingsql-build/blazingsql-build.properties $workspace/
+if [ $? != 0 ]; then
+  exit 1
+fi
 sed -ie "s/blazingdb_ral_branch.*/blazingdb_ral_branch\=$BRANCH/g" $workspace/blazingsql-build.properties
 sed -ie "s/blazingdb_ral_tests.*/blazingdb_ral_tests\=true/g" $workspace/blazingsql-build.properties
 

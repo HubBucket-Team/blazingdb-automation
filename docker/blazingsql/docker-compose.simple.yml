@@ -1,0 +1,22 @@
+version: '2.3'
+
+services:
+
+  blazingsql:
+    image: blazingdb/blazingsql:simple_distribution
+    build: ./simple_distribution/
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - data:/blazingdb/data/demo/
+    #entrypoint: "sleep 36000"
+    ports:
+      - "80:80"
+      - "8889:8889"
+      - "8891:8891"
+      - "9001:9001"
+
+volumes:
+  data:
+

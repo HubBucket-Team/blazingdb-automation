@@ -40,6 +40,12 @@ if [ -z "$blazingdb_toolchain_branch" ]; then
     exit 1
 fi
 
+if [ -z "$rmm_branch" ]; then
+    echo "Error: Need the 'rmm_branch' argument in order to run the build process."
+    touch FAILED
+    exit 1
+fi
+
 if [ -z "$custrings_branch" ]; then
     echo "Error: Need the 'custrings_branch' argument in order to run the build process."
     touch FAILED
@@ -109,6 +115,10 @@ if [ -z "$blazingdb_toolchain_enable" ]; then
     blazingdb_toolchain_enable=true
 fi
 
+if [ -z "$rmm_enable" ]; then
+    rmm_enable=true
+fi
+
 if [ -z "$custrings_enable" ]; then
     custrings_enable=true
 fi
@@ -154,6 +164,10 @@ fi
 #BEGIN set default optional arguments for C/C++ build types: Release, Debug, etc
 # for more info check https://cmake.org/cmake/help/v3.12/variable/CMAKE_BUILD_TYPE.html#variable:CMAKE_BUILD_TYPE 
 
+if [ -z "$rmm_build_type" ]; then
+    rmm_build_type=Release
+fi
+
 if [ -z "$custrings_build_type" ]; then
     custrings_build_type=Release
 fi
@@ -186,6 +200,10 @@ fi
 
 if [ -z "$blazingdb_toolchain_tests" ]; then
     blazingdb_toolchain_tests=false
+fi
+
+if [ -z "$rmm_tests" ]; then
+    rmm_tests=false
 fi
 
 if [ -z "$custrings_tests" ]; then
@@ -234,6 +252,10 @@ fi
 
 if [ -z "$blazingdb_toolchain_parallel" ]; then
     blazingdb_toolchain_parallel=4
+fi
+
+if [ -z "$rmm_parallel" ]; then
+    rmm_parallel=4
 fi
 
 if [ -z "$custrings_parallel" ]; then
@@ -300,6 +322,10 @@ if [ -z "$blazingdb_toolchain_clean_before_build" ]; then
     blazingdb_toolchain_clean_before_build=false
 fi
 
+if [ -z "$rmm_clean_before_build" ]; then
+    rmm_clean_before_build=false
+fi
+
 if [ -z "$custrings_clean_before_build" ]; then
     custrings_clean_before_build=false
 fi
@@ -361,6 +387,7 @@ function normalize_branch_name() {
 #BEGIN main
 
 blazingdb_toolchain_branch_name=$(normalize_branch_name $blazingdb_toolchain_branch)
+rmm_branch_name=$(normalize_branch_name $rmm_branch)
 custrings_branch_name=$(normalize_branch_name $custrings_branch)
 cudf_branch_name=$(normalize_branch_name $cudf_branch)
 blazingdb_protocol_branch_name=$(normalize_branch_name $blazingdb_protocol_branch)
@@ -388,7 +415,7 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     
     if [ ! -d $workspace_dir/blazingdb-toolchain/ ]; then
         cd $workspace_dir/
-        git clone git@github.com:BlazingDB/blazingdb-toolchain.git
+        git clone https://github.com/BlazingDB/blazingdb-toolchain.git
     fi
     
     cd $workspace_dir/blazingdb-toolchain/
@@ -411,6 +438,49 @@ boost_install_dir=$workspace_dir/dependencies/
 
 #END boost
 
+#BEGIN rmm
+rmm_current_dir=$workspace_dir/rmm_project/$rmm_branch_name/
+rmm_install_dir=$rmm_current_dir/install
+
+if [ $rmm_enable == true ]; then
+
+    echo "### RMM - start ###"
+
+    if [ ! -d $rmm_current_dir ]; then
+        mkdir -p $rmm_current_dir
+        mkdir -p $rmm_install_dir
+
+        cd $rmm_current_dir
+        git clone --recurse-submodules https://github.com/rapidsai/rmm.git
+    fi
+    
+    cd $rmm_current_dir/rmm
+    git checkout $rmm_branch
+    git pull
+
+    rmm_build_dir=$rmm_current_dir/rmm/build
+    mkdir -p $rmm_build_dir
+    cd $rmm_build_dir
+
+    echo "### RMM - cmake ###"
+    CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$rmm_build_type \
+            -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
+            ..
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### RMM - make ###"
+    make -j$rmm_parallel install
+    if [ $? != 0 ]; then
+      exit 1
+    fi
+
+    echo "### RMM - end ###"
+fi
+
+#END rmm
+
 #BEGIN nvstrings
 
 custrings_install_dir=$workspace_dir/custrings_project/$custrings_branch_name/install
@@ -418,10 +488,6 @@ nvstrings_install_dir=$custrings_install_dir
 if [ ! -d $custrings_install_dir ]; then
     custrings_install_dir=""   
     nvstrings_install_dir="" 
-fi
-rmm_install_dir=$workspace_dir/custrings_project/$custrings_branch_name/custrings/thirdparty/rmm/install
-if [ ! -d $rmm_install_dir ]; then
-    rmm_install_dir=""       
 fi
 
 if [ $custrings_enable == true ]; then
@@ -434,10 +500,6 @@ if [ $custrings_enable == true ]; then
     #TODO percy use this path when custrings is part of toolchain dependencies
     #nvstrings_install_dir=$workspace_dir/dependencies/
     nvstrings_install_dir=$custrings_install_dir
-    
-    rmm_src_dir=$custrings_project_dir/$custrings_branch_name/custrings/thirdparty/rmm
-    rmm_build_dir=$rmm_src_dir/build
-    rmm_install_dir=$rmm_src_dir/install
     
     if [ ! -f $custrings_install_dir/include/NVStrings.h ] || [ $custrings_clean_before_build == true ]; then
         #BEGIN custrings
@@ -462,21 +524,11 @@ if [ $custrings_enable == true ]; then
         if [ ! -d $custrings_branch_name ]; then
             mkdir $custrings_branch_name
             cd $custrings_branch_name
-            git clone git@github.com:BlazingDB/custrings.git
+            git clone https://github.com/BlazingDB/custrings.git
             cd $custrings_current_dir/custrings
             git checkout $custrings_branch
             git pull
             git submodule update --init --recursive
-            
-            #BEGIN build rmm
-            mkdir -p $rmm_build_dir
-            cd $rmm_build_dir
-            CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
-                -DBUILD_TESTS=$build_testing_custrings \
-                -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
-                ..
-            make -j$custrings_parallel install
-            #END build rmm
             
             echo "### CUSTRINGS - cmake ###"
             mkdir -p $custrings_build_dir
@@ -491,16 +543,6 @@ if [ $custrings_enable == true ]; then
         git checkout $custrings_branch
         git pull
         git submodule update --init --recursive
-        
-        #BEGIN build rmm
-        mkdir -p $rmm_build_dir
-        cd $rmm_build_dir
-        CUDACXX=/usr/local/cuda/bin/nvcc cmake -DCMAKE_BUILD_TYPE=$custrings_build_type \
-            -DBUILD_TESTS=$build_testing_custrings \
-            -DCMAKE_INSTALL_PREFIX:PATH=$rmm_install_dir \
-            ..
-        make -j$custrings_parallel install
-        #END build rmm
         
         echo "### CUSTRINGS - clean before build: $custrings_clean_before_build ###"
         
@@ -553,9 +595,6 @@ if [ $custrings_enable == true ]; then
     if [ $? != 0 ]; then
       exit 1
     fi
-    
-    mkdir -p ${output}/nvstrings-build/rmm
-    cp -r $rmm_install_dir/lib/* ${output}/nvstrings-build/rmm
     
     if [ $? != 0 ]; then
       exit 1
@@ -678,7 +717,7 @@ if [ $cudf_enable == true ]; then
     if [ ! -d $cudf_branch_name ]; then
         mkdir $cudf_branch_name
         cd $cudf_branch_name
-        git clone git@github.com:BlazingDB/cudf.git
+        git clone https://github.com/BlazingDB/cudf.git
         cd $cudf_current_dir/cudf
         git checkout $cudf_branch
         git pull
@@ -765,7 +804,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     if [ ! -d $blazingdb_protocol_branch_name ]; then
         mkdir $blazingdb_protocol_branch_name
         cd $blazingdb_protocol_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-protocol.git
+        git clone https://github.com/BlazingDB/blazingdb-protocol.git
     fi
     
     blazingdb_protocol_current_dir=$blazingdb_protocol_project_dir/$blazingdb_protocol_branch_name/
@@ -847,7 +886,7 @@ if [ $blazingdb_io_enable == true ]; then
     if [ ! -d $blazingdb_io_branch_name ]; then
         mkdir $blazingdb_io_branch_name
         cd $blazingdb_io_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-io.git
+        git clone https://github.com/BlazingDB/blazingdb-io.git
     fi
     
     blazingdb_io_current_dir=$blazingdb_io_project_dir/$blazingdb_io_branch_name/
@@ -911,7 +950,7 @@ if [ $blazingdb_communication_enable == true ]; then
     if [ ! -d $blazingdb_communication_branch_name ]; then
         mkdir $blazingdb_communication_branch_name
         cd $blazingdb_communication_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-communication.git
+        git clone https://github.com/BlazingDB/blazingdb-communication.git
     fi
     
     blazingdb_communication_current_dir=$blazingdb_communication_project_dir/$blazingdb_communication_branch_name/
@@ -972,7 +1011,7 @@ if [ $blazingdb_ral_enable == true ]; then
     if [ ! -d $blazingdb_ral_branch_name ]; then
         mkdir $blazingdb_ral_branch_name
         cd $blazingdb_ral_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-ral.git
+        git clone https://github.com/BlazingDB/blazingdb-ral.git
     fi
     
     blazingdb_ral_current_dir=$blazingdb_ral_project_dir/$blazingdb_ral_branch_name/
@@ -1057,7 +1096,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     if [ ! -d $blazingdb_orchestrator_branch_name ]; then
         mkdir $blazingdb_orchestrator_branch_name
         cd $blazingdb_orchestrator_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
+        git clone https://github.com/BlazingDB/blazingdb-orchestrator.git
     fi
     
     blazingdb_orchestrator_current_dir=$blazingdb_orchestrator_project_dir/$blazingdb_orchestrator_branch_name/
@@ -1129,7 +1168,7 @@ if [ $blazingdb_calcite_enable == true ]; then
     if [ ! -d $blazingdb_calcite_branch_name ]; then
         mkdir $blazingdb_calcite_branch_name
         cd $blazingdb_calcite_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-calcite.git
+        git clone https://github.com/BlazingDB/blazingdb-calcite.git
     fi
     
     blazingdb_calcite_current_dir=$blazingdb_calcite_project_dir/$blazingdb_calcite_branch_name/
@@ -1175,7 +1214,7 @@ if [ $pyblazing_enable == true ]; then
     if [ ! -d $pyblazing_branch_name ]; then
         mkdir $pyblazing_branch_name
         cd $pyblazing_branch_name
-        git clone git@github.com:BlazingDB/pyBlazing.git
+        git clone https://github.com/BlazingDB/pyBlazing.git
     fi
     
     pyblazing_current_dir=$pyblazing_project_dir/$pyblazing_branch_name/

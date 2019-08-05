@@ -1,5 +1,4 @@
-ARG  CUDA_VERSION=9.2
-FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu16.04
+FROM nvidia/cuda:9.2-devel-ubuntu16.04
 
 MAINTAINER BlazingDB <percy@blazingdb.com>
 
@@ -55,31 +54,34 @@ ARG PYTHON_VERSION=3.7
 RUN conda create -n cudf python=${PYTHON_VERSION}
 
 ARG NUMBA_VERSION=0.43.0
-ARG NUMPY_VERSION=1.16.2
 # Locked to Pandas 0.20.3 by https://github.com/rapidsai/cudf/issues/118
 ARG PANDAS_VERSION=0.24.2
 ARG PYARROW_VERSION=0.12.1
 
 # Install default packages for the user env
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numba=${NUMBA_VERSION}
-RUN conda install -n cudf -y -c numba -c conda-forge -c defaults numpy=${NUMPY_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pandas=${PANDAS_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults pyarrow=${PYARROW_VERSION}
 RUN conda install -n cudf -y -c numba -c conda-forge -c defaults cmake=3.14
-RUN conda install -n cudf -y -c numba -c conda-forge -c defaults gtest=1.8.0
+
+# Dask
+RUN conda install -n cudf -y dask
+RUN source activate cudf && pip install bokeh
+RUN conda install -n cudf -y -c nvidia -c rapidsai-nightly dask-cudf
+
+# Conda Nightly
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9.0a1
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings=0.9.0a
+RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
 
 # libgdf dependencies
 RUN source activate cudf && pip install --upgrade pip
-# TODO percy mario edith uncomment this when we don't need to build nvstrings(custrings)
-#RUN conda install -n cudf -y -c numba -c conda-forge -c nvidia -c defaults nvstrings
 
 # blazingdb-protocol dependencies
 RUN source activate cudf && pip install flatbuffers
 
 # Pyblazing dependencies
 RUN source activate cudf && conda install -c conda-forge jupyterlab
-#RUN source activate cudf && pip install numba==0.40.1
-#RUN source activate cudf && pip install pycuda==2018.1.1
 RUN source activate cudf && pip install cython
 
 # Demo dependencies
@@ -92,11 +94,11 @@ RUN source activate cudf && pip install cmake_setuptools
 USER root
 
 # Install hdfs stuff
-RUN apt-get install -y --no-install-recommends libffi-dev libprotobuf9v5 libgsasl7 libgsasl7-dev
+RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
-ENV NUMBAPRO_NVVM /usr/local/cuda/nvvm/lib64/libnvvm.so
-ENV NUMBAPRO_LIBDEVICE /usr/local/cuda/nvvm/libdevice/
+ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE /usr/local/cuda-9.2/nvvm/libdevice/
 
 # Setup Supervisord
 RUN mkdir -p /var/log/supervisor

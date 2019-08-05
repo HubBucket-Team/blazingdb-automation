@@ -2,6 +2,7 @@
 # Usage: 
 # config_write.sh
 # (arg 1) # blazingdb_toolchain_branch
+# (arg 2) # rmm_branch
 # (arg 2) # custrings_branch
 # (arg 3) # cudf_branch
 # (arg 4) # protocol_branch
@@ -22,32 +23,33 @@
 # (arg 19) # blazingdb_calcite_clean_before_build
 # (arg 20) # pyblazing_clean_before_build
 # (arg 21) # workspace_maven_clean_repository
-# Example: ./config_write.sh develop develop develop develop develop develop develop develop develop develop false false false false false false false false false false false
+# Example: ./config_write.sh develop develop develop develop develop develop develop develop develop develop develop false false false false false false false false false false false
 
 # Parametrize branchs
 blazingdb_toolchain_branch=$1
-custrings_branch=$2
-cudf_branch=$3
-blazingdb_protocol_branch=$4
-blazingdb_io_branch=$5
-blazingdb_communication_branch=$6
-blazingdb_ral_branch=$7
-blazingdb_orchestrator_branch=$8
-blazingdb_calcite_branch=$9
-pyblazing_branch=${10}
+rmm_branch=$2
+custrings_branch=$3
+cudf_branch=$4
+blazingdb_protocol_branch=$5
+blazingdb_io_branch=$6
+blazingdb_communication_branch=$7
+blazingdb_ral_branch=$8
+blazingdb_orchestrator_branch=$9
+blazingdb_calcite_branch=${10}
+pyblazing_branch=${11}
 
 # Parametrize clean before build options
-blazingdb_toolchain_clean_before_build=${11}
-custrings_clean_before_build=${12}
-cudf_clean_before_build=${13}
-blazingdb_protocol_clean_before_build=${14}
-blazingdb_io_clean_before_build=${15}
-blazingdb_communication_clean_before_build=${16}
-blazingdb_ral_clean_before_build=${17}
-blazingdb_orchestrator_clean_before_build=${18}
-blazingdb_calcite_clean_before_build=${19}
-pyblazing_clean_before_build=${20}
-workspace_maven_repository=${21}
+blazingdb_toolchain_clean_before_build=${12}
+custrings_clean_before_build=${13}
+cudf_clean_before_build=${14}
+blazingdb_protocol_clean_before_build=${15}
+blazingdb_io_clean_before_build=${16}
+blazingdb_communication_clean_before_build=${17}
+blazingdb_ral_clean_before_build=${18}
+blazingdb_orchestrator_clean_before_build=${19}
+blazingdb_calcite_clean_before_build=${20}
+pyblazing_clean_before_build=${21}
+workspace_maven_repository=${22}
 
 # set default branches
 echo "Forcing build dependencies: $blazingdb_toolchain_clean_before_build"
@@ -108,6 +110,7 @@ echo "pyblazing_branch: $pyblazing_branch"
 cat << EOF > ./blazingsql-build.properties
 #mandatory: branches
 blazingdb_toolchain_branch=$blazingdb_toolchain_branch
+rmm_branch=$rmm_branch
 custrings_branch=$custrings_branch
 cudf_branch=$cudf_branch
 blazingdb_protocol_branch=$blazingdb_protocol_branch
@@ -120,6 +123,7 @@ pyblazing_branch=$pyblazing_branch
 
 #optional: enable build (default is true)
 blazingdb_toolchain_enable=true
+rmm_enable=true
 custrings_enable=true
 cudf_enable=true
 blazingdb_protocol_enable=true
@@ -132,6 +136,7 @@ pyblazing_enable=true
 
 #optional: build type for C/C++ projects (default is Release, i.e. -DCMAKE_BUILD_TYPE=Release)
 # For debug mode use: Debug ... more info here: https://cmake.org/cmake/help/v3.12/variable/CMAKE_BUILD_TYPE.html#variable:CMAKE_BUILD_TYPE
+rmm_build_type=Release
 custrings_build_type=Release
 cudf_build_type=Release
 blazingdb_protocol_build_type=Release
@@ -142,6 +147,7 @@ blazingdb_orchestrator_build_type=Release
 
 #optional: tests build & run (default is false)
 blazingdb_toolchain_tests=false
+rmm_tests=false
 custrings_tests=false
 cudf_tests=false
 blazingdb_protocol_tests=false
@@ -154,6 +160,7 @@ pyblazing_tests=false
 
 #optional: parallel builds for make -jX and mvn -T XC (default is 4)
 blazingdb_toolchain_parallel=4
+rmm_parallel=4
 custrings_parallel=4
 cudf_parallel=4
 blazingdb_protocol_parallel=4

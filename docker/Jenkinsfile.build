@@ -10,14 +10,18 @@ pipeline {
 
   parameters {
     booleanParam(name: 'CALL_JOB_E2E', defaultValue: true, description: 'Call to job e2e')
+
     booleanParam(name: 'DOCKERHUB_PUBLISH', defaultValue: false, description: 'Publish to Docker Hub')
-    booleanParam(name: 'DOCKERHUB_LATEST', defaultValue: false, description: 'Publish image as latest')
-    string(name: 'DOCKERHUB_TAG_DEPLOY', defaultValue: 'latest', description: "NOTE: Write your deploy tag, if leave in blank it'll be the automatic")
+    booleanParam(name: 'DOCKERHUB_LATEST', defaultValue: false, description: 'Also publish image as latest')
+    string(name: 'DOCKERHUB_TAG_DEPLOY', defaultValue: 'latest', description: "NOTE: Write your deploy tag, if leave in blank it'll be latest")
+
     booleanParam(name: 'ANACONDA_PUBLISH_CLOUD', defaultValue: false, description: 'Publish to Conda Cloud')
     string(name: 'ANACONDA_BLAZINGSQL_VERSION', defaultValue: '0.2.0', description: 'Blazingsql version')   
     string(name: 'ANACONDA_PYTHON_VERSION', defaultValue: 'py35', description: 'Python version')   
     string(name: 'ANACONDA_LABEL', defaultValue: 'main', description: 'Label to blazinsql package')   
+
     string(name: 'BLAZINGDB_TOOLCHAIN_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
+    string(name: 'RMM_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'CUSTRINGS_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'CUDF_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_PROTOCOL_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
@@ -27,8 +31,7 @@ pipeline {
     string(name: 'BLAZINGDB_ORCHESTRATOR_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'BLAZINGDB_CALCITE_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'PYBLAZING_BRANCH', defaultValue: 'develop', description: '')
-    string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
-    string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
+
     booleanParam(name: 'BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build all dependencies')
     booleanParam(name: 'CUSTRINGS_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'CUDF_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
@@ -40,10 +43,17 @@ pipeline {
     booleanParam(name: 'BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'PYBLAZING_CLEAN_BEFORE_BUILD', defaultValue: false, description: 'Clean before build ')
     booleanParam(name: 'CLEAN_WORKSPACE_MAVEN', defaultValue: false, description: 'maven-repository')
+
+    string(name: 'SLACK_CHANNEL', defaultValue: 'jenkins-blazingsql', description: '')
+    string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
   }
   
   environment {
+    IMAGE_BUILD = "blazingsql/build:cuda9.2"
     IMAGE = "blazingdb/blazingsql:${params.DOCKERHUB_TAG_DEPLOY}"
+    BZSQL_WORKSPACE = "${env.HOME}/blazingsql/workspace"
+    BZSQL_OUTPUT = "${env.HOME}/blazingsql/output"
+    ARTIFACT = "${env.BZSQL_OUTPUT}/blazingsql-files.tar.gz"
     SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 
@@ -54,11 +64,29 @@ pipeline {
         checkout scm
       }
     }
-    
-    stage("Build") {
+
+    stage("Build Compiler") {
       steps {
-        dir("docker/") {
-          sh "./build-deploy.sh ${params.DOCKERHUB_TAG_DEPLOY} ${params.BLAZINGDB_TOOLCHAIN_BRANCH} ${params.CUSTRINGS_BRANCH} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_COMMUNICATION_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH} ${params.BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD} ${params.CUSTRINGS_CLEAN_BEFORE_BUILD} ${params.CUDF_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_PROTOCOL_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_IO_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_COMMUNICATION_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_RAL_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_ORCHESTRATOR_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD} ${params.PYBLAZING_CLEAN_BEFORE_BUILD} ${params.CLEAN_WORKSPACE_MAVEN}"
+        sh "nvidia-docker build -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
+      }
+    }
+    
+    stage("Compile Binaries") {
+      steps {
+        sh "./docker/config_write.sh ${params.BLAZINGDB_TOOLCHAIN_BRANCH} ${params.RMM_BRANCH} ${params.CUSTRINGS_BRANCH} ${params.CUDF_BRANCH} ${params.BLAZINGDB_PROTOCOL_BRANCH} ${params.BLAZINGDB_IO_BRANCH} ${params.BLAZINGDB_COMMUNICATION_BRANCH} ${params.BLAZINGDB_RAL_BRANCH} ${params.BLAZINGDB_ORCHESTRATOR_BRANCH} ${params.BLAZINGDB_CALCITE_BRANCH} ${params.PYBLAZING_BRANCH} ${params.BLAZINGDB_TOOLCHAIN_CLEAN_BEFORE_BUILD} ${params.CUSTRINGS_CLEAN_BEFORE_BUILD} ${params.CUDF_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_PROTOCOL_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_IO_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_COMMUNICATION_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_RAL_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_ORCHESTRATOR_CLEAN_BEFORE_BUILD} ${params.BLAZINGDB_CALCITE_CLEAN_BEFORE_BUILD} ${params.PYBLAZING_CLEAN_BEFORE_BUILD} ${params.CLEAN_WORKSPACE_MAVEN}"
+
+        sh "cp -f ./blazingsql-build.properties ${BZSQL_WORKSPACE}"
+
+        sh "./docker/compile.sh ${BZSQL_WORKSPACE} ${BZSQL_OUTPUT} ${IMAGE_BUILD}"
+      }
+    }
+
+    stage("Build Image") {
+      steps {
+        sh "cp -f ${env.ARTIFACT} ./docker/blazingsql/"
+
+        dir ("./docker/blazingsql/") {
+          sh "nvidia-docker build -t ${IMAGE_BUILD} ./docker/blazingsql/"
         }
       }
     }

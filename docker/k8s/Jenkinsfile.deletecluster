@@ -1,0 +1,40 @@
+pipeline {
+  agent {
+      label 'slave-gpu'
+  }
+
+  options {
+    ansiColor('xterm')
+    timestamps()
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  parameters {
+    string(name: 'PROJECT_ID', defaultValue: '', description: '')
+    string(name: 'CLUSTER_NAME', defaultValue: '', description: '')
+    string(name: 'LOCATION', defaultValue: '', description: '')
+  }
+
+  environment {
+    SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
+  }
+
+  stages {
+    stage("Repository") {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage("Remove cluster GKE  on GCP") { 
+      steps {
+         dir("docker/k8s/") {
+        script {         
+            sh "./delete-cluster-gke.sh ${params.PROJECT_ID} ${params.CLUSTER_NAME} ${params.LOCATION}"
+          }
+        }
+      }
+      }
+    }
+
+  }

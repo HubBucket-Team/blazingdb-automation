@@ -13,8 +13,8 @@ RUN apt-get install -y libnuma1
 
 RUN apt-get clean
 
-COPY ./blazingsql-files/cudf/cpp/install/lib/libcudf.so /usr/local/cuda/lib64/
-COPY ./blazingsql-files/cudf/cpp/install/lib/librmm.so /usr/local/cuda/lib64/
+#COPY ./blazingsql-files/cudf/cpp/install/lib/libcudf.so /usr/local/cuda/lib64/
+COPY ./blazingsql-files/rmm/lib/librmm.so /usr/local/cuda/lib64/
 
 COPY ./blazingsql-files/nvstrings/lib/libNVCategory.so /usr/local/cuda/lib64/
 COPY ./blazingsql-files/nvstrings/lib/libNVStrings.so /usr/local/cuda/lib64/

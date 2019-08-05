@@ -1,0 +1,26 @@
+version: '2.3'
+
+services:
+
+  scheduler:
+    image: blazingdb/blazingsql:scheduler
+    build: ./scheduler/
+    command: ["dask-scheduler", "--show"]
+    ports:
+      - "8786"
+      - 8787:8787
+
+  worker1:
+    image: blazingdb/blazingsql:worker
+    build: ./worker/
+    command: ["dask-worker", "scheduler:8786"]
+    ports:
+      - "8786"
+
+  worker2:
+    image: blazingdb/blazingsql:worker
+    build: ./worker/
+    command: ["dask-worker", "scheduler:8786"]
+    ports:
+      - "8786"
+

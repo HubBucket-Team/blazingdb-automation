@@ -415,7 +415,7 @@ if [ ! -d $workspace_dir/dependencies/include/ ]; then
     
     if [ ! -d $workspace_dir/blazingdb-toolchain/ ]; then
         cd $workspace_dir/
-        git clone git@github.com:BlazingDB/blazingdb-toolchain.git
+        git clone https://github.com/BlazingDB/blazingdb-toolchain.git
     fi
     
     cd $workspace_dir/blazingdb-toolchain/
@@ -524,7 +524,7 @@ if [ $custrings_enable == true ]; then
         if [ ! -d $custrings_branch_name ]; then
             mkdir $custrings_branch_name
             cd $custrings_branch_name
-            git clone git@github.com:BlazingDB/custrings.git
+            git clone https://github.com/BlazingDB/custrings.git
             cd $custrings_current_dir/custrings
             git checkout $custrings_branch
             git pull
@@ -717,7 +717,7 @@ if [ $cudf_enable == true ]; then
     if [ ! -d $cudf_branch_name ]; then
         mkdir $cudf_branch_name
         cd $cudf_branch_name
-        git clone git@github.com:BlazingDB/cudf.git
+        git clone https://github.com/BlazingDB/cudf.git
         cd $cudf_current_dir/cudf
         git checkout $cudf_branch
         git pull
@@ -804,7 +804,7 @@ if [ $blazingdb_protocol_enable == true ]; then
     if [ ! -d $blazingdb_protocol_branch_name ]; then
         mkdir $blazingdb_protocol_branch_name
         cd $blazingdb_protocol_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-protocol.git
+        git clone https://github.com/BlazingDB/blazingdb-protocol.git
     fi
     
     blazingdb_protocol_current_dir=$blazingdb_protocol_project_dir/$blazingdb_protocol_branch_name/
@@ -886,7 +886,7 @@ if [ $blazingdb_io_enable == true ]; then
     if [ ! -d $blazingdb_io_branch_name ]; then
         mkdir $blazingdb_io_branch_name
         cd $blazingdb_io_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-io.git
+        git clone https://github.com/BlazingDB/blazingdb-io.git
     fi
     
     blazingdb_io_current_dir=$blazingdb_io_project_dir/$blazingdb_io_branch_name/
@@ -950,7 +950,7 @@ if [ $blazingdb_communication_enable == true ]; then
     if [ ! -d $blazingdb_communication_branch_name ]; then
         mkdir $blazingdb_communication_branch_name
         cd $blazingdb_communication_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-communication.git
+        git clone https://github.com/BlazingDB/blazingdb-communication.git
     fi
     
     blazingdb_communication_current_dir=$blazingdb_communication_project_dir/$blazingdb_communication_branch_name/
@@ -1011,7 +1011,7 @@ if [ $blazingdb_ral_enable == true ]; then
     if [ ! -d $blazingdb_ral_branch_name ]; then
         mkdir $blazingdb_ral_branch_name
         cd $blazingdb_ral_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-ral.git
+        git clone https://github.com/BlazingDB/blazingdb-ral.git
     fi
     
     blazingdb_ral_current_dir=$blazingdb_ral_project_dir/$blazingdb_ral_branch_name/
@@ -1096,7 +1096,7 @@ if [ $blazingdb_orchestrator_enable == true ]; then
     if [ ! -d $blazingdb_orchestrator_branch_name ]; then
         mkdir $blazingdb_orchestrator_branch_name
         cd $blazingdb_orchestrator_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-orchestrator.git
+        git clone https://github.com/BlazingDB/blazingdb-orchestrator.git
     fi
     
     blazingdb_orchestrator_current_dir=$blazingdb_orchestrator_project_dir/$blazingdb_orchestrator_branch_name/
@@ -1168,7 +1168,7 @@ if [ $blazingdb_calcite_enable == true ]; then
     if [ ! -d $blazingdb_calcite_branch_name ]; then
         mkdir $blazingdb_calcite_branch_name
         cd $blazingdb_calcite_branch_name
-        git clone git@github.com:BlazingDB/blazingdb-calcite.git
+        git clone https://github.com/BlazingDB/blazingdb-calcite.git
     fi
     
     blazingdb_calcite_current_dir=$blazingdb_calcite_project_dir/$blazingdb_calcite_branch_name/
@@ -1214,7 +1214,7 @@ if [ $pyblazing_enable == true ]; then
     if [ ! -d $pyblazing_branch_name ]; then
         mkdir $pyblazing_branch_name
         cd $pyblazing_branch_name
-        git clone git@github.com:BlazingDB/pyBlazing.git
+        git clone https://github.com/BlazingDB/pyBlazing.git
     fi
     
     pyblazing_current_dir=$pyblazing_project_dir/$pyblazing_branch_name/

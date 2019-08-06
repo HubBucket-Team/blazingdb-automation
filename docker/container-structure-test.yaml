@@ -3,9 +3,9 @@ schemaVersion: "2.0.0"
 metadataTest:
   env:
     - key: "NUMBAPRO_NVVM"
-      value: "/usr/local/cuda/nvvm/lib64/libnvvm.so"
+      value: "/usr/local/cuda-9.2/nvvm/lib64/libnvvm.so"
     - key: "NUMBAPRO_LIBDEVICE"
-      value: "/usr/local/cuda/nvvm/libdevice/"
+      value: "/usr/local/cuda-9.2/nvvm/libdevice/"
     - key: "LD_LIBRARY_PATH"
       value: "/conda/envs/cudf/lib/"
   exposedPorts: ["80", "9001"]
@@ -29,19 +29,3 @@ fileExistenceTests:
     path: '/home/jupyter/BlazingCalcite.jar'
     shouldExist: true
     permissions: '-rw-r--r--'
-
-
-#commandTests:
-
-#  - name: "orchestrator starting"
-#    command: "/home/jupyter/blazingdb_orchestator_service"
-#    expectedOutput: ["\n"]
-
-#  - name: "ral starting"
-#    command: "/home/jupyter/testing-libgdf"
-#    expectedOutput: ["RAL Engine starting\n"]
-
-#  - name: "calcite starting"
-#    command: "java"
-#    args: ["-jar", "/home/jupyter/BlazingCalcite.jar"]
-#    expectedOutput: ["Waiting for messages\n"]

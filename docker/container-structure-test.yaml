@@ -15,21 +15,6 @@ metadataTest:
 
 fileExistenceTests:
 
-  - name: 'libNVStrings.so'
-    path: '/conda/envs/cudf/lib/libNVStrings.so'
-    shouldExist: true
-#    permissions: '-rwxrwxr-x'
-
-  - name: 'libcudf.so'
-    path: '/conda/envs/cudf/lib/libcudf.so'
-    shouldExist: true
-    permissions: '-rw-r--r--'
-
-  - name: 'librmm.so'
-    path: '/conda/envs/cudf/lib/librmm.so'
-    shouldExist: true
-    permissions: '-rw-r--r--'
-
   - name: 'orchestrator'
     path: '/home/jupyter/blazingdb_orchestator_service'
     shouldExist: true

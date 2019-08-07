@@ -97,7 +97,10 @@ pipeline {
         sh "docker cp ./docker/colab/supervisor/blazing-calcite.conf ${CONTAINER_NAME}:/etc/supervisor/conf.d/"
         sh "docker cp ./docker/colab/supervisor/blazing-orchestrator.conf ${CONTAINER_NAME}:/etc/supervisor/conf.d/"
         sh "docker cp ./docker/colab/supervisor/blazing-ral.conf ${CONTAINER_NAME}:/etc/supervisor/conf.d/"
+
         sh "docker exec ${CONTAINER_NAME} supervisorctl reload"
+        sh "docker exec ${CONTAINER_NAME} supervisorctl restart blazing-orchestrator"
+        sh "docker exec ${CONTAINER_NAME} supervisorctl restart blazing-ral"
 
         sh "docker exec ${CONTAINER_NAME} blazingsql status"
       }

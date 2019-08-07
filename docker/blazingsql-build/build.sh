@@ -730,6 +730,7 @@ if [ $cudf_enable == true ]; then
             -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
+            -DBUILD_SHARED_LIBS="OFF"  \
             ..
     fi
     
@@ -750,6 +751,7 @@ if [ $cudf_enable == true ]; then
             -DCMAKE_BUILD_TYPE=$cudf_build_type  \
             -DBUILD_TESTS=$build_testing_cudf  \
             -DCMAKE_INSTALL_PREFIX:PATH=$libgdf_install_dir  \
+            -DBUILD_SHARED_LIBS="OFF"  \
             ..
     fi
     

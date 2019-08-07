@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blazingdb-dask-worker
-        image: "blazingdb/blazingsql:dask_ral_pyblazingv49"
+        image: "blazingdb/blazingsql:dask_ral_pyblazingv55"
         ports:
           - containerPort: 80 # jupyter
           - containerPort: 9001 # supervisor

@@ -69,14 +69,14 @@ pipeline {
       }
     }
 
-    stage("Build image") {
+    stage("Build compiler") {
       steps {
         sh "docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
         //sh "docker build --build-arg CUDA_VERSION=9.2 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
       }
     }
 
-    stage("Compile") {
+    stage("Compile binaries") {
       when {
         expression {
           return params.COMPILE ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
@@ -87,16 +87,24 @@ pipeline {
       }
     }
 
-    stage("Test") {
+    stage("Test installation") {
       steps {
         sh "./docker/cuda10_run.sh ${CONTAINER_NAME}"
         sh "docker cp ${ARTIFACT} ${CONTAINER_NAME}:/tmp/"
         sh "docker cp ./docker/colab/install.sh ${CONTAINER_NAME}:/tmp/"
         sh "docker exec ${CONTAINER_NAME} /tmp/install.sh /tmp/blazingsql-files.tar.gz true"
 
-        sh "sleep 10"
-        sh "docker exec ${CONTAINER_NAME} blazingsql status"
+        sh "docker cp ./docker/colab/supervisor/blazing-calcite.conf ${CONTAINER_NAME}:/etc/supervisor/conf.d/"
+        sh "docker cp ./docker/colab/supervisor/blazing-orchestrator.conf ${CONTAINER_NAME}:/etc/supervisor/conf.d/"
+        sh "docker cp ./docker/colab/supervisor/blazing-ral.conf ${CONTAINER_NAME}:/etc/supervisor/conf.d/"
+        sh "docker exec ${CONTAINER_NAME} supervisorctl reload"
 
+        sh "docker exec ${CONTAINER_NAME} blazingsql status"
+      }
+    }
+
+    stage("Run demos") {
+      steps {
         sh "docker cp ./docker/colab/demo1.py ${CONTAINER_NAME}:/blazingsql/"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo1.py"
 
@@ -106,7 +114,6 @@ pipeline {
         sh "docker cp ./docker/colab/demo3.py ${CONTAINER_NAME}:/blazingsql/"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo3.py"
 
-        //sh "docker cp ./docker/blazingsql/data/Music.csv ${CONTAINER_NAME}:/blazingsql/data/"
         sh "docker cp ./docker/colab/demo4.py ${CONTAINER_NAME}:/blazingsql/"
         sh "docker exec ${CONTAINER_NAME} python3 /blazingsql/demo4.py"
 

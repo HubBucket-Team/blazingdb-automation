@@ -57,8 +57,8 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-PYTHON="python3.7"
-PIP="python3.7 -m pip"
+PYTHON="python"
+PIP="python -m pip"
 
 PATH_USR="/usr/"
 if [ ! -z $4 ]; then
@@ -99,22 +99,16 @@ if [ $? != 0 ]; then
 fi
 
 echo "### conda dependencies ###"
-conda install -y -c numba -c conda-forge -c defaults dask xgboost numba=0.43.0 pandas=0.24.2 pyarrow=0.12.1 cmake=3.14
+conda install -y --prefix /usr/local \
+    -c rapidsai-nightly/label/xgboost -c nvidia -c conda-forge -c rapidsai-nightly/label/cuda10.0 \
+    python=3.6 cudatoolkit=10.0 \
+    rmm=0.9.0a1 nvstrings=0.9.0a cudf=0.9 dask-cudf=0.9.0a \
+    dask dask-cudf rapidsai/label/xgboost::xgboost=>0.9 \
+    numba=0.43.0 pandas=0.24.2 pyarrow=0.12.1 cmake=3.14
 if [ $? != 0 ]; then
   exit 1
 fi
 
-#echo "### pip dependencies ###"
-#$PIP install sklearn 
-#if [ $? != 0 ]; then
-#  exit 1
-#fi
-
-echo "### conda nightly ###"
-conda install -y -c rapidsai-nightly/label/cuda10.0 rmm=0.9.0a1 nvstrings=0.9.0a cudf=0.9 dask-cudf=0.9.0a
-if [ $? != 0 ]; then
-  exit 1
-fi
 
 blazingsql_files=/tmp/blazing/blazingsql-files
 

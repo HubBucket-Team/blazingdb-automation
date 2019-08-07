@@ -102,6 +102,7 @@ pipeline {
         sh "docker exec ${CONTAINER_NAME} supervisorctl restart blazing-orchestrator"
         sh "docker exec ${CONTAINER_NAME} supervisorctl restart blazing-ral"
 
+        sh "sleep 10"
         sh "docker exec ${CONTAINER_NAME} blazingsql status"
       }
     }

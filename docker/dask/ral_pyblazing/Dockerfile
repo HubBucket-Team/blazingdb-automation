@@ -95,7 +95,7 @@ USER root
 #RUN ln -s /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so /usr/local/cuda-9.2/targets/x86_64-linux/lib/stubs/libcuda.so.1
 
 # Install hdfs stuff
-RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7
+RUN apt-get install -y --no-install-recommends libprotobuf9v5 libgsasl7 libgsasl7-dev libxml2-dev default-jre
 
 # NOTE Fix some numba issues (NvvmSupportError: libNVVM cannot be found)
 ENV NUMBAPRO_NVVM /usr/local/cuda-9.2/nvvm/lib64/libnvvm.so

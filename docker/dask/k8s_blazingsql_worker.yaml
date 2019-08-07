@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: blazingdb-dask-worker
-  replicas: 15
+  replicas: 1
   template:
     metadata:
       labels:
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blazingdb-dask-worker
-        image: "blazingdb/blazingsql:dask_ral_pyblazingv48"
+        image: "blazingdb/blazingsql:dask_ral_pyblazingv49"
         ports:
           - containerPort: 80 # jupyter
           - containerPort: 9001 # supervisor

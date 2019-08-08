@@ -13,8 +13,6 @@ pipeline {
     booleanParam(name: 'COMPILE', defaultValue: true, description: 'Compile to cuda10')
     booleanParam(name: 'CALL_JOB_E2E', defaultValue: true, description: 'Call to job e2e')
     booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Publish tar file and install.sh to S3')
-    //choice(name: 'CUDA_VERSION', choices: 'cuda92\cuda10', description: 'Cuda 9.2 or Cuda 10.0')
-    //string(name: 'BRANCH_BLAZINGDB_AUTOMATION', defaultValue: 'develop', description: '')
     string(name: 'BLAZINGDB_TOOLCHAIN_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'RMM_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
     string(name: 'CUSTRINGS_BRANCH', defaultValue: 'develop', description: 'if the branch is a feature use put into quotation marks and backslash before / ')
@@ -44,10 +42,13 @@ pipeline {
     IMAGE_BUILD = "blazingsql/build:cuda10"
     IMAGE_COLAB = "blazingdb/blazingsql:colab-cuda10"
     CONTAINER_NAME = "blzsql_colab_cuda10"
+
     BZSQL_WORKSPACE = "${env.WORKSPACE}/workspace_cuda10"
     BZSQL_OUTPUT = "${env.WORKSPACE}/output_cuda10"
+
     ARTIFACT = "${env.BZSQL_OUTPUT}/blazingsql-files.tar.gz"
-    BUCKET = "blazingsql-colab/latest"
+    BUCKET = "blazingsql-colab/beta"
+
     SLACK_MESSAGE=" - Job '${env.JOB_NAME}' - Build #${env.BUILD_NUMBER}: ${env.BUILD_URL}"
   }
 
@@ -72,7 +73,6 @@ pipeline {
     stage("Build compiler") {
       steps {
         sh "docker build --build-arg CUDA_VERSION=10.0 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
-        //sh "docker build --build-arg CUDA_VERSION=9.2 -t ${IMAGE_BUILD} ./docker/blazingsql-build/"
       }
     }
 

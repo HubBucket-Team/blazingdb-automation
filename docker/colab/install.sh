@@ -3,20 +3,14 @@
 # Usage: /tmp/blazingsql-files.tar.gz true true $PYENV_VIRTUAL_ENV/|/usr true
 
 GPU_TYPE=$(nvidia-smi --query-gpu=gpu_name --format=csv|awk 'FNR==2 {print $1}')
-echo "GPU_TYPE: "$GPU_TYPE
 
 STRICT_MODE=0
 if [ ! -z $5 ]; then
   STRICT_MODE=1
 fi
 
-echo "Strict mode: "$STRICT_MODE
-if [ $STRICT_MODE == 1 ] && [ "$GPU_TYPE" != "Tesla T4" ]; then
-  echo "GPU model must be Tesla T4"
-  exit 1
-fi
-
 VERBOSE="/dev/null"
+#VERBOSE="/dev/stdout"
 if [ ! -z $2 ]; then
   VERBOSE="/dev/stdout"
 fi
@@ -24,6 +18,25 @@ fi
 SUDO=""
 if [ ! -z $3 ]; then
   SUDO="sudo"
+fi
+
+BUCKET="blazingsql-colab"
+BUCKET_DEMO=$BUCKET"/demo"
+BUCKET_DATA=$BUCKET_DEMO"/data"
+
+PYTHON="python"
+PIP="python -m pip"
+
+PATH_USR="/usr/local/"
+if [ ! -z $4 ]; then
+  PATH_USR=$4
+fi
+
+echo "GPU_TYPE: "$GPU_TYPE
+echo "Strict mode: "$STRICT_MODE
+if [ $STRICT_MODE == 1 ] && [ "$GPU_TYPE" != "Tesla T4" ]; then
+  echo "GPU model must be Tesla T4"
+  exit 1
 fi
 
 echo "### update ###"
@@ -41,9 +54,6 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-BUCKET="blazingsql-colab"
-BUCKET_DEMO=$BUCKET"/demo"
-BUCKET_DATA=$BUCKET_DEMO"/data"
 
 if [ -z $1 ]; then
   wget -O /tmp/blazingsql-files.tar.gz -q https://s3.amazonaws.com/$BUCKET/blazingsql-files.tar.gz
@@ -57,13 +67,6 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-PYTHON="python"
-PIP="python -m pip"
-
-PATH_USR="/usr/"
-if [ ! -z $4 ]; then
-  PATH_USR=$4
-fi
 
 source /etc/lsb-release
 #echo "DISTRIB_ID: "$DISTRIB_ID
@@ -87,7 +90,7 @@ echo "### Conda ###"
 if ! [ -x "$(command -v conda)" ]; then
   echo "conda is not installed"
   wget -q -O /tmp/miniconda.sh -nv https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-  bash /tmp/miniconda.sh -b -f -p /usr/local/
+  bash /tmp/miniconda.sh -b -f -p /usr/local
   if [ $? != 0 ]; then
     exit 1
   fi
@@ -99,12 +102,19 @@ if [ $? != 0 ]; then
 fi
 
 echo "### conda dependencies ###"
-conda install -y --prefix /usr/local \
-    -c rapidsai-nightly/label/xgboost -c nvidia -c conda-forge -c rapidsai-nightly/label/cuda10.0 \
-    python=3.6 cudatoolkit=10.0 \
-    rmm=0.9.0a1 nvstrings=0.9.0a cudf=0.9 dask-cudf=0.9.0a \
-    dask dask-cudf rapidsai/label/xgboost::xgboost=>0.9 \
-    numba=0.43.0 pandas=0.24.2 pyarrow=0.12.1 cmake=3.14
+conda install -y --prefix $PATH_USR -c numba -c conda-forge -c defaults dask xgboost numba=0.43.0 pandas=0.24.2 pyarrow=0.12.1 cmake=3.14
+#conda install -y --prefix /usr/local \
+#    -c rapidsai-nightly/label/xgboost -c nvidia -c conda-forge -c rapidsai-nightly/label/cuda10.0 \
+#    python=3.6 cudatoolkit=10.0 \
+#    rmm=0.9.0a1 nvstrings=0.9.0a cudf=0.9 dask-cudf=0.9.0a \
+#    dask dask-cudf rapidsai/label/xgboost::xgboost=>0.9 \
+#    numba=0.43.0 pandas=0.24.2 pyarrow=0.12.1 cmake=3.14
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+echo "### conda nightly ###"
+conda install -y --prefix $PATH_USR -c rapidsai-nightly/label/cuda10.0 rmm=0.9.0a1 nvstrings=0.9.0a cudf=0.9 dask-cudf=0.9.0a
 if [ $? != 0 ]; then
   exit 1
 fi
@@ -123,11 +133,11 @@ $PIP install $blazingsql_files/pyBlazing
 if [ $? != 0 ]; then
   exit 1
 fi
-echo "### test pyblazing ###"
-$PYTHON -c "import pyblazing"
-if [ $? != 0 ]; then
-  exit 1
-fi
+#echo "### test pyblazing ###"
+#$PYTHON -c "import pyblazing"
+#if [ $? != 0 ]; then
+#  exit 1
+#fi
 
 echo "### binaries ###"
 cp -f $blazingsql_files/BlazingCalcite.jar $PATH_USR/bin/

@@ -85,6 +85,7 @@ RUN source activate cudf && conda install -c conda-forge jupyterlab
 RUN source activate cudf && pip install cython
 
 # Demo dependencies
+RUN source activate cudf && pip install numpy==1.16.4
 RUN source activate cudf && pip install xgboost==0.90
 RUN source activate cudf && pip install sklearn
 

@@ -78,16 +78,18 @@ RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
 RUN source activate cudf && pip install --upgrade pip
 
 # blazingdb-protocol dependencies
-RUN source activate cudf && pip install flatbuffers
+#RUN source activate cudf && pip install flatbuffers
 
 # Pyblazing dependencies
-RUN source activate cudf && conda install -c conda-forge jupyterlab
-RUN source activate cudf && pip install cython
+RUN conda install -n cudf -y -c conda-forge jupyterlab
+#RUN source activate cudf && pip install cython
 
 # Demo dependencies
-RUN source activate cudf && pip install scipy==1.3.0
-RUN source activate cudf && pip install xgboost==0.90
+#RUN source activate cudf && pip install scipy==1.3.0
+#RUN source activate cudf && pip install xgboost==0.90
+RUN conda install -n cudf -y -c conda-forge xgboost
 RUN source activate cudf && pip install sklearn
+
 
 #extra dependencies (from cudf 0.7)
 RUN source activate cudf && pip install cmake_setuptools

@@ -86,6 +86,7 @@ RUN source activate cudf && pip install cython
 
 # Demo dependencies
 RUN source activate cudf && pip install numpy==1.16.4
+RUN source activate cudf && pip install scipy==1.3.0
 RUN source activate cudf && pip install xgboost==0.90
 RUN source activate cudf && pip install sklearn
 

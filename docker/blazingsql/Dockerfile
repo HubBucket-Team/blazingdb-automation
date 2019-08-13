@@ -67,13 +67,13 @@ ARG PYARROW_VERSION=0.12.1
 # Dask
 RUN conda install -n cudf -y dask
 RUN source activate cudf && pip install bokeh
-RUN conda install -n cudf -y -c nvidia -c rapidsai-nightly dask-cudf
 
 # Conda Nightly
 #RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 rmm=0.9.0a1
 #RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 nvstrings=0.9.0a
 #RUN conda install -n cudf -y -c rapidsai-nightly/label/cuda9.2 cudf=0.9
 RUN conda install -n cudf -y -c conda-forge -c rapidsai-nightly/label/cuda9.2 cudf=0.9
+RUN conda install -n cudf -y c rapidsai-nightly/label/cuda9.2 dask-cudf
 
 # libgdf dependencies
 RUN source activate cudf && pip install --upgrade pip
